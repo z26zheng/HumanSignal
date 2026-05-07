@@ -5,7 +5,9 @@ import type {
   GeminiStatus,
   HealthMetrics,
   PriorityUpdate,
+  ScoringLabel,
   ScoringResult,
+  ScoringSource,
   UserSettings,
 } from '@/shared/types';
 
@@ -23,6 +25,11 @@ export interface PingMessage extends BaseMessage {
 export interface ScoreBatchMessage extends BaseMessage {
   readonly type: 'SCORE_BATCH';
   readonly items: readonly ExtractedItem[];
+}
+
+export interface ScoreResultMessage extends BaseMessage {
+  readonly type: 'SCORE_RESULT';
+  readonly results: readonly ScoringResult[];
 }
 
 export interface PriorityUpdateMessage extends BaseMessage {
@@ -57,10 +64,20 @@ export interface FeedbackMessage extends BaseMessage {
   readonly type: 'FEEDBACK';
   readonly itemId: string;
   readonly feedback: FeedbackType;
+  readonly label: ScoringLabel;
+  readonly scoringSource: ScoringSource;
 }
 
 export interface GetHealthMessage extends BaseMessage {
   readonly type: 'GET_HEALTH';
+}
+
+export interface ClearCacheMessage extends BaseMessage {
+  readonly type: 'CLEAR_CACHE';
+}
+
+export interface DeleteAllDataMessage extends BaseMessage {
+  readonly type: 'DELETE_ALL_DATA';
 }
 
 export interface EnsureOffscreenDocumentMessage extends BaseMessage {
@@ -71,9 +88,14 @@ export interface CloseOffscreenDocumentMessage extends BaseMessage {
   readonly type: 'CLOSE_OFFSCREEN_DOCUMENT';
 }
 
+export interface DestroyGeminiSessionMessage extends BaseMessage {
+  readonly type: 'DESTROY_GEMINI_SESSION';
+}
+
 export type HumanSignalMessage =
   | PingMessage
   | ScoreBatchMessage
+  | ScoreResultMessage
   | PriorityUpdateMessage
   | GeminiPromptMessage
   | CheckGeminiStatusMessage
@@ -82,8 +104,11 @@ export type HumanSignalMessage =
   | SettingsChangedMessage
   | FeedbackMessage
   | GetHealthMessage
+  | ClearCacheMessage
+  | DeleteAllDataMessage
   | EnsureOffscreenDocumentMessage
-  | CloseOffscreenDocumentMessage;
+  | CloseOffscreenDocumentMessage
+  | DestroyGeminiSessionMessage;
 
 export interface PongPayload {
   readonly type: 'PONG';
@@ -93,6 +118,7 @@ export interface PongPayload {
 export interface ScoreBatchPayload {
   readonly type: 'SCORE_RESULT';
   readonly results: readonly ScoringResult[];
+  readonly queued: readonly string[];
 }
 
 export interface GeminiResultPayload {
@@ -125,6 +151,10 @@ export interface OffscreenLifecyclePayload {
   readonly isAvailable: boolean;
 }
 
+export interface ServiceWorkerAlivePayload {
+  readonly type: 'SERVICE_WORKER_ALIVE';
+}
+
 export type MessagePayload =
   | PongPayload
   | ScoreBatchPayload
@@ -133,7 +163,8 @@ export type MessagePayload =
   | HealthPayload
   | SettingsPayload
   | AckPayload
-  | OffscreenLifecyclePayload;
+  | OffscreenLifecyclePayload
+  | ServiceWorkerAlivePayload;
 
 export interface MessageError {
   readonly code: string;
@@ -156,6 +187,12 @@ export type MessageHandler = (
   message: HumanSignalMessage,
   sender: Browser.runtime.MessageSender,
 ) => Promise<MessagePayload>;
+
+type OutboundMessage = DistributiveOmit<HumanSignalMessage, 'requestId' | 'target'>;
+
+type DistributiveOmit<TValue, TKeys extends PropertyKey> = TValue extends unknown
+  ? Omit<TValue, TKeys>
+  : never;
 
 export function createRequestId(): string {
   const randomId: string = crypto.randomUUID();
@@ -255,7 +292,7 @@ export function addMessageListener(
 }
 
 export async function sendToBackground(
-  message: Omit<HumanSignalMessage, 'requestId' | 'target'>,
+  message: OutboundMessage,
 ): Promise<MessageResponse> {
   const targetedMessage: HumanSignalMessage = createMessage({
     ...message,
@@ -266,7 +303,7 @@ export async function sendToBackground(
 }
 
 export async function sendToOffscreen(
-  message: Omit<HumanSignalMessage, 'requestId' | 'target'>,
+  message: OutboundMessage,
 ): Promise<MessageResponse> {
   const targetedMessage: HumanSignalMessage = createMessage({
     ...message,
@@ -278,7 +315,7 @@ export async function sendToOffscreen(
 
 export async function sendToContentScript(
   tabId: number,
-  message: Omit<HumanSignalMessage, 'requestId' | 'target'>,
+  message: OutboundMessage,
 ): Promise<MessageResponse> {
   const targetedMessage: HumanSignalMessage = createMessage({
     ...message,
@@ -341,6 +378,7 @@ function isKnownMessageType(type: string): boolean {
   const knownTypes: readonly string[] = [
     'PING',
     'SCORE_BATCH',
+    'SCORE_RESULT',
     'PRIORITY_UPDATE',
     'GEMINI_PROMPT',
     'CHECK_GEMINI_STATUS',
@@ -349,8 +387,11 @@ function isKnownMessageType(type: string): boolean {
     'SETTINGS_CHANGED',
     'FEEDBACK',
     'GET_HEALTH',
+    'CLEAR_CACHE',
+    'DELETE_ALL_DATA',
     'ENSURE_OFFSCREEN_DOCUMENT',
     'CLOSE_OFFSCREEN_DOCUMENT',
+    'DESTROY_GEMINI_SESSION',
   ];
 
   return knownTypes.includes(type);

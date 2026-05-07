@@ -3,6 +3,7 @@ import { safeCatchAsync } from '@/shared/safe-catch';
 import {
   DEFAULT_GEMINI_STATUS,
   DEFAULT_USER_SETTINGS,
+  type FeedbackEntry,
   type GeminiStatus,
   type UserSettings,
 } from '@/shared/types';
@@ -10,6 +11,7 @@ import {
 interface StorageSchema {
   readonly userSettings: UserSettings;
   readonly geminiStatus: GeminiStatus;
+  readonly feedbackEntries: readonly FeedbackEntry[];
 }
 
 export type StorageKey = keyof StorageSchema;
@@ -46,7 +48,11 @@ export async function writeStorageValue<TKey extends StorageKey>(
 }
 
 export async function getUserSettings(): Promise<UserSettings> {
-  return await readStorageValue('userSettings', DEFAULT_USER_SETTINGS);
+  const storedSettings: UserSettings = await readStorageValue('userSettings', DEFAULT_USER_SETTINGS);
+  return {
+    ...DEFAULT_USER_SETTINGS,
+    ...storedSettings,
+  };
 }
 
 export async function setUserSettings(settings: Partial<UserSettings>): Promise<UserSettings> {
@@ -78,5 +84,35 @@ export async function setGeminiStatus(status: GeminiStatus): Promise<GeminiStatu
     },
     DEFAULT_GEMINI_STATUS,
     'storage.setGeminiStatus',
+  );
+}
+
+export async function getFeedbackEntries(): Promise<readonly FeedbackEntry[]> {
+  return await readStorageValue('feedbackEntries', []);
+}
+
+export async function addFeedbackEntry(entry: FeedbackEntry): Promise<readonly FeedbackEntry[]> {
+  return await safeCatchAsync(
+    async (): Promise<readonly FeedbackEntry[]> => {
+      const existingEntries: readonly FeedbackEntry[] = await getFeedbackEntries();
+      const nextEntries: readonly FeedbackEntry[] = [...existingEntries, entry].slice(-500);
+
+      await writeStorageValue('feedbackEntries', nextEntries);
+      return nextEntries;
+    },
+    [],
+    'storage.addFeedbackEntry',
+  );
+}
+
+export async function clearAllStoredData(): Promise<boolean> {
+  return await safeCatchAsync(
+    async (): Promise<boolean> => {
+      await browser.storage.local.clear();
+      logger.info('storage.clear', 'All extension storage cleared');
+      return true;
+    },
+    false,
+    'storage.clearAllStoredData',
   );
 }

@@ -12,6 +12,8 @@
 body {
   margin: 0;
   min-width: 360px;
+  max-height: 560px;
+  overflow: auto;
 }
 
 .human-signal-popup {
@@ -58,6 +60,92 @@ h1 {
   background: #ffffff;
 }
 
+.panel {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.panel h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+select,
+button {
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #0f172a;
+  font: inherit;
+  padding: 8px 10px;
+}
+
+button {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+button:hover {
+  border-color: #2563eb;
+}
+
+.danger {
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.muted {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+}
+
+progress {
+  width: 100%;
+}
+
+.diagnostics {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 12px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.diagnostics dt {
+  color: #64748b;
+}
+
+.diagnostics dd {
+  margin: 0;
+  font-weight: 700;
+}
+
 .status-dot {
   width: 10px;
   height: 10px;
@@ -87,4 +175,31 @@ h1 {
   color: #0f172a;
   font-size: 14px;
   font-weight: 700;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #e2e8f0;
+    background: #0f172a;
+  }
+
+  .description,
+  .muted,
+  .status-label,
+  .diagnostics dt {
+    color: #94a3b8;
+  }
+
+  .status-card,
+  .panel,
+  select,
+  button {
+    border-color: #334155;
+    background: #111827;
+    color: #e2e8f0;
+  }
+
+  .status-value {
+    color: #f8fafc;
+  }
 }
