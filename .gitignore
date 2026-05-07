@@ -1,0 +1,21 @@
+# OS and editor files
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+logs/
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# JavaScript extension build artifacts
+node_modules/
+**/node_modules/
+**/.output/
+**/.wxt/
+**/stats.html
+**/stats-*.json
