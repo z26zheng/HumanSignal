@@ -106,12 +106,7 @@ function findPostAnchor(container: HTMLElement): HTMLElement | null {
     return visibilityIcon;
   }
 
-  const followersAnchor: HTMLElement | null = findFollowersAnchor(container, containerRect);
-  if (followersAnchor !== null) {
-    return followersAnchor;
-  }
-
-  return findConnectionBadge(container, containerRect, 50);
+  return findFollowersAnchor(container, containerRect);
 }
 
 function findCommentAnchor(container: HTMLElement): HTMLElement | null {
