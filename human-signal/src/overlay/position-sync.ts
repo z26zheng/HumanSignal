@@ -97,7 +97,7 @@ export class PositionSync {
   }
 }
 
-const ANCHOR_SEARCH_INTERVAL_MS: number = 1000;
+const ANCHOR_SEARCH_INTERVAL_MS: number = 200;
 
 function findAnchorElement(tracked: TrackedItem): HTMLElement | null {
   if (tracked.cachedAnchor !== null && tracked.cachedAnchor.isConnected) {

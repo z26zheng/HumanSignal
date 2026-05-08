@@ -51,7 +51,7 @@ function createOverlayStyle(): HTMLStyleElement {
       padding: 6px 9px;
       pointer-events: auto;
       transform: translate(-9999px, -9999px);
-      transition: opacity 120ms ease, transform 120ms ease;
+      transition: opacity 120ms ease;
       user-select: none;
       white-space: nowrap;
       will-change: transform;
