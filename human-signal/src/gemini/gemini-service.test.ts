@@ -379,3 +379,89 @@ describe('coerceToString and prompt response handling', (): void => {
     await service.destroySession();
   });
 });
+
+describe('session pre-warming', (): void => {
+  afterEach((): void => {
+    vi.restoreAllMocks();
+  });
+
+  it('creates a session eagerly via warmUp without sending a prompt', async (): Promise<void> => {
+    const prompt = vi.fn<PromptApiSession['prompt']>();
+    const create = vi.fn(async (): Promise<PromptApiSession> => ({ prompt, destroy: vi.fn() }));
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create,
+    };
+    const service: GeminiService = new GeminiService(languageModel, persistStatus);
+
+    await service.warmUp();
+
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(prompt).not.toHaveBeenCalled();
+    await service.destroySession();
+  });
+
+  it('does not create a session if LanguageModel is unavailable', async (): Promise<void> => {
+    const service: GeminiService = new GeminiService(null, persistStatus);
+
+    await service.warmUp();
+
+    // Should not throw, just log and return
+  });
+
+  it('reuses warm session for scoring without extra create call', async (): Promise<void> => {
+    const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue(
+      JSON.stringify({
+        primaryLabel: 'Specific',
+        color: 'green',
+        confidence: 'medium',
+        dimensions: { authenticity: 0.7, originality: 0.6, specificity: 0.8, engagementBait: 0, templating: 0.1, usefulness: 0.7 },
+        reasons: ['Concrete metric.', 'Specific rollout.'],
+      }),
+    );
+    const create = vi.fn(async (): Promise<PromptApiSession> => ({ prompt, destroy: vi.fn() }));
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create,
+    };
+    const service: GeminiService = new GeminiService(languageModel, persistStatus);
+
+    await service.warmUp();
+    expect(create).toHaveBeenCalledTimes(1);
+
+    const result = await service.scoreWithGemini(createRulesItem('I reduced failures by 27%.', 'post'));
+    expect(result?.source).toBe('gemini');
+    expect(create).toHaveBeenCalledTimes(1);
+
+    await service.destroySession();
+  });
+
+  it('handles warmUp failure gracefully without affecting later scoring', async (): Promise<void> => {
+    const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue(
+      JSON.stringify({
+        primaryLabel: 'Generic',
+        color: 'orange',
+        confidence: 'medium',
+        dimensions: { authenticity: 0.2, originality: 0.1, specificity: 0.1, engagementBait: 0, templating: 0.3, usefulness: 0.2 },
+        reasons: ['Vague claim.', 'No evidence.'],
+      }),
+    );
+    const create = vi.fn<PromptApiLanguageModel['create']>()
+      .mockRejectedValueOnce(new Error('warm-up network error'))
+      .mockResolvedValueOnce({ prompt, destroy: vi.fn() });
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create,
+    };
+    const service: GeminiService = new GeminiService(languageModel, persistStatus);
+
+    await service.warmUp();
+    expect(create).toHaveBeenCalledTimes(1);
+
+    const result = await service.scoreWithGemini(createRulesItem('Mindset is key.', 'post'));
+    expect(result?.source).toBe('gemini');
+    expect(create).toHaveBeenCalledTimes(2);
+
+    await service.destroySession();
+  });
+});

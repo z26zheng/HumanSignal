@@ -36,41 +36,45 @@ export class ScoringCoordinator {
   private failureCount: number = 0;
   private totalLatencyMs: number = 0;
 
+  private initPromise: Promise<void> | null = null;
+
   public async initialize(): Promise<void> {
-    await this.modeManager.initialize();
+    this.initPromise ??= this.modeManager.initialize();
+    await this.initPromise;
   }
 
   public async handleScoreBatch(
     items: readonly ExtractedItem[],
     tabId: number | null,
   ): Promise<ScoreBatchResult> {
+    await this.initialize();
+
     const results: ScoringResult[] = [];
     const queued: string[] = [];
 
     for (const item of items) {
-      const result: ScoringResult | null = await this.getCachedResult(item);
+      const cachedResult: ScoringResult | null = await this.getCachedResult(item);
 
-      if (result !== null) {
-        results.push(result);
+      if (cachedResult !== null) {
+        results.push(cachedResult);
         continue;
       }
 
-      if (this.modeManager.getMode() !== 'gemini') {
-        const rulesResult: ScoringResult = scoreWithRules(item);
-        await this.cache.set(item.metadata.contentHash, rulesResult);
-        this.itemsScored += 1;
-        results.push(rulesResult);
-        continue;
-      }
+      const rulesResult: ScoringResult = scoreWithRules(item);
+      await this.cache.set(item.metadata.contentHash, rulesResult);
+      this.itemsScored += 1;
+      results.push(rulesResult);
 
-      queued.push(item.itemId);
-      this.queue.enqueue({
-        item,
-        contentHash: item.metadata.contentHash,
-        priority: 1,
-        tabId,
-        addedAt: Date.now(),
-      });
+      if (this.modeManager.getMode() === 'gemini') {
+        queued.push(item.itemId);
+        this.queue.enqueue({
+          item,
+          contentHash: item.metadata.contentHash,
+          priority: 1,
+          tabId,
+          addedAt: Date.now(),
+        });
+      }
     }
 
     void this.processQueue();

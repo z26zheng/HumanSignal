@@ -98,6 +98,27 @@ function createQueueItem(text: string, priority: QueueItem['priority']): QueueIt
   };
 }
 
+describe('hybrid scoring (rules immediate + Gemini upgrade)', (): void => {
+  it('returns rules results immediately even in gemini mode', async (): Promise<void> => {
+    vi.stubGlobal('browser', {
+      runtime: { sendMessage: vi.fn(async (): Promise<unknown> => ({})) },
+      storage: { local: { get: vi.fn(async (): Promise<Record<string, unknown>> => ({})) } },
+    });
+
+    const { ScoringCoordinator } = await import('@/scoring-coordinator');
+    const coordinator = new ScoringCoordinator();
+
+    const item: ExtractedItem = createRulesItem('I shipped 2 changes last quarter.', 'post');
+    const result = await coordinator.handleScoreBatch([item], null);
+
+    expect(result.results.length).toBe(1);
+    expect(result.results[0]?.source).toBe('rules');
+    expect(result.results[0]?.label).not.toBe('unavailable');
+
+    vi.unstubAllGlobals();
+  });
+});
+
 function createFailingWriteOpenRequest(): IDBOpenDBRequest {
   const objectStore = {
     put: (): IDBRequest<unknown> => createFailedRequest(new Error('quota exceeded')),

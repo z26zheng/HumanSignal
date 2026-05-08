@@ -20,6 +20,8 @@ logger.info('offscreen.startup', 'HumanSignal offscreen document loaded');
 
 const geminiService: GeminiService = new GeminiService();
 
+void geminiService.warmUp();
+
 addMessageListener('offscreen', handleOffscreenMessage);
 
 async function handleOffscreenMessage(message: HumanSignalMessage): Promise<MessagePayload> {

@@ -137,6 +137,23 @@ export class GeminiService {
     }
   }
 
+  public async warmUp(): Promise<void> {
+    if (this.languageModel === null) {
+      logger.info('gemini.warmUp', 'Skipped warm-up: LanguageModel not available');
+      return;
+    }
+
+    try {
+      await this.getOrCreateSession();
+      logger.info('gemini.warmUp', 'Session pre-warmed successfully');
+    } catch (error: unknown) {
+      logger.warn('gemini.warmUp', 'Session warm-up failed; will retry on first prompt', {
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+      this.session = null;
+    }
+  }
+
   public async destroySession(): Promise<void> {
     if (this.idleTimeoutId !== null) {
       clearTimeout(this.idleTimeoutId);
