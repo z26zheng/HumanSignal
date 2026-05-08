@@ -138,6 +138,94 @@ describe('GeminiService', (): void => {
 
     await service.destroySession();
   });
+
+  it('persists download progress and available status when model download succeeds', async (): Promise<void> => {
+    const persistedStatuses: GeminiStatus[] = [];
+    const session: PromptApiSession = {
+      prompt: vi.fn(),
+      destroy: vi.fn(),
+    };
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'downloadable'),
+      create: vi.fn(async (options): Promise<PromptApiSession> => {
+        options.monitor?.({
+          addEventListener: (_eventName: string, listener: (event: { readonly loaded: number }) => void): void => {
+            listener({ loaded: 0.42 });
+          },
+        });
+        return session;
+      }),
+    };
+    const service: GeminiService = new GeminiService(languageModel, async (status: GeminiStatus): Promise<GeminiStatus> => {
+      persistedStatuses.push(status);
+      return status;
+    });
+
+    await expect(service.triggerModelDownload()).resolves.toMatchObject({
+      availability: 'available',
+      downloadProgress: 100,
+    });
+    expect(persistedStatuses).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ availability: 'downloading', downloadProgress: 0 }),
+        expect.objectContaining({ availability: 'downloading', downloadProgress: 42 }),
+        expect.objectContaining({ availability: 'available', downloadProgress: 100 }),
+      ]),
+    );
+
+    await service.destroySession();
+  });
+
+  it('persists error status when model download fails', async (): Promise<void> => {
+    const persistedStatuses: GeminiStatus[] = [];
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'downloadable'),
+      create: vi.fn(async (): Promise<PromptApiSession> => {
+        throw new Error('download failed');
+      }),
+    };
+    const service: GeminiService = new GeminiService(languageModel, async (status: GeminiStatus): Promise<GeminiStatus> => {
+      persistedStatuses.push(status);
+      return status;
+    });
+
+    await expect(service.triggerModelDownload()).resolves.toMatchObject({
+      availability: 'error',
+      errorMessage: 'download failed',
+    });
+    expect(persistedStatuses.at(-1)).toMatchObject({
+      availability: 'error',
+      downloadProgress: null,
+      errorMessage: 'download failed',
+    });
+  });
+
+  it('pauses scoring and persists error status after repeated invalid responses', async (): Promise<void> => {
+    const persistedStatuses: GeminiStatus[] = [];
+    const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue('not json');
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create: vi.fn(async (): Promise<PromptApiSession> => ({ prompt })),
+    };
+    const service: GeminiService = new GeminiService(languageModel, async (status: GeminiStatus): Promise<GeminiStatus> => {
+      persistedStatuses.push(status);
+      return status;
+    });
+    const item = createRulesItem('This should fail Gemini validation.', 'post');
+
+    await expect(service.scoreWithGemini(item)).resolves.toBeNull();
+    await expect(service.scoreWithGemini(item)).resolves.toBeNull();
+    await expect(service.scoreWithGemini(item)).resolves.toBeNull();
+    await expect(service.scoreWithGemini(item)).resolves.toBeNull();
+
+    expect(prompt).toHaveBeenCalledTimes(6);
+    expect(persistedStatuses.at(-1)).toMatchObject({
+      availability: 'error',
+      errorMessage: 'Gemini returned invalid JSON twice.',
+    });
+
+    await service.destroySession();
+  });
 });
 
 async function persistStatus(status: GeminiStatus): Promise<GeminiStatus> {

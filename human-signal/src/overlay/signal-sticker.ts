@@ -13,6 +13,8 @@ export interface StickerProps {
 export class SignalSticker {
   private readonly element: HTMLDivElement;
   private props: StickerProps;
+  private isAllowedVisible: boolean = true;
+  private isInViewport: boolean = true;
 
   public constructor(props: StickerProps) {
     this.props = props;
@@ -47,6 +49,7 @@ export class SignalSticker {
     this.element.setAttribute('role', 'status');
     this.element.setAttribute('aria-label', `Signal: ${this.props.label}`);
     this.element.textContent = this.props.state === 'loading' ? 'Scoring...' : this.props.label;
+    this.syncVisibility();
   }
 
   public setPosition(x: number, y: number): void {
@@ -54,14 +57,31 @@ export class SignalSticker {
   }
 
   public show(): void {
-    this.element.classList.remove('human-signal-sticker--hidden');
+    this.setAllowedVisible(true);
   }
 
   public hide(): void {
-    this.element.classList.add('human-signal-sticker--hidden');
+    this.setAllowedVisible(false);
+  }
+
+  public setViewportVisible(isVisible: boolean): void {
+    this.isInViewport = isVisible;
+    this.syncVisibility();
   }
 
   public destroy(): void {
     this.element.remove();
+  }
+
+  private setAllowedVisible(isVisible: boolean): void {
+    this.isAllowedVisible = isVisible;
+    this.syncVisibility();
+  }
+
+  private syncVisibility(): void {
+    this.element.classList.toggle(
+      'human-signal-sticker--hidden',
+      !this.isAllowedVisible || !this.isInViewport,
+    );
   }
 }

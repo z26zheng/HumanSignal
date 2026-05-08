@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest';
 
 import { classify, createRulesItem, extractFeatures, scoreWithRules } from '@/rules-engine';
 import { GOLDEN_SET } from '@/rules-engine/golden-set';
+import { LLM_EVALUATION_SET } from '@/rules-engine/llm-evaluation-set';
 
 import type { ExtractedItem, ScoringLabel } from '@/shared/types';
 import type { GoldenSetItem } from '@/rules-engine/golden-set';
+import type { LlmEvaluationItem } from '@/rules-engine/llm-evaluation-set';
 
 describe('rules feature extraction', (): void => {
   it('extracts concrete evidence and first-person signals', (): void => {
@@ -106,7 +108,42 @@ describe('rules golden set', (): void => {
   });
 });
 
+describe('rules agreement with LLM-labeled evaluation set', (): void => {
+  it('contains broad post and comment coverage', (): void => {
+    expect(LLM_EVALUATION_SET.length).toBeGreaterThanOrEqual(20);
+    expect(new Set(LLM_EVALUATION_SET.map((item: LlmEvaluationItem): string => item.itemType))).toEqual(
+      new Set(['post', 'comment']),
+    );
+  });
+
+  it('meets the LLM-labeled agreement gate', (): void => {
+    const disagreements: string[] = [];
+    let agreementCount: number = 0;
+
+    for (const item of LLM_EVALUATION_SET) {
+      const actualLabel: ScoringLabel = scoreLlmEvaluationItem(item);
+
+      if (item.acceptableLabels.includes(actualLabel)) {
+        agreementCount += 1;
+      } else {
+        disagreements.push(
+          `${item.id}: llm=${item.llmLabel}, rules=${actualLabel}, rationale=${item.rationale}`,
+        );
+      }
+    }
+
+    const agreementRate: number = agreementCount / LLM_EVALUATION_SET.length;
+
+    expect(agreementRate, disagreements.join('\n')).toBeGreaterThanOrEqual(0.8);
+  });
+});
+
 function scoreGoldenSetItem(item: GoldenSetItem): ScoringLabel {
+  const extractedItem: ExtractedItem = createRulesItem(item.text, item.itemType);
+  return scoreWithRules(extractedItem).label;
+}
+
+function scoreLlmEvaluationItem(item: LlmEvaluationItem): ScoringLabel {
   const extractedItem: ExtractedItem = createRulesItem(item.text, item.itemType);
   return scoreWithRules(extractedItem).label;
 }

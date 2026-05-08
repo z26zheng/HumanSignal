@@ -12,12 +12,19 @@ import {
   clearAllStoredData,
   getGeminiStatus,
   getUserSettings,
+  readStorageValue,
+  writeStorageValue,
   setUserSettings,
 } from '@/shared/storage';
 import { ScoringCoordinator } from '@/scoring-coordinator';
-import type { ItemId } from '@/shared/types';
+import { closeOffscreenDocument, ensureOffscreenDocument } from '@/background/offscreen-lifecycle';
+import {
+  createE2EGeminiDownloadResponse,
+  createE2EGeminiStatusResponse,
+} from '@/gemini/e2e-gemini-mock';
+import { DEFAULT_E2E_GEMINI_MOCK_CONFIG, DEFAULT_USER_SETTINGS } from '@/shared/types';
+import type { E2EGeminiMockConfig, ItemId } from '@/shared/types';
 
-const OFFSCREEN_DOCUMENT_PATH: '/offscreen.html' = '/offscreen.html';
 const scoringCoordinator: ScoringCoordinator = new ScoringCoordinator();
 
 export default defineBackground((): void => {
@@ -54,6 +61,9 @@ async function handleBackgroundMessage(
 
     case 'SETTINGS_CHANGED':
       await relaySettingsToActiveTab(message);
+      logger.info('background.settings', 'Settings changed', {
+        keys: Object.keys(message.settings),
+      });
       return {
         type: 'SETTINGS_RESULT',
         settings: await setUserSettings(message.settings),
@@ -65,6 +75,16 @@ async function handleBackgroundMessage(
 
     case 'SCORE_BATCH':
       const tabId: number | null = sender.tab?.id ?? null;
+      if (await shouldFailScoreBatchForE2E()) {
+        logger.warn('background.scoring', 'E2E score batch failure injected', {
+          itemCount: message.items.length,
+        });
+        throw new Error('E2E injected SCORE_BATCH failure.');
+      }
+      logger.info('background.scoring', 'Score batch received', {
+        itemCount: message.items.length,
+        tabId: tabId ?? -1,
+      });
       const scoreBatchResult = await scoringCoordinator.handleScoreBatch(message.items, tabId);
 
       return {
@@ -75,6 +95,17 @@ async function handleBackgroundMessage(
 
     case 'PRIORITY_UPDATE':
       scoringCoordinator.handlePriorityUpdates(message.updates);
+      return {
+        type: 'ACK',
+      };
+
+    case 'SERVICE_WORKER_ALIVE':
+      await relayServiceWorkerAliveToLinkedInTabs();
+      return {
+        type: 'ACK',
+      };
+
+    case 'REDISCOVER_CONTENT':
       return {
         type: 'ACK',
       };
@@ -93,12 +124,18 @@ async function handleBackgroundMessage(
         source: message.scoringSource,
         createdAt: Date.now(),
       });
+      logger.info('background.feedback', 'Feedback saved', {
+        feedback: message.feedback,
+        label: message.label,
+        source: message.scoringSource,
+      });
       return {
         type: 'ACK',
       };
 
     case 'CLEAR_CACHE':
       await scoringCoordinator.clearCache();
+      logger.info('background.cache', 'Score cache cleared from message');
       return {
         type: 'ACK',
       };
@@ -106,6 +143,12 @@ async function handleBackgroundMessage(
     case 'DELETE_ALL_DATA':
       await scoringCoordinator.clearCache();
       await clearAllStoredData();
+      await relaySettingsToActiveTab({
+        ...message,
+        type: 'SETTINGS_CHANGED',
+        settings: DEFAULT_USER_SETTINGS,
+      });
+      logger.info('background.data', 'All extension data deleted');
       return {
         type: 'ACK',
       };
@@ -130,61 +173,38 @@ async function handleBackgroundMessage(
   }
 }
 
-async function ensureOffscreenDocument(): Promise<boolean> {
-  try {
-    if (await hasOffscreenDocument()) {
-      return true;
-    }
+async function shouldFailScoreBatchForE2E(): Promise<boolean> {
+  const shouldFail: boolean = await readStorageValue('e2eFailNextScoreBatch', false);
 
-    await browser.offscreen.createDocument({
-      url: browser.runtime.getURL(OFFSCREEN_DOCUMENT_PATH),
-      reasons: [browser.offscreen.Reason.LOCAL_STORAGE],
-      justification: 'Host on-device AI model sessions for HumanSignal.',
-    });
-
-    logger.info('background.offscreen', 'Offscreen document created');
-    return true;
-  } catch (error: unknown) {
-    logger.error('background.offscreen.create', error);
+  if (!shouldFail) {
     return false;
   }
-}
 
-async function closeOffscreenDocument(): Promise<boolean> {
-  try {
-    if (!(await hasOffscreenDocument())) {
-      return false;
-    }
-
-    await browser.offscreen.closeDocument();
-    logger.info('background.offscreen', 'Offscreen document closed');
-    return false;
-  } catch (error: unknown) {
-    logger.error('background.offscreen.close', error);
-    return await hasOffscreenDocument();
-  }
-}
-
-async function hasOffscreenDocument(): Promise<boolean> {
-  try {
-    return await browser.offscreen.hasDocument();
-  } catch (error: unknown) {
-    logger.warn('background.offscreen.check', 'Unable to inspect offscreen contexts', {
-      message: error instanceof Error ? error.message : String(error),
-    });
-    return false;
-  }
+  await writeStorageValue('e2eFailNextScoreBatch', false);
+  return true;
 }
 
 void getUserSettings();
 
 async function forwardToOffscreen(message: HumanSignalMessage): Promise<MessagePayload> {
+  const mockPayload: MessagePayload | null = await handleE2EGeminiMockInBackground(message);
+
+  if (mockPayload !== null) {
+    if (mockPayload.type === 'MODEL_STATUS' || mockPayload.type === 'GEMINI_RESULT') {
+      scoringCoordinator.onGeminiStatus(mockPayload.status);
+    }
+
+    return mockPayload;
+  }
+
   const isAvailable: boolean = await ensureOffscreenDocument();
 
   if (!isAvailable) {
+    const status = await getGeminiStatus();
+    scoringCoordinator.onGeminiStatus(status);
     return {
       type: 'MODEL_STATUS',
-      status: await getGeminiStatus(),
+      status,
     };
   }
 
@@ -212,6 +232,31 @@ async function forwardToOffscreen(message: HumanSignalMessage): Promise<MessageP
   };
 }
 
+async function handleE2EGeminiMockInBackground(message: HumanSignalMessage): Promise<MessagePayload | null> {
+  const config: E2EGeminiMockConfig = await readStorageValue('e2eGeminiMock', DEFAULT_E2E_GEMINI_MOCK_CONFIG);
+
+  if (!config.isEnabled) {
+    return null;
+  }
+
+  switch (message.type) {
+    case 'CHECK_GEMINI_STATUS':
+      return {
+        type: 'MODEL_STATUS',
+        status: createE2EGeminiStatusResponse(config),
+      };
+
+    case 'TRIGGER_DOWNLOAD':
+      return {
+        type: 'MODEL_STATUS',
+        status: createE2EGeminiDownloadResponse(config),
+      };
+
+    default:
+      return null;
+  }
+}
+
 async function relaySettingsToActiveTab(message: HumanSignalMessage): Promise<void> {
   if (message.type !== 'SETTINGS_CHANGED') {
     return;
@@ -233,4 +278,25 @@ async function relaySettingsToActiveTab(message: HumanSignalMessage): Promise<vo
     source: 'background',
     settings: message.settings,
   });
+}
+
+async function relayServiceWorkerAliveToLinkedInTabs(): Promise<void> {
+  const tabs: Browser.tabs.Tab[] = await browser.tabs.query({
+    url: 'https://www.linkedin.com/*',
+  });
+
+  logger.info('background.lifecycle', 'Relaying service worker alive message', {
+    tabCount: tabs.length,
+  });
+
+  for (const tab of tabs) {
+    if (tab.id === undefined) {
+      continue;
+    }
+
+    await sendToContentScript(tab.id, {
+      type: 'SERVICE_WORKER_ALIVE',
+      source: 'background',
+    });
+  }
 }

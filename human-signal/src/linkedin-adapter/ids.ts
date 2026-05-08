@@ -24,6 +24,16 @@ export function resolvePostId(element: HTMLElement, text: string): ResolvedPostI
     };
   }
 
+  const componentKey: string | null = element.getAttribute('componentkey');
+
+  if (componentKey !== null && componentKey.trim() !== '') {
+    return {
+      postId: `ck_${createContentHash(componentKey)}`,
+      method: 'permalink',
+      contentHash,
+    };
+  }
+
   const permalink: string | null = findPermalink(element);
 
   if (permalink !== null) {
@@ -49,6 +59,13 @@ export function resolveCommentId(element: HTMLElement, text: string, parentPostI
 
   if (explicitId !== null && explicitId.trim() !== '') {
     return explicitId.trim();
+  }
+
+  const componentKey: string | null = element.getAttribute('componentkey');
+  const commentUrnMatch: RegExpMatchArray | null = componentKey?.match(/urn:li:comment:\([^)]+\)/) ?? null;
+
+  if (commentUrnMatch?.[0] !== undefined) {
+    return commentUrnMatch[0];
   }
 
   return `comment_${parentPostId}_${createContentHash(text)}`;

@@ -13,12 +13,20 @@
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
     "test": "vitest run",
+    "test:e2e": "playwright test",
+    "eval:rules": "tsx -r tsconfig-paths/register scripts/evaluate-rules.ts",
+    "perf:baseline": "tsx -r tsconfig-paths/register scripts/perf-baseline.ts",
+    "release:check-package": "tsx scripts/check-package-size.ts",
+    "manual-test": "bash scripts/manual-test.sh",
     "postinstall": "wxt prepare"
   },
   "devDependencies": {
+    "@playwright/test": "1.59.1",
     "@preact/preset-vite": "2.10.5",
     "@types/jsdom": "28.0.1",
     "jsdom": "29.1.1",
+    "tsconfig-paths": "4.2.0",
+    "tsx": "4.21.0",
     "typescript": "5.9.3",
     "vitest": "4.1.5",
     "wxt": "0.20.25"

@@ -34,7 +34,10 @@ export class LinkedInAdapter {
 
   public detectPosts(): readonly DetectedPost[] {
     return safeCatch((): readonly DetectedPost[] => {
-      const postElements: readonly HTMLElement[] = queryByStrategies(this.root, POST_CONTAINER_STRATEGIES);
+      const postElements: readonly HTMLElement[] = queryByStrategies(
+        this.root,
+        POST_CONTAINER_STRATEGIES,
+      ).filter((element: HTMLElement): boolean => !isInsideCommentSection(element));
       const posts: readonly DetectedPost[] = postElements
         .map((element: HTMLElement): DetectedPost | null => this.createDetectedPost(element))
         .filter((post: DetectedPost | null): post is DetectedPost => post !== null);
@@ -47,12 +50,25 @@ export class LinkedInAdapter {
 
   public detectComments(): readonly DetectedComment[] {
     return safeCatch((): readonly DetectedComment[] => {
-      const commentElements: readonly HTMLElement[] = queryByStrategies(
-        this.root,
-        COMMENT_CONTAINER_STRATEGIES,
-      );
+      const rawElements: readonly HTMLElement[] = queryByStrategies(this.root, COMMENT_CONTAINER_STRATEGIES);
+      const commentElements: readonly HTMLElement[] = deduplicateByComponentKey(rawElements);
+
+      logger.info('linkedinAdapter.comments', 'Comment detection', {
+        rawCount: rawElements.length,
+        dedupedCount: commentElements.length,
+      });
+
       const comments: readonly DetectedComment[] = commentElements
-        .map((element: HTMLElement): DetectedComment | null => this.createDetectedComment(element))
+        .map((element: HTMLElement): DetectedComment | null => {
+          try {
+            return this.createDetectedComment(element);
+          } catch (error: unknown) {
+            logger.error('linkedinAdapter.commentCreate', error, {
+              componentkey: element.getAttribute('componentkey')?.slice(0, 60) ?? 'none',
+            });
+            return null;
+          }
+        })
         .filter((comment: DetectedComment | null): comment is DetectedComment => comment !== null);
 
       this.logDetection(
@@ -99,7 +115,7 @@ export class LinkedInAdapter {
   }
 
   private createDetectedPost(element: HTMLElement): DetectedPost | null {
-    const textElement: HTMLElement | null = findFirstByStrategies(element, POST_TEXT_STRATEGIES);
+    const textElement: HTMLElement | null = findFirstPostText(element);
 
     if (textElement === null) {
       return null;
@@ -127,12 +143,18 @@ export class LinkedInAdapter {
     const textElement: HTMLElement | null = findFirstByStrategies(element, COMMENT_TEXT_STRATEGIES);
 
     if (textElement === null) {
+      logger.debug('linkedinAdapter.commentSkip', 'No text element found for comment', {
+        componentkey: element.getAttribute('componentkey')?.slice(0, 60) ?? 'none',
+      });
       return null;
     }
 
     const text: string = extractText(textElement);
 
     if (text === '') {
+      logger.debug('linkedinAdapter.commentSkip', 'Empty text for comment', {
+        componentkey: element.getAttribute('componentkey')?.slice(0, 60) ?? 'none',
+      });
       return null;
     }
 
@@ -149,13 +171,17 @@ export class LinkedInAdapter {
   }
 
   private findParentPost(element: HTMLElement): DetectedPost | null {
-    const postContainer: HTMLElement | null = POST_CONTAINER_STRATEGIES.flatMap(
-      (strategy) => strategy.selectors,
-    ).reduce<HTMLElement | null>((foundElement: HTMLElement | null, selector: string): HTMLElement | null => {
-      return foundElement ?? element.closest<HTMLElement>(selector);
-    }, null);
+    try {
+      const postContainer: HTMLElement | null = POST_CONTAINER_STRATEGIES.flatMap(
+        (strategy) => strategy.selectors,
+      ).reduce<HTMLElement | null>((foundElement: HTMLElement | null, selector: string): HTMLElement | null => {
+        return foundElement ?? element.closest<HTMLElement>(selector);
+      }, null);
 
-    return postContainer === null ? null : this.createDetectedPost(postContainer);
+      return postContainer === null ? null : this.createDetectedPost(postContainer);
+    } catch {
+      return null;
+    }
   }
 
   private recordDetection(hasDetectedPosts: boolean): void {
@@ -173,6 +199,49 @@ export class LinkedInAdapter {
       strategy: strategyName ?? 'none',
     });
   }
+}
+
+function findFirstPostText(postElement: HTMLElement): HTMLElement | null {
+  const candidates: readonly HTMLElement[] = queryByStrategies(postElement, POST_TEXT_STRATEGIES);
+
+  for (const candidate of candidates) {
+    if (candidate.closest('[componentkey*="replaceableComment"]') !== null ||
+        candidate.closest('[componentkey*="commentsSectionContainer"]') !== null) {
+      continue;
+    }
+
+    return candidate;
+  }
+
+  return null;
+}
+
+function isInsideCommentSection(element: HTMLElement): boolean {
+  return element.closest('[componentkey*="commentsSectionContainer"]') !== null ||
+    element.closest('[componentkey*="replaceableComment"]') !== null;
+}
+
+function deduplicateByComponentKey(elements: readonly HTMLElement[]): readonly HTMLElement[] {
+  const seen: Set<string> = new Set();
+  const result: HTMLElement[] = [];
+
+  for (const element of elements) {
+    const key: string | null = element.getAttribute('componentkey');
+
+    if (key === null || key.trim() === '') {
+      result.push(element);
+      continue;
+    }
+
+    if (seen.has(key)) {
+      continue;
+    }
+
+    seen.add(key);
+    result.push(element);
+  }
+
+  return result;
 }
 
 function hasSeeMoreControl(element: HTMLElement): boolean {

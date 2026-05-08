@@ -119,6 +119,22 @@ export interface FeedbackEntry {
   readonly createdAt: number;
 }
 
+export interface E2EGeminiMockConfig {
+  readonly isEnabled: boolean;
+  readonly availability: GeminiAvailability;
+  readonly promptMode: 'valid' | 'invalid' | 'mixed';
+  readonly downloadMode: 'success' | 'failure';
+  readonly downloadProgress: number | null;
+}
+
+export const DEFAULT_E2E_GEMINI_MOCK_CONFIG: E2EGeminiMockConfig = {
+  isEnabled: false,
+  availability: 'unavailable',
+  promptMode: 'valid',
+  downloadMode: 'success',
+  downloadProgress: null,
+};
+
 export interface PriorityUpdate {
   readonly itemId: ItemId;
   readonly inViewport: boolean;

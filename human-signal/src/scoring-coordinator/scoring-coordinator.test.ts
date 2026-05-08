@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { clearLogEntries, getLogEntries } from '@/shared/logger';
 import { ScoreCache, ScoringQueue } from '@/scoring-coordinator';
 import { createRulesItem, scoreWithRules } from '@/rules-engine';
 
@@ -7,6 +8,11 @@ import type { QueueItem } from '@/scoring-coordinator';
 import type { ContentHash, ExtractedItem, ScoringResult } from '@/shared/types';
 
 describe('ScoreCache', (): void => {
+  afterEach((): void => {
+    vi.unstubAllGlobals();
+    clearLogEntries();
+  });
+
   it('returns cached entries only when scoring version matches', async (): Promise<void> => {
     const cache: ScoreCache = new ScoreCache({ maxEntries: 10, ttlMs: 60_000 });
     const item: ExtractedItem = createRulesItem('I shipped 2 changes last quarter.', 'post');
@@ -29,6 +35,30 @@ describe('ScoreCache', (): void => {
     await cache.set(third.metadata.contentHash, scoreWithRules(third));
 
     await expect(cache.getSize()).resolves.toBeLessThanOrEqual(2);
+  });
+
+  it('keeps memory cache available when IndexedDB writes fail', async (): Promise<void> => {
+    vi.stubGlobal('indexedDB', {
+      open: (): IDBOpenDBRequest => createFailingWriteOpenRequest(),
+    });
+    const cache: ScoreCache = new ScoreCache({ maxEntries: 10, ttlMs: 60_000 }, 'failing-write-cache');
+    const item: ExtractedItem = createRulesItem('Specific update with 42% improvement.', 'post');
+    const result: ScoringResult = scoreWithRules(item);
+
+    await expect(cache.set(item.metadata.contentHash, result)).resolves.toBeUndefined();
+    await expect(cache.get(item.metadata.contentHash, result.scoringVersion)).resolves.toEqual(result);
+    expect(getLogEntries()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          level: 'warn',
+          context: 'scoreCache.persist',
+        }),
+        expect.objectContaining({
+          level: 'warn',
+          context: 'scoreCache.persistFallback',
+        }),
+      ]),
+    );
   });
 });
 
@@ -66,4 +96,63 @@ function createQueueItem(text: string, priority: QueueItem['priority']): QueueIt
     tabId: null,
     addedAt: Date.now(),
   };
+}
+
+function createFailingWriteOpenRequest(): IDBOpenDBRequest {
+  const objectStore = {
+    put: (): IDBRequest<unknown> => createFailedRequest(new Error('quota exceeded')),
+    get: (): IDBRequest<unknown> => createFailedRequest(new Error('read unavailable')),
+    getAll: (): IDBRequest<unknown[]> => createSuccessfulRequest<unknown[]>([]),
+    count: (): IDBRequest<number> => createSuccessfulRequest(0),
+    clear: (): IDBRequest<undefined> => createSuccessfulRequest(undefined),
+    delete: (): IDBRequest<undefined> => createSuccessfulRequest(undefined),
+  };
+  const database = {
+    objectStoreNames: {
+      contains: (): boolean => true,
+    },
+    transaction: () => ({
+      objectStore: () => objectStore,
+    }),
+  };
+  const request = {
+    result: database,
+    onupgradeneeded: null,
+    onsuccess: null,
+    onerror: null,
+  } as unknown as IDBOpenDBRequest;
+
+  setTimeout((): void => {
+    request.onsuccess?.({} as Event);
+  }, 0);
+
+  return request;
+}
+
+function createSuccessfulRequest<TResult>(result: TResult): IDBRequest<TResult> {
+  const request = {
+    result,
+    onsuccess: null,
+    onerror: null,
+  } as unknown as IDBRequest<TResult>;
+
+  setTimeout((): void => {
+    request.onsuccess?.({} as Event);
+  }, 0);
+
+  return request;
+}
+
+function createFailedRequest<TResult>(error: Error): IDBRequest<TResult> {
+  const request = {
+    error,
+    onsuccess: null,
+    onerror: null,
+  } as unknown as IDBRequest<TResult>;
+
+  setTimeout((): void => {
+    request.onerror?.({} as Event);
+  }, 0);
+
+  return request;
 }

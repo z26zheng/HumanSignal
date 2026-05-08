@@ -2,6 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import type { JSX } from 'preact';
 
 import { sendToBackground } from '@/shared/messaging';
+import { logger } from '@/shared/logger';
 import { getGeminiStatus, getUserSettings } from '@/shared/storage';
 import { DEFAULT_GEMINI_STATUS, DEFAULT_USER_SETTINGS } from '@/shared/types';
 
@@ -38,6 +39,9 @@ export function App(): JSX.Element {
       ...nextSettings,
     };
     setSettings(mergedSettings);
+    logger.info('popup.settings', 'Popup settings changed', {
+      keys: Object.keys(nextSettings),
+    });
 
     await sendToBackground({
       type: 'SETTINGS_CHANGED',
@@ -54,6 +58,10 @@ export function App(): JSX.Element {
 
     if (response.ok && response.payload.type === 'MODEL_STATUS') {
       setGeminiStatusState(response.payload.status);
+      logger.info('popup.model', 'Model status refreshed', {
+        availability: response.payload.status.availability,
+        progress: response.payload.status.downloadProgress ?? -1,
+      });
     }
   }
 
@@ -65,6 +73,10 @@ export function App(): JSX.Element {
 
     if (response.ok && response.payload.type === 'MODEL_STATUS') {
       setGeminiStatusState(response.payload.status);
+      logger.info('popup.model', 'Model download triggered', {
+        availability: response.payload.status.availability,
+        progress: response.payload.status.downloadProgress ?? -1,
+      });
     }
   }
 
@@ -73,6 +85,7 @@ export function App(): JSX.Element {
       type: 'CLEAR_CACHE',
       source: 'popup',
     });
+    logger.info('popup.data', 'Clear cache requested');
     setHealth(await fetchHealth());
   }
 
@@ -81,6 +94,7 @@ export function App(): JSX.Element {
       type: 'DELETE_ALL_DATA',
       source: 'popup',
     });
+    logger.info('popup.data', 'Delete all data requested');
     setSettings(DEFAULT_USER_SETTINGS);
     setGeminiStatusState(DEFAULT_GEMINI_STATUS);
     setHealth(await fetchHealth());

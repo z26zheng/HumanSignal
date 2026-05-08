@@ -15,7 +15,11 @@ export default defineContentScript({
     logger.info('content.startup', 'HumanSignal content script loaded');
 
     addMessageListener('content-script', handleContentMessage);
-    void overlayController.start().catch((error: unknown): void => {
+    void overlayController.start().then((): void => {
+      logger.info('content.overlay.started', 'Overlay started successfully', {
+        trackedItems: overlayController.getTrackedItemCount(),
+      });
+    }).catch((error: unknown): void => {
       logger.error('content.overlay.start', error);
     });
 
@@ -36,6 +40,18 @@ async function handleContentMessage(message: HumanSignalMessage): Promise<Messag
       return {
         type: 'PONG',
         receivedAt: Date.now(),
+      };
+
+    case 'SERVICE_WORKER_ALIVE':
+      await overlayController.resendPendingScores('service-worker-alive');
+      return {
+        type: 'ACK',
+      };
+
+    case 'REDISCOVER_CONTENT':
+      await overlayController.rediscoverForTest();
+      return {
+        type: 'ACK',
       };
 
     case 'SHOW_EXPLANATION':

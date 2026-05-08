@@ -9,6 +9,32 @@ const SESSION_IDLE_TIMEOUT_MS: number = 60_000;
 const FAILURE_PAUSE_MS: number = 5 * 60_000;
 const MAX_PROMPT_CHARS: number = 6_000;
 const GEMINI_SCORING_VERSION: string = 'gemini-1';
+const GEMINI_POST_LABELS: readonly ScoringResult['label'][] = [
+  'high-signal',
+  'specific',
+  'mixed',
+  'generic',
+  'engagement-bait',
+  'low-signal',
+  'unclear',
+];
+const GEMINI_COMMENT_LABELS: readonly ScoringResult['label'][] = [
+  'thoughtful',
+  'specific',
+  'question',
+  'generic',
+  'low-effort',
+  'repeated',
+  'unclear',
+];
+const DIMENSION_KEYS: readonly (keyof ScoringResult['dimensions'])[] = [
+  'authenticity',
+  'originality',
+  'specificity',
+  'engagementBait',
+  'templating',
+  'usefulness',
+];
 
 export class GeminiService {
   private session: PromptApiSession | null = null;
@@ -270,25 +296,8 @@ function mapGeminiLabel(value: unknown, itemType: ExtractedItem['itemType']): Sc
   }
 
   const normalizedValue: string = value.trim().toLowerCase().replace(/\s+/g, '-');
-  const postLabels: readonly ScoringResult['label'][] = [
-    'high-signal',
-    'specific',
-    'mixed',
-    'generic',
-    'engagement-bait',
-    'low-signal',
-    'unclear',
-  ];
-  const commentLabels: readonly ScoringResult['label'][] = [
-    'thoughtful',
-    'specific',
-    'question',
-    'generic',
-    'low-effort',
-    'repeated',
-    'unclear',
-  ];
-  const allowedLabels: readonly ScoringResult['label'][] = itemType === 'post' ? postLabels : commentLabels;
+  const allowedLabels: readonly ScoringResult['label'][] =
+    itemType === 'post' ? GEMINI_POST_LABELS : GEMINI_COMMENT_LABELS;
 
   return allowedLabels.includes(normalizedValue as ScoringResult['label'])
     ? (normalizedValue as ScoringResult['label'])
@@ -320,16 +329,7 @@ function isDimensions(value: unknown): value is ScoringResult['dimensions'] {
     return false;
   }
 
-  const keys: readonly (keyof ScoringResult['dimensions'])[] = [
-    'authenticity',
-    'originality',
-    'specificity',
-    'engagementBait',
-    'templating',
-    'usefulness',
-  ];
-
-  return keys.every((key: keyof ScoringResult['dimensions']): boolean => {
+  return DIMENSION_KEYS.every((key: keyof ScoringResult['dimensions']): boolean => {
     const dimensionValue: unknown = value[key];
     return typeof dimensionValue === 'number' && dimensionValue >= 0 && dimensionValue <= 1;
   });

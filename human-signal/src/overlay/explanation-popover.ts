@@ -6,19 +6,46 @@ import type { FeedbackType, ScoringResult } from '@/shared/types';
 
 export class ExplanationPopover {
   private readonly element: HTMLDivElement;
+  private readonly handleDocumentClick = (event: MouseEvent): void => {
+    if (
+      this.anchorSticker === null ||
+      event.target instanceof Node === false ||
+      this.element.contains(event.target) ||
+      this.anchorSticker.getElement().contains(event.target)
+    ) {
+      return;
+    }
+
+    this.close();
+  };
+  private readonly handleKeydown = (event: KeyboardEvent): void => {
+    if (event.key === 'Escape') {
+      this.close({ restoreFocus: true });
+      return;
+    }
+
+    if (event.key === 'Tab' && this.anchorSticker !== null) {
+      this.trapFocus(event);
+    }
+  };
+  private readonly handleScroll = (): void => {
+    if (this.anchorSticker !== null) {
+      this.close();
+    }
+  };
   private anchorSticker: SignalSticker | null = null;
 
   public constructor(private readonly root: HTMLElement) {
     this.element = document.createElement('div');
     this.element.className = 'human-signal-popover';
     this.element.setAttribute('role', 'dialog');
+    this.element.setAttribute('aria-modal', 'false');
+    this.element.tabIndex = -1;
     this.root.append(this.element);
 
-    document.addEventListener('keydown', (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        this.close();
-      }
-    });
+    document.addEventListener('click', this.handleDocumentClick, true);
+    document.addEventListener('keydown', this.handleKeydown);
+    window.addEventListener('scroll', this.handleScroll, true);
   }
 
   public open(sticker: SignalSticker, score: ScoringResult): void {
@@ -28,10 +55,21 @@ export class ExplanationPopover {
     this.element.focus();
   }
 
-  public close(): void {
+  public close(options: { readonly restoreFocus?: boolean } = {}): void {
+    const previouslyFocusedSticker: HTMLElement | null =
+      options.restoreFocus === true ? (this.anchorSticker?.getElement() ?? null) : null;
     this.anchorSticker = null;
     this.element.replaceChildren();
     this.element.style.transform = 'translate(-9999px, -9999px)';
+    previouslyFocusedSticker?.focus();
+  }
+
+  public destroy(): void {
+    this.close();
+    document.removeEventListener('click', this.handleDocumentClick, true);
+    document.removeEventListener('keydown', this.handleKeydown);
+    window.removeEventListener('scroll', this.handleScroll, true);
+    this.element.remove();
   }
 
   public updateScore(score: ScoringResult): void {
@@ -76,6 +114,34 @@ export class ExplanationPopover {
     const y: number = Math.min(rect.bottom + 8, window.innerHeight - 220);
     this.element.style.transform = `translate(${Math.max(12, x)}px, ${Math.max(12, y)}px)`;
   }
+
+  private trapFocus(event: KeyboardEvent): void {
+    const focusableElements: readonly HTMLElement[] = getFocusableElements(this.element);
+
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      this.element.focus();
+      return;
+    }
+
+    const firstElement: HTMLElement | undefined = focusableElements[0];
+    const lastElement: HTMLElement | undefined = focusableElements.at(-1);
+
+    if (firstElement === undefined || lastElement === undefined) {
+      return;
+    }
+
+    if (event.shiftKey && document.activeElement === firstElement) {
+      event.preventDefault();
+      lastElement.focus();
+      return;
+    }
+
+    if (!event.shiftKey && document.activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  }
 }
 
 function createFeedbackButton(score: ScoringResult, feedback: FeedbackType): HTMLButtonElement {
@@ -106,4 +172,12 @@ function splitReasons(explanation: string): readonly string[] {
     .slice(0, 3);
 
   return reasons.length > 0 ? reasons : ['No explanation available.'];
+}
+
+function getFocusableElements(root: HTMLElement): readonly HTMLElement[] {
+  return Array.from(
+    root.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((element: HTMLElement): boolean => element.offsetParent !== null);
 }

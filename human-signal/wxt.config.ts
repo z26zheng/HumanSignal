@@ -6,7 +6,7 @@ export default defineConfig({
   manifest: {
     name: 'HumanSignal',
     description: 'Signal intelligence for LinkedIn',
-    permissions: ['storage', 'offscreen', 'activeTab', 'sidePanel'],
+    permissions: ['storage', 'offscreen', 'activeTab'],
     host_permissions: ['https://www.linkedin.com/*'],
     action: {
       default_title: 'HumanSignal',

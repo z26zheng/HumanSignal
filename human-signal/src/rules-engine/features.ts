@@ -38,7 +38,8 @@ const DATE_PATTERN: RegExp =
 const NAMED_ENTITY_PATTERN: RegExp =
   /\b(?:at|from|inside|with|for)\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)\b|\b(?:CEO|CTO|VP|PM|SRE|API|SDK|Chrome|LinkedIn|ExampleCo|Example Labs)\b/g;
 const CLAIM_PATTERN: RegExp = /\b(?:should|must|will|always|never|is|are|means|proves)\b/gi;
-const LISTICLE_PATTERN: RegExp = /\b(?:\d+\s+(?:lessons|things|ways|tips|rules)|here are|framework)\b/gi;
+const LISTICLE_PATTERN: RegExp =
+  /\b(?:\d+\s+(?:lessons|things|ways|tips|rules)|here are|framework|nobody tells you)\b/gi;
 
 export function extractFeatures(text: string): TextFeatures {
   const normalizedText: string = text.trim();

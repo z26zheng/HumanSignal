@@ -1,13 +1,23 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import {
+  clearLogEntries,
+  getLogEntries,
+} from '@/shared/logger';
 import {
   createErrorResponse,
   createMessage,
   createSuccessResponse,
   isHumanSignalMessage,
+  sendToBackground,
 } from '@/shared/messaging';
 
 describe('messaging contracts', (): void => {
+  afterEach((): void => {
+    vi.unstubAllGlobals();
+    clearLogEntries();
+  });
+
   it('creates messages with request ids', (): void => {
     const message = createMessage({
       type: 'PING',
@@ -48,5 +58,28 @@ describe('messaging contracts', (): void => {
 
     expect(successResponse.ok).toBe(true);
     expect(errorResponse.ok).toBe(false);
+  });
+
+  it('logs runtime send failures without throwing', async (): Promise<void> => {
+    vi.stubGlobal('browser', {
+      runtime: {
+        sendMessage: vi.fn(async (): Promise<unknown> => {
+          throw new Error('service worker unavailable');
+        }),
+      },
+    });
+
+    const response = await sendToBackground({
+      type: 'PING',
+      source: 'popup',
+    });
+
+    expect(response.ok).toBe(false);
+    expect(getLogEntries()).toContainEqual(
+      expect.objectContaining({
+        level: 'error',
+        context: 'messaging.runtime.send',
+      }),
+    );
   });
 });

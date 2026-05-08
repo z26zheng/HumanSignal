@@ -3,6 +3,7 @@ import { safeCatchAsync } from '@/shared/safe-catch';
 import {
   DEFAULT_GEMINI_STATUS,
   DEFAULT_USER_SETTINGS,
+  type E2EGeminiMockConfig,
   type FeedbackEntry,
   type GeminiStatus,
   type UserSettings,
@@ -12,6 +13,8 @@ interface StorageSchema {
   readonly userSettings: UserSettings;
   readonly geminiStatus: GeminiStatus;
   readonly feedbackEntries: readonly FeedbackEntry[];
+  readonly e2eGeminiMock: E2EGeminiMockConfig;
+  readonly e2eFailNextScoreBatch: boolean;
 }
 
 export type StorageKey = keyof StorageSchema;

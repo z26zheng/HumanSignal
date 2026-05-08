@@ -1,3 +1,5 @@
+import { logger } from '@/shared/logger';
+
 import type {
   ExtensionContext,
   ExtractedItem,
@@ -10,6 +12,34 @@ import type {
   ScoringSource,
   UserSettings,
 } from '@/shared/types';
+
+const KNOWN_MESSAGE_TYPES: readonly string[] = [
+  'PING',
+  'SCORE_BATCH',
+  'SCORE_RESULT',
+  'PRIORITY_UPDATE',
+  'GEMINI_PROMPT',
+  'CHECK_GEMINI_STATUS',
+  'TRIGGER_DOWNLOAD',
+  'SHOW_EXPLANATION',
+  'SETTINGS_CHANGED',
+  'FEEDBACK',
+  'GET_HEALTH',
+  'CLEAR_CACHE',
+  'DELETE_ALL_DATA',
+  'ENSURE_OFFSCREEN_DOCUMENT',
+  'CLOSE_OFFSCREEN_DOCUMENT',
+  'DESTROY_GEMINI_SESSION',
+  'SERVICE_WORKER_ALIVE',
+  'REDISCOVER_CONTENT',
+];
+
+const EXTENSION_CONTEXTS: readonly ExtensionContext[] = [
+  'background',
+  'content-script',
+  'offscreen',
+  'popup',
+];
 
 export interface BaseMessage {
   readonly type: string;
@@ -92,6 +122,14 @@ export interface DestroyGeminiSessionMessage extends BaseMessage {
   readonly type: 'DESTROY_GEMINI_SESSION';
 }
 
+export interface ServiceWorkerAliveMessage extends BaseMessage {
+  readonly type: 'SERVICE_WORKER_ALIVE';
+}
+
+export interface RediscoverContentMessage extends BaseMessage {
+  readonly type: 'REDISCOVER_CONTENT';
+}
+
 export type HumanSignalMessage =
   | PingMessage
   | ScoreBatchMessage
@@ -108,7 +146,9 @@ export type HumanSignalMessage =
   | DeleteAllDataMessage
   | EnsureOffscreenDocumentMessage
   | CloseOffscreenDocumentMessage
-  | DestroyGeminiSessionMessage;
+  | DestroyGeminiSessionMessage
+  | ServiceWorkerAliveMessage
+  | RediscoverContentMessage;
 
 export interface PongPayload {
   readonly type: 'PONG';
@@ -195,19 +235,18 @@ type DistributiveOmit<TValue, TKeys extends PropertyKey> = TValue extends unknow
   : never;
 
 export function createRequestId(): string {
-  const randomId: string = crypto.randomUUID();
-  return randomId;
+  return crypto.randomUUID();
 }
 
 export function createMessage<TMessage extends Omit<BaseMessage, 'requestId'>>(
   message: TMessage,
 ): TMessage & { readonly requestId: string } {
-  const signalLensMessage: TMessage & { readonly requestId: string } = {
+  const humanSignalMessage: TMessage & { readonly requestId: string } = {
     ...message,
     requestId: createRequestId(),
   };
 
-  return signalLensMessage;
+  return humanSignalMessage;
 }
 
 export function createSuccessResponse(
@@ -272,6 +311,11 @@ export function addMessageListener(
         sendResponse(createSuccessResponse(rawMessage.requestId, payload));
       })
       .catch((error: unknown): void => {
+        logger.error('messaging.handler', error, {
+          messageType: rawMessage.type,
+          source: rawMessage.source,
+          target: rawMessage.target,
+        });
         sendResponse(
           createErrorResponse(
             rawMessage.requestId,
@@ -329,8 +373,16 @@ export async function sendToContentScript(
       return response;
     }
 
+    logger.warn('messaging.content.invalidResponse', 'Content script returned invalid response', {
+      messageType: targetedMessage.type,
+      tabId,
+    });
     return createErrorResponse(targetedMessage.requestId, 'INVALID_RESPONSE', 'Invalid response shape.');
   } catch (error: unknown) {
+    logger.error('messaging.content.send', error, {
+      messageType: targetedMessage.type,
+      tabId,
+    });
     return createErrorResponse(
       targetedMessage.requestId,
       'SEND_FAILED',
@@ -347,8 +399,18 @@ async function sendRuntimeMessage(message: HumanSignalMessage): Promise<MessageR
       return response;
     }
 
+    logger.warn('messaging.runtime.invalidResponse', 'Runtime message returned invalid response', {
+      messageType: message.type,
+      source: message.source,
+      target: message.target,
+    });
     return createErrorResponse(message.requestId, 'INVALID_RESPONSE', 'Invalid response shape.');
   } catch (error: unknown) {
+    logger.error('messaging.runtime.send', error, {
+      messageType: message.type,
+      source: message.source,
+      target: message.target,
+    });
     return createErrorResponse(
       message.requestId,
       'SEND_FAILED',
@@ -375,37 +437,11 @@ function isMessageResponse(value: unknown): value is MessageResponse {
 }
 
 function isKnownMessageType(type: string): boolean {
-  const knownTypes: readonly string[] = [
-    'PING',
-    'SCORE_BATCH',
-    'SCORE_RESULT',
-    'PRIORITY_UPDATE',
-    'GEMINI_PROMPT',
-    'CHECK_GEMINI_STATUS',
-    'TRIGGER_DOWNLOAD',
-    'SHOW_EXPLANATION',
-    'SETTINGS_CHANGED',
-    'FEEDBACK',
-    'GET_HEALTH',
-    'CLEAR_CACHE',
-    'DELETE_ALL_DATA',
-    'ENSURE_OFFSCREEN_DOCUMENT',
-    'CLOSE_OFFSCREEN_DOCUMENT',
-    'DESTROY_GEMINI_SESSION',
-  ];
-
-  return knownTypes.includes(type);
+  return KNOWN_MESSAGE_TYPES.includes(type);
 }
 
 function isExtensionContext(value: unknown): value is ExtensionContext {
-  const contexts: readonly ExtensionContext[] = [
-    'background',
-    'content-script',
-    'offscreen',
-    'popup',
-  ];
-
-  return typeof value === 'string' && contexts.includes(value as ExtensionContext);
+  return typeof value === 'string' && EXTENSION_CONTEXTS.includes(value as ExtensionContext);
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

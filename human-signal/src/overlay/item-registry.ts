@@ -1,5 +1,5 @@
 import type { SignalSticker } from '@/overlay/signal-sticker';
-import type { ScoringResult } from '@/shared/types';
+import type { ExtractedItem, ScoringResult } from '@/shared/types';
 
 export type RegistryState = 'loading' | 'scored' | 'hidden' | 'failed';
 
@@ -7,6 +7,7 @@ export interface RegistryEntry {
   readonly itemId: string;
   readonly itemType: 'post' | 'comment';
   readonly element: HTMLElement;
+  readonly item: ExtractedItem;
   readonly sticker: SignalSticker;
   readonly createdAt: number;
   state: RegistryState;
@@ -17,7 +18,10 @@ export interface RegistryEntry {
 export class ItemRegistry {
   private readonly entries: Map<string, RegistryEntry> = new Map();
 
-  public constructor(private readonly maxEntries: number = 50) {}
+  public constructor(
+    private readonly maxEntries: number = 50,
+    private readonly onRemove: (itemId: string) => void = (): void => {},
+  ) {}
 
   public add(entry: RegistryEntry): void {
     this.entries.set(entry.itemId, entry);
@@ -46,7 +50,10 @@ export class ItemRegistry {
   public remove(itemId: string): void {
     const entry: RegistryEntry | undefined = this.entries.get(itemId);
     entry?.sticker.destroy();
-    this.entries.delete(itemId);
+
+    if (this.entries.delete(itemId)) {
+      this.onRemove(itemId);
+    }
   }
 
   public clear(): void {

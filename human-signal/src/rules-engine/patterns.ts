@@ -28,6 +28,9 @@ export const MOTIVATIONAL_CLICHES: readonly string[] = [
 export const ENGAGEMENT_BAIT_PATTERNS: readonly string[] = [
   "comment ai and i'll send you",
   'comment ai and i will send you',
+  'comment playbook and i will send',
+  'comment template and i will send',
+  'comment guide and i will send',
   'comment below and i will send',
   'like if you agree',
   'repost for reach',

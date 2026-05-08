@@ -2,6 +2,10 @@ import type { SelectorStrategy } from '@/linkedin-adapter/types';
 
 export const POST_CONTAINER_STRATEGIES: readonly SelectorStrategy[] = [
   {
+    name: 'listitem-componentkey',
+    selectors: ['div[role="listitem"][componentkey]'],
+  },
+  {
     name: 'data-urn-article',
     selectors: ['article[data-urn*="urn:li:activity"]'],
   },
@@ -16,6 +20,10 @@ export const POST_CONTAINER_STRATEGIES: readonly SelectorStrategy[] = [
 ];
 
 export const POST_TEXT_STRATEGIES: readonly SelectorStrategy[] = [
+  {
+    name: 'expandable-text-box',
+    selectors: ['span[data-testid="expandable-text-box"]', '[data-testid="expandable-text-box"]'],
+  },
   {
     name: 'commentary-region',
     selectors: [
@@ -35,6 +43,10 @@ export const POST_TEXT_STRATEGIES: readonly SelectorStrategy[] = [
 
 export const COMMENT_CONTAINER_STRATEGIES: readonly SelectorStrategy[] = [
   {
+    name: 'componentkey-comment-urn',
+    selectors: ['div[componentkey*="replaceableComment_urn:li:comment"]'],
+  },
+  {
     name: 'comment-id',
     selectors: ['[data-comment-id]'],
   },
@@ -50,6 +62,10 @@ export const COMMENT_CONTAINER_STRATEGIES: readonly SelectorStrategy[] = [
 
 export const COMMENT_TEXT_STRATEGIES: readonly SelectorStrategy[] = [
   {
+    name: 'expandable-text-box',
+    selectors: ['span[data-testid="expandable-text-box"]', '[data-testid="expandable-text-box"]'],
+  },
+  {
     name: 'comment-text',
     selectors: ['.comments-comment-item__main-content', '[data-test-id="comment-text"]'],
   },
@@ -62,12 +78,16 @@ export const COMMENT_TEXT_STRATEGIES: readonly SelectorStrategy[] = [
 export function queryByStrategies(
   root: ParentNode,
   strategies: readonly SelectorStrategy[],
+  excludeSelector: string | null = null,
 ): readonly HTMLElement[] {
   const uniqueElements: Set<HTMLElement> = new Set();
 
   for (const strategy of strategies) {
     for (const selector of strategy.selectors) {
       for (const element of Array.from(root.querySelectorAll<HTMLElement>(selector))) {
+        if (excludeSelector !== null && element.closest(excludeSelector) !== null && element.matches(excludeSelector) === false) {
+          continue;
+        }
         uniqueElements.add(element);
       }
     }

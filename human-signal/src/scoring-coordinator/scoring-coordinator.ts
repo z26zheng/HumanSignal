@@ -4,10 +4,14 @@ import { ScoringQueue, type QueueItem } from '@/scoring-coordinator/scoring-queu
 import { sendToContentScript, sendToOffscreen } from '@/shared/messaging';
 import { logger } from '@/shared/logger';
 import { RULES_SCORING_VERSION, scoreWithRules } from '@/rules-engine';
+import { createE2EGeminiScoringResult } from '@/gemini/e2e-gemini-mock';
+import { readStorageValue } from '@/shared/storage';
+import { DEFAULT_E2E_GEMINI_MOCK_CONFIG } from '@/shared/types';
 
 import type { MessageResponse } from '@/shared/messaging';
 import type {
   ContentHash,
+  E2EGeminiMockConfig,
   ExtractedItem,
   GeminiStatus,
   HealthMetrics,
@@ -88,11 +92,13 @@ export class ScoringCoordinator {
   }
 
   public async getHealth(logEntryCount: number, adapterSuccessRate: number): Promise<HealthMetrics> {
+    const scoredItemCount: number = this.itemsScored;
+
     return {
       itemsScored: this.itemsScored,
       cacheEntries: await this.cache.getSize(),
       cacheHitRate: this.cacheLookups === 0 ? 0 : this.cacheHits / this.cacheLookups,
-      avgLatencyMs: this.itemsScored === 0 ? 0 : this.totalLatencyMs / this.itemsScored,
+      avgLatencyMs: scoredItemCount === 0 ? 0 : this.totalLatencyMs / scoredItemCount,
       failureCount: this.failureCount,
       queueDepth: this.queue.getDepth(),
       scoringMode: this.modeManager.getMode(),
@@ -124,22 +130,27 @@ export class ScoringCoordinator {
 
     this.isProcessing = true;
 
-    while (this.queue.getDepth() > 0) {
-      const queueItem: QueueItem | null = this.queue.dequeue();
+    try {
+      while (this.queue.getDepth() > 0) {
+        const queueItem: QueueItem | null = this.queue.dequeue();
 
-      if (queueItem === null) {
-        break;
+        if (queueItem === null) {
+          break;
+        }
+
+        const result: ScoringResult = await this.scoreGeminiWithFallback(queueItem.item);
+        await this.cache.set(queueItem.contentHash, result);
+
+        if (queueItem.tabId !== null) {
+          await this.sendResultToTab(queueItem.tabId, result);
+        }
       }
-
-      const result: ScoringResult = await this.scoreGeminiWithFallback(queueItem.item);
-      await this.cache.set(queueItem.contentHash, result);
-
-      if (queueItem.tabId !== null) {
-        await this.sendResultToTab(queueItem.tabId, result);
-      }
+    } catch (error: unknown) {
+      this.failureCount += 1;
+      logger.error('scoringCoordinator.queue', error);
+    } finally {
+      this.isProcessing = false;
     }
-
-    this.isProcessing = false;
   }
 
   private async scoreGeminiWithFallback(item: ExtractedItem): Promise<ScoringResult> {
@@ -162,6 +173,23 @@ export class ScoringCoordinator {
 
   private async runGeminiRequest(item: ExtractedItem): Promise<ScoringResult> {
     const startedAt: number = Date.now();
+    const mockResult: ScoringResult | null | undefined = await this.scoreWithE2EGeminiMock(item);
+
+    if (mockResult !== undefined) {
+      if (mockResult !== null) {
+        this.recordScoringLatency(startedAt);
+        return mockResult;
+      }
+
+      this.failureCount += 1;
+      logger.warn('scoringCoordinator.geminiFallback', 'E2E Gemini mock returned null; falling back to rules', {
+        itemType: item.itemType,
+      });
+      const fallbackResult: ScoringResult = scoreWithRules(item);
+      this.recordScoringLatency(startedAt);
+      return fallbackResult;
+    }
+
     const response: MessageResponse = await sendToOffscreen({
       type: 'GEMINI_PROMPT',
       source: 'background',
@@ -172,8 +200,7 @@ export class ScoringCoordinator {
       this.onGeminiStatus(response.payload.status);
 
       if (response.payload.result !== null) {
-        this.itemsScored += 1;
-        this.totalLatencyMs += Date.now() - startedAt;
+        this.recordScoringLatency(startedAt);
         return response.payload.result;
       }
     }
@@ -183,8 +210,23 @@ export class ScoringCoordinator {
       itemType: item.itemType,
     });
     const fallbackResult: ScoringResult = scoreWithRules(item);
-    this.itemsScored += 1;
+    this.recordScoringLatency(startedAt);
     return fallbackResult;
+  }
+
+  private async scoreWithE2EGeminiMock(item: ExtractedItem): Promise<ScoringResult | null | undefined> {
+    const config: E2EGeminiMockConfig = await readStorageValue('e2eGeminiMock', DEFAULT_E2E_GEMINI_MOCK_CONFIG);
+
+    if (!config.isEnabled || config.availability !== 'available') {
+      return undefined;
+    }
+
+    return createE2EGeminiScoringResult(item, config);
+  }
+
+  private recordScoringLatency(startedAt: number): void {
+    this.itemsScored += 1;
+    this.totalLatencyMs += Date.now() - startedAt;
   }
 
   private async sendResultToTab(tabId: number, result: ScoringResult): Promise<void> {

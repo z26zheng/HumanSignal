@@ -30,7 +30,7 @@ export class ScoreCache {
 
   public async get(contentHash: ContentHash, scoringVersion: string): Promise<ScoringResult | null> {
     const entry: CacheEntry | undefined =
-      (await this.getPersistedEntry(contentHash)) ?? this.entries.get(contentHash);
+      (await this.safeGetPersistedEntry(contentHash)) ?? this.entries.get(contentHash);
 
     if (entry === undefined) {
       return null;
@@ -53,7 +53,7 @@ export class ScoreCache {
     };
 
     this.entries.set(contentHash, entry);
-    await this.putPersistedEntry(entry);
+    await this.safePutPersistedEntry(entry);
 
     if ((await this.getSize()) > this.options.maxEntries) {
       await this.evictOldest(Math.ceil(this.options.maxEntries * 0.25));
@@ -72,15 +72,23 @@ export class ScoreCache {
   }
 
   public async getSize(): Promise<number> {
-    const database: IDBDatabase | null = await this.openDatabase();
+    try {
+      const database: IDBDatabase | null = await this.openDatabase();
 
-    if (database === null) {
+      if (database === null) {
+        return this.entries.size;
+      }
+
+      return await requestToPromise<number>(
+        database.transaction('scoreCache', 'readonly').objectStore('scoreCache').count(),
+      );
+    } catch (error: unknown) {
+      logger.warn('scoreCache.size', 'Persisted cache size unavailable; using memory size', {
+        errorName: error instanceof Error ? error.name : 'unknown',
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
       return this.entries.size;
     }
-
-    return await requestToPromise<number>(
-      database.transaction('scoreCache', 'readonly').objectStore('scoreCache').count(),
-    );
   }
 
   public async evictExpired(): Promise<void> {
@@ -121,6 +129,19 @@ export class ScoreCache {
     );
   }
 
+  private async safeGetPersistedEntry(contentHash: ContentHash): Promise<CacheEntry | undefined> {
+    try {
+      return await this.getPersistedEntry(contentHash);
+    } catch (error: unknown) {
+      logger.warn('scoreCache.read', 'Persisted cache read failed; using memory cache', {
+        contentHash,
+        errorName: error instanceof Error ? error.name : 'unknown',
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+      return undefined;
+    }
+  }
+
   private async putPersistedEntry(entry: CacheEntry): Promise<void> {
     const database: IDBDatabase | null = await this.openDatabase();
 
@@ -131,6 +152,32 @@ export class ScoreCache {
     await requestToPromise(
       database.transaction('scoreCache', 'readwrite').objectStore('scoreCache').put(entry),
     );
+  }
+
+  private async safePutPersistedEntry(entry: CacheEntry): Promise<void> {
+    try {
+      await this.putPersistedEntry(entry);
+    } catch (error: unknown) {
+      logger.warn('scoreCache.persist', 'Persisted cache write failed; trying eviction before memory fallback', {
+        contentHash: entry.contentHash,
+        errorName: error instanceof Error ? error.name : 'unknown',
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+      await this.retryPersistAfterEviction(entry);
+    }
+  }
+
+  private async retryPersistAfterEviction(entry: CacheEntry): Promise<void> {
+    try {
+      await this.evictOldest(Math.max(1, Math.ceil(this.options.maxEntries * 0.25)));
+      await this.putPersistedEntry(entry);
+    } catch (error: unknown) {
+      logger.warn('scoreCache.persistFallback', 'Persisted cache retry failed; memory cache retained', {
+        contentHash: entry.contentHash,
+        errorName: error instanceof Error ? error.name : 'unknown',
+        errorMessage: error instanceof Error ? error.message : String(error),
+      });
+    }
   }
 
   private async getAllEntries(): Promise<readonly CacheEntry[]> {
