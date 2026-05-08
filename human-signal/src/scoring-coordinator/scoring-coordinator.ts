@@ -36,6 +36,8 @@ export class ScoringCoordinator {
   private failureCount: number = 0;
   private totalLatencyMs: number = 0;
 
+  private initialized: boolean = false;
+
   public async initialize(): Promise<void> {
     await this.modeManager.initialize();
   }
@@ -44,6 +46,11 @@ export class ScoringCoordinator {
     items: readonly ExtractedItem[],
     tabId: number | null,
   ): Promise<ScoreBatchResult> {
+    if (!this.initialized) {
+      this.initialized = true;
+      await this.waitForGeminiCheck();
+    }
+
     const results: ScoringResult[] = [];
     const queued: string[] = [];
 
@@ -89,6 +96,38 @@ export class ScoringCoordinator {
 
   public onGeminiStatus(status: GeminiStatus): void {
     this.modeManager.onGeminiStatus(status);
+  }
+
+  public getMode(): string {
+    return this.modeManager.getMode();
+  }
+
+  private async waitForGeminiCheck(): Promise<void> {
+    if (this.modeManager.getMode() === 'gemini') {
+      return;
+    }
+
+    const maxWaitMs: number = 3000;
+    const pollIntervalMs: number = 200;
+    const startedAt: number = Date.now();
+
+    while (Date.now() - startedAt < maxWaitMs) {
+      if (this.modeManager.getMode() === 'gemini') {
+        logger.info('scoringCoordinator.geminiReady', 'Gemini mode activated before first batch', {
+          waitedMs: Date.now() - startedAt,
+        });
+        return;
+      }
+
+      await new Promise((resolve): void => {
+        setTimeout(resolve, pollIntervalMs);
+      });
+    }
+
+    logger.info('scoringCoordinator.geminiTimeout', 'Gemini not ready; proceeding with rules', {
+      waitedMs: Date.now() - startedAt,
+      mode: this.modeManager.getMode(),
+    });
   }
 
   public async getHealth(logEntryCount: number, adapterSuccessRate: number): Promise<HealthMetrics> {

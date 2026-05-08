@@ -34,7 +34,7 @@ export interface PromptApiPromptOptions {
 }
 
 export interface PromptApiSession {
-  readonly prompt: (input: string, options?: PromptApiPromptOptions) => Promise<string>;
+  readonly prompt: (input: string, options?: PromptApiPromptOptions) => Promise<unknown>;
   readonly destroy?: () => void;
 }
 
@@ -44,7 +44,11 @@ export interface PromptApiLanguageModel {
 }
 
 export function getLanguageModel(): PromptApiLanguageModel | null {
-  const candidate: unknown = (globalThis as { readonly LanguageModel?: unknown }).LanguageModel;
+  const globals: Record<string, unknown> = globalThis as Record<string, unknown>;
+  const candidate: unknown =
+    globals['LanguageModel'] ??
+    (globals['ai'] as Record<string, unknown> | undefined)?.['languageModel'] ??
+    null;
 
   if (!isPromptApiLanguageModel(candidate)) {
     return null;

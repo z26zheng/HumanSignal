@@ -133,15 +133,17 @@ export class GeminiService {
     try {
       const session: PromptApiSession = await this.getOrCreateSession();
       const prompt: string = buildScoringPrompt(item, false);
-      const rawResponse: string = await session.prompt(prompt, { responseConstraint: RESULT_SCHEMA });
-      const firstResult: ScoringResult | null = validateGeminiResult(rawResponse, item);
+      const rawResponse: unknown = await session.prompt(prompt);
+      const responseText: string = coerceToString(rawResponse);
+      const firstResult: ScoringResult | null = validateGeminiResult(responseText, item);
 
       if (firstResult !== null) {
         this.markSuccess();
         return firstResult;
       }
 
-      const repairResponse: string = await session.prompt(buildScoringPrompt(item, true));
+      const repairRaw: unknown = await session.prompt(buildScoringPrompt(item, true));
+      const repairResponse: string = coerceToString(repairRaw);
       const repairedResult: ScoringResult | null = validateGeminiResult(repairResponse, item);
 
       if (repairedResult !== null) {
@@ -251,6 +253,18 @@ export function validateGeminiResult(raw: unknown, item: ExtractedItem): Scoring
     scoredAt: Date.now(),
     isTextTruncated: item.isTruncated || item.text.length > MAX_PROMPT_CHARS,
   };
+}
+
+function coerceToString(value: unknown): string {
+  if (typeof value === 'string') {
+    return value;
+  }
+
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return JSON.stringify(value);
 }
 
 function buildScoringPrompt(item: ExtractedItem, isRepairAttempt: boolean): string {

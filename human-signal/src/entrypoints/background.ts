@@ -17,6 +17,7 @@ import {
   setUserSettings,
 } from '@/shared/storage';
 import { ScoringCoordinator } from '@/scoring-coordinator';
+import { GeminiService } from '@/gemini';
 import { closeOffscreenDocument, ensureOffscreenDocument } from '@/background/offscreen-lifecycle';
 import {
   createE2EGeminiDownloadResponse,
@@ -26,6 +27,7 @@ import { DEFAULT_E2E_GEMINI_MOCK_CONFIG, DEFAULT_USER_SETTINGS } from '@/shared/
 import type { E2EGeminiMockConfig, ItemId } from '@/shared/types';
 
 const scoringCoordinator: ScoringCoordinator = new ScoringCoordinator();
+const geminiService: GeminiService = new GeminiService();
 
 export default defineBackground((): void => {
   logger.info('background.startup', 'HumanSignal background service worker started', {
@@ -33,7 +35,22 @@ export default defineBackground((): void => {
   });
 
   addMessageListener('background', handleBackgroundMessage);
-  void scoringCoordinator.initialize();
+  void scoringCoordinator.initialize().then(async (): Promise<void> => {
+    const statusPayload = await forwardToOffscreen({
+      type: 'CHECK_GEMINI_STATUS',
+      requestId: '',
+      source: 'background',
+      target: 'offscreen',
+    } as HumanSignalMessage);
+
+    if (statusPayload.type === 'MODEL_STATUS') {
+      scoringCoordinator.onGeminiStatus(statusPayload.status);
+      logger.info('background.startup', 'Gemini status checked on startup', {
+        availability: statusPayload.status.availability,
+        mode: scoringCoordinator.getMode(),
+      });
+    }
+  }).catch((): void => {});
 
   browser.runtime.onInstalled.addListener((details: Browser.runtime.InstalledDetails): void => {
     logger.info('background.installed', 'Extension install event received', {
