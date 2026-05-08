@@ -182,7 +182,6 @@ function findCommentAnchor(container: HTMLElement): HTMLElement | null {
 
 function findPromotedOrFollowersAnchor(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
   const candidates: NodeListOf<HTMLElement> = container.querySelectorAll('p, div, span');
-  let bestMatch: HTMLElement | null = null;
 
   for (const el of candidates) {
     const rect: DOMRect = el.getBoundingClientRect();
@@ -192,16 +191,12 @@ function findPromotedOrFollowersAnchor(container: HTMLElement, containerRect: DO
     const text: string = el.textContent?.trim() ?? '';
     if (el.children.length > 1 || text.length > 30) continue;
 
-    if (text === 'Promoted') {
-      return el;
-    }
-
     if (/^\d[\d,]*\s+followers$/.test(text)) {
-      bestMatch = el;
+      return el;
     }
   }
 
-  return bestMatch;
+  return null;
 }
 
 function findVisibilityIcon(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
