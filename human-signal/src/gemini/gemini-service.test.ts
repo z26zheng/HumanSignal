@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { GeminiService, validateGeminiResult } from '@/gemini';
+import { GeminiService, getLanguageModel, validateGeminiResult } from '@/gemini';
 import { createRulesItem } from '@/rules-engine';
 
 import type { PromptApiLanguageModel, PromptApiSession } from '@/gemini';
@@ -231,3 +231,151 @@ describe('GeminiService', (): void => {
 async function persistStatus(status: GeminiStatus): Promise<GeminiStatus> {
   return status;
 }
+
+describe('getLanguageModel', (): void => {
+  afterEach((): void => {
+    vi.unstubAllGlobals();
+  });
+
+  it('detects LanguageModel as a function constructor (Chrome 147+)', (): void => {
+    const mockLM = {
+      availability: vi.fn(),
+      create: vi.fn(),
+    };
+    vi.stubGlobal('LanguageModel', mockLM);
+
+    const result = getLanguageModel();
+    expect(result).toBe(mockLM);
+  });
+
+  it('falls back to self.ai.languageModel when LanguageModel is undefined', (): void => {
+    const mockLM = {
+      availability: vi.fn(),
+      create: vi.fn(),
+    };
+    vi.stubGlobal('ai', { languageModel: mockLM });
+
+    const result = getLanguageModel();
+    expect(result).toBe(mockLM);
+  });
+
+  it('returns null when no API is available', (): void => {
+    const result = getLanguageModel();
+    expect(result).toBeNull();
+  });
+
+  it('returns null for objects without availability and create methods', (): void => {
+    vi.stubGlobal('LanguageModel', { someOtherMethod: vi.fn() });
+    const result = getLanguageModel();
+    expect(result).toBeNull();
+  });
+});
+
+describe('coerceToString and prompt response handling', (): void => {
+  afterEach((): void => {
+    vi.restoreAllMocks();
+  });
+
+  it('handles string prompt responses directly', async (): Promise<void> => {
+    const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue(
+      JSON.stringify({
+        primaryLabel: 'Specific',
+        color: 'green',
+        confidence: 'medium',
+        dimensions: { authenticity: 0.7, originality: 0.6, specificity: 0.8, engagementBait: 0, templating: 0.1, usefulness: 0.7 },
+        reasons: ['Concrete metric.', 'Specific rollout.'],
+      }),
+    );
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create: vi.fn(async (): Promise<PromptApiSession> => ({ prompt })),
+    };
+    const service = new GeminiService(languageModel, persistStatus);
+    const result = await service.scoreWithGemini(createRulesItem('I reduced failures by 27%.', 'post'));
+
+    expect(result?.label).toBe('specific');
+    expect(result?.source).toBe('gemini');
+    await service.destroySession();
+  });
+
+  it('handles object prompt responses via JSON.stringify coercion', async (): Promise<void> => {
+    const responseObj = {
+      primaryLabel: 'Generic',
+      color: 'orange',
+      confidence: 'medium',
+      dimensions: { authenticity: 0.2, originality: 0.1, specificity: 0.1, engagementBait: 0, templating: 0.3, usefulness: 0.2 },
+      reasons: ['Vague claim.', 'No evidence.'],
+    };
+    const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue(responseObj);
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create: vi.fn(async (): Promise<PromptApiSession> => ({ prompt })),
+    };
+    const service = new GeminiService(languageModel, persistStatus);
+    const result = await service.scoreWithGemini(createRulesItem('Success is about mindset.', 'post'));
+
+    expect(result?.label).toBe('generic');
+    expect(result?.source).toBe('gemini');
+    await service.destroySession();
+  });
+
+  it('handles null/undefined prompt responses gracefully', async (): Promise<void> => {
+    const prompt = vi.fn<PromptApiSession['prompt']>()
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(undefined);
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create: vi.fn(async (): Promise<PromptApiSession> => ({ prompt })),
+    };
+    const service = new GeminiService(languageModel, persistStatus);
+    const result = await service.scoreWithGemini(createRulesItem('Test post.', 'post'));
+
+    expect(result).toBeNull();
+    await service.destroySession();
+  });
+
+  it('uses systemPrompt in create options', async (): Promise<void> => {
+    const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue('not json');
+    const create = vi.fn(async (): Promise<PromptApiSession> => ({ prompt }));
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create,
+    };
+    const service = new GeminiService(languageModel, persistStatus);
+    await service.scoreWithGemini(createRulesItem('Test.', 'post'));
+
+    expect(create).toHaveBeenCalledWith(
+      expect.objectContaining({ systemPrompt: expect.any(String) }),
+    );
+    await service.destroySession();
+  });
+
+  it('passes responseConstraint in prompt options', async (): Promise<void> => {
+    const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue('not json');
+    const languageModel: PromptApiLanguageModel = {
+      availability: vi.fn(async (): Promise<string> => 'available'),
+      create: vi.fn(async (): Promise<PromptApiSession> => ({ prompt })),
+    };
+    const service = new GeminiService(languageModel, persistStatus);
+    await service.scoreWithGemini(createRulesItem('Test.', 'post'));
+
+    expect(prompt).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ responseConstraint: expect.any(Object) }),
+    );
+    await service.destroySession();
+  });
+
+  it('calls availability without required options (Chrome 147)', async (): Promise<void> => {
+    const availability = vi.fn(async (): Promise<string> => 'available');
+    const languageModel: PromptApiLanguageModel = {
+      availability,
+      create: vi.fn(async (): Promise<PromptApiSession> => ({ prompt: vi.fn() })),
+    };
+    const service = new GeminiService(languageModel, persistStatus);
+    await service.checkGeminiAvailability();
+
+    expect(availability).toHaveBeenCalledWith();
+    await service.destroySession();
+  });
+});

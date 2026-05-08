@@ -131,3 +131,136 @@ function createAdapter(fixture: FixtureCase): LinkedInAdapter {
 
   return new LinkedInAdapter(dom.window.document);
 }
+
+describe('Chrome 147 LinkedIn DOM (listitem + componentkey)', (): void => {
+  it('detects posts from div[role=listitem][componentkey] containers', (): void => {
+    const dom: JSDOM = new JSDOM(`<!doctype html>
+      <main>
+        <div role="listitem" componentkey="expandedABC123FeedType_MAIN">
+          <span data-testid="expandable-text-box">I shipped a rollout and reduced failures by 27%.</span>
+        </div>
+        <div role="listitem" componentkey="expandedDEF456FeedType_MAIN">
+          <span data-testid="expandable-text-box">Hard truth: consistency beats talent.</span>
+        </div>
+      </main>`, { url: 'https://www.linkedin.com/feed/' });
+
+    const adapter: LinkedInAdapter = new LinkedInAdapter(dom.window.document);
+    const posts = adapter.detectPosts();
+
+    expect(posts.length).toBe(2);
+    expect(posts[0]?.text).toContain('shipped a rollout');
+    expect(posts[1]?.text).toContain('consistency beats talent');
+  });
+
+  it('detects comments from div[componentkey*=replaceableComment] containers', (): void => {
+    const dom: JSDOM = new JSDOM(`<!doctype html>
+      <main>
+        <div role="listitem" componentkey="expandedABC123FeedType_MAIN">
+          <span data-testid="expandable-text-box">Main post text here.</span>
+          <div componentkey="commentsSectionContainerABC123">
+            <div componentkey="replaceableComment_urn:li:comment:(urn:li:activity:123,456)">
+              <span data-testid="expandable-text-box">Great insights on this topic.</span>
+            </div>
+            <div componentkey="replaceableComment_urn:li:comment:(urn:li:activity:123,789)">
+              <span data-testid="expandable-text-box">How did you measure the improvement?</span>
+            </div>
+          </div>
+        </div>
+      </main>`, { url: 'https://www.linkedin.com/feed/' });
+
+    const adapter: LinkedInAdapter = new LinkedInAdapter(dom.window.document);
+    const comments = adapter.detectComments();
+
+    expect(comments.length).toBe(2);
+    expect(comments[0]?.text).toContain('Great insights');
+    expect(comments[1]?.text).toContain('measure the improvement');
+  });
+
+  it('excludes comment text from post detection via findFirstPostText', (): void => {
+    const dom: JSDOM = new JSDOM(`<!doctype html>
+      <main>
+        <div role="listitem" componentkey="expandedABC123FeedType_MAIN">
+          <span data-testid="expandable-text-box">Post text with 27% improvement.</span>
+          <div componentkey="replaceableComment_urn:li:comment:(urn:li:activity:123,456)">
+            <span data-testid="expandable-text-box">Comment text here.</span>
+          </div>
+        </div>
+      </main>`, { url: 'https://www.linkedin.com/feed/' });
+
+    const adapter: LinkedInAdapter = new LinkedInAdapter(dom.window.document);
+    const posts = adapter.detectPosts();
+
+    expect(posts.length).toBe(1);
+    expect(posts[0]?.text).toContain('27% improvement');
+    expect(posts[0]?.text).not.toContain('Comment text');
+  });
+
+  it('deduplicates comment containers by componentkey', (): void => {
+    const dom: JSDOM = new JSDOM(`<!doctype html>
+      <main>
+        <div role="listitem" componentkey="expandedABC123FeedType_MAIN">
+          <span data-testid="expandable-text-box">Post text.</span>
+          <div componentkey="replaceableComment_urn:li:comment:(urn:li:activity:123,456)">
+            <div componentkey="replaceableComment_urn:li:comment:(urn:li:activity:123,456)">
+              <span data-testid="expandable-text-box">Nested duplicate comment.</span>
+            </div>
+          </div>
+        </div>
+      </main>`, { url: 'https://www.linkedin.com/feed/' });
+
+    const adapter: LinkedInAdapter = new LinkedInAdapter(dom.window.document);
+    const comments = adapter.detectComments();
+
+    expect(comments.length).toBe(1);
+  });
+
+  it('resolves post ID from componentkey attribute', (): void => {
+    const dom: JSDOM = new JSDOM(`<!doctype html>
+      <main>
+        <div role="listitem" componentkey="expandedUniqueKey123FeedType_MAIN">
+          <span data-testid="expandable-text-box">Post content here.</span>
+        </div>
+      </main>`, { url: 'https://www.linkedin.com/feed/' });
+
+    const adapter: LinkedInAdapter = new LinkedInAdapter(dom.window.document);
+    const posts = adapter.detectPosts();
+
+    expect(posts.length).toBe(1);
+    expect(posts[0]?.postId).toContain('ck_');
+  });
+
+  it('resolves comment ID from componentkey URN', (): void => {
+    const dom: JSDOM = new JSDOM(`<!doctype html>
+      <main>
+        <div role="listitem" componentkey="expandedABCFeedType_MAIN">
+          <span data-testid="expandable-text-box">Post.</span>
+          <div componentkey="replaceableComment_urn:li:comment:(urn:li:activity:7456684137597526017,7458224735)">
+            <span data-testid="expandable-text-box">Comment content.</span>
+          </div>
+        </div>
+      </main>`, { url: 'https://www.linkedin.com/feed/' });
+
+    const adapter: LinkedInAdapter = new LinkedInAdapter(dom.window.document);
+    const comments = adapter.detectComments();
+
+    expect(comments.length).toBe(1);
+    expect(comments[0]?.commentId).toContain('urn:li:comment');
+  });
+
+  it('still detects posts from legacy article[data-urn] selectors', (): void => {
+    const dom: JSDOM = new JSDOM(`<!doctype html>
+      <main>
+        <article data-urn="urn:li:activity:1001">
+          <div data-test-id="main-feed-activity-card__commentary">
+            <p>Legacy post with 42% metric.</p>
+          </div>
+        </article>
+      </main>`, { url: 'https://www.linkedin.com/feed/' });
+
+    const adapter: LinkedInAdapter = new LinkedInAdapter(dom.window.document);
+    const posts = adapter.detectPosts();
+
+    expect(posts.length).toBe(1);
+    expect(posts[0]?.text).toContain('42%');
+  });
+});
