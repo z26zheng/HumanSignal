@@ -54,7 +54,7 @@ export function getLanguageModel(): PromptApiLanguageModel | null {
 }
 
 function isPromptApiLanguageModel(value: unknown): value is PromptApiLanguageModel {
-  if (typeof value !== 'object' || value === null) {
+  if (value === null || value === undefined) {
     return false;
   }
 
