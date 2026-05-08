@@ -22,12 +22,7 @@ if pgrep -f "Google Chrome" > /dev/null 2>&1; then
   sleep 2
 fi
 
-EXT_ID="hoagjhaadmbfbgceiipccdgkjfghflnj"
-EXT_STORAGE_DIR="$HOME/Library/Application Support/Google/Chrome/Default/Local Extension Settings/$EXT_ID"
-if [ -d "$EXT_STORAGE_DIR" ]; then
-  rm -rf "$EXT_STORAGE_DIR"
-  echo "       Cleared stale extension storage at $EXT_STORAGE_DIR"
-fi
+echo "       Keeping extension storage (geminiStatus persists across launches)."
 echo "       Chrome stopped."
 
 echo "[3/5] Launching Chrome with extension and LinkedIn feed..."

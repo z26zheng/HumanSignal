@@ -18,6 +18,8 @@
     "perf:baseline": "tsx -r tsconfig-paths/register scripts/perf-baseline.ts",
     "release:check-package": "tsx scripts/check-package-size.ts",
     "manual-test": "bash scripts/manual-test.sh",
+    "test:gemini-context": "bash scripts/test-gemini-context.sh",
+    "test:gemini-messaging": "tsx scripts/read-gemini-test.ts",
     "postinstall": "wxt prepare"
   },
   "devDependencies": {

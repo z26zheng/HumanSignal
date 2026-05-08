@@ -40,7 +40,7 @@ export interface PromptApiSession {
 }
 
 export interface PromptApiLanguageModel {
-  readonly availability: (options: PromptApiAvailabilityOptions) => Promise<string>;
+  readonly availability: (options?: PromptApiAvailabilityOptions) => Promise<string>;
   readonly create: (options?: PromptApiCreateOptions) => Promise<PromptApiSession>;
 }
 
