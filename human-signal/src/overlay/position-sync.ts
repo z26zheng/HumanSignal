@@ -129,7 +129,35 @@ function findPostAnchor(container: HTMLElement): HTMLElement | null {
     return visibilityIcon;
   }
 
-  return findPromotedOrFollowersAnchor(container, containerRect);
+  const promotedAnchor: HTMLElement | null = findPromotedOrFollowersAnchor(container, containerRect);
+  if (promotedAnchor !== null) {
+    return promotedAnchor;
+  }
+
+  return findConnectionBadgeAnchor(container, containerRect, 50);
+}
+
+function findConnectionBadgeAnchor(
+  container: HTMLElement,
+  containerRect: DOMRect,
+  maxRelY: number,
+): HTMLElement | null {
+  const candidates: NodeListOf<HTMLElement> = container.querySelectorAll('p, span, div');
+
+  for (const el of candidates) {
+    const rect: DOMRect = el.getBoundingClientRect();
+    const relY: number = rect.y - containerRect.y;
+    if (relY < 0 || relY > maxRelY || rect.height === 0 || rect.width === 0) continue;
+
+    const text: string = el.textContent?.trim() ?? '';
+    if (text.length > 30 || el.children.length > 2) continue;
+
+    if (CONNECTION_PATTERN.test(text)) {
+      return el;
+    }
+  }
+
+  return null;
 }
 
 function findCommentAnchor(container: HTMLElement): HTMLElement | null {
@@ -154,21 +182,26 @@ function findCommentAnchor(container: HTMLElement): HTMLElement | null {
 
 function findPromotedOrFollowersAnchor(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
   const candidates: NodeListOf<HTMLElement> = container.querySelectorAll('p, div, span');
+  let bestMatch: HTMLElement | null = null;
 
   for (const el of candidates) {
     const rect: DOMRect = el.getBoundingClientRect();
     const relY: number = rect.y - containerRect.y;
-    if (relY < 60 || relY > 120 || rect.height === 0 || rect.width === 0) continue;
+    if (relY < 20 || relY > 120 || rect.height === 0 || rect.width === 0) continue;
 
     const text: string = el.textContent?.trim() ?? '';
     if (el.children.length > 1 || text.length > 30) continue;
 
-    if (text === 'Promoted' || /^\d[\d,]*\s+followers$/.test(text)) {
+    if (text === 'Promoted') {
       return el;
+    }
+
+    if (/^\d[\d,]*\s+followers$/.test(text)) {
+      bestMatch = el;
     }
   }
 
-  return null;
+  return bestMatch;
 }
 
 function findVisibilityIcon(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
