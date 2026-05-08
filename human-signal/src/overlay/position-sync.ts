@@ -2,6 +2,7 @@ import { SignalSticker } from '@/overlay/signal-sticker';
 
 const CONNECTION_PATTERN: RegExp = /[•·]\s*(1st|2nd|3rd\+?)/;
 const TIMESTAMP_PATTERN: RegExp = /^\d+[hdwm]$/;
+const ANCHOR_RETRY_MS: number = 300;
 
 interface TrackedItem {
   readonly itemType: 'post' | 'comment';
@@ -50,56 +51,33 @@ export class PositionSync {
   }
 
   private syncFrame(): void {
-    const positions: Array<{
-      readonly sticker: SignalSticker;
-      readonly x: number;
-      readonly y: number;
-      readonly isVisible: boolean;
-    }> = [];
-
-    for (const trackedItem of this.trackedItems.values()) {
-      const containerRect: DOMRect = trackedItem.element.getBoundingClientRect();
+    for (const tracked of this.trackedItems.values()) {
+      const containerRect: DOMRect = tracked.element.getBoundingClientRect();
 
       if (containerRect.width === 0 || containerRect.height === 0 ||
-          containerRect.bottom < 0 || containerRect.top > window.innerHeight) {
-        positions.push({ sticker: trackedItem.sticker, x: 0, y: 0, isVisible: false });
+          containerRect.bottom < -200 || containerRect.top > window.innerHeight + 200) {
+        tracked.sticker.setViewportVisible(false);
         continue;
       }
 
-      const anchor: HTMLElement | null = findAnchorElement(trackedItem);
+      const anchor: HTMLElement | null = getAnchor(tracked);
+
       if (anchor !== null) {
         const anchorRect: DOMRect = anchor.getBoundingClientRect();
-        positions.push({
-          sticker: trackedItem.sticker,
-          x: anchorRect.right + 6,
-          y: anchorRect.top + (anchorRect.height - 24) / 2,
-          isVisible: true,
-        });
+        tracked.sticker.setPosition(anchorRect.right + 6, anchorRect.top + (anchorRect.height - 24) / 2);
       } else {
-        positions.push({
-          sticker: trackedItem.sticker,
-          ...calculateFallbackPosition(containerRect, trackedItem.itemType),
-        });
-      }
-    }
-
-    for (const position of positions) {
-      if (!position.isVisible) {
-        position.sticker.setViewportVisible(false);
-        continue;
+        const fallback = fallbackPosition(containerRect, tracked.itemType);
+        tracked.sticker.setPosition(fallback.x, fallback.y);
       }
 
-      position.sticker.setPosition(position.x, position.y);
-      position.sticker.setViewportVisible(true);
+      tracked.sticker.setViewportVisible(true);
     }
 
     this.animationFrameId = requestAnimationFrame((): void => this.syncFrame());
   }
 }
 
-const ANCHOR_SEARCH_INTERVAL_MS: number = 200;
-
-function findAnchorElement(tracked: TrackedItem): HTMLElement | null {
+function getAnchor(tracked: TrackedItem): HTMLElement | null {
   if (tracked.cachedAnchor !== null && tracked.cachedAnchor.isConnected) {
     return tracked.cachedAnchor;
   }
@@ -107,12 +85,11 @@ function findAnchorElement(tracked: TrackedItem): HTMLElement | null {
   tracked.cachedAnchor = null;
 
   const now: number = Date.now();
-  if (now - tracked.lastAnchorSearch < ANCHOR_SEARCH_INTERVAL_MS) {
+  if (now - tracked.lastAnchorSearch < ANCHOR_RETRY_MS) {
     return null;
   }
 
   tracked.lastAnchorSearch = now;
-
   const anchor: HTMLElement | null = tracked.itemType === 'post'
     ? findPostAnchor(tracked.element)
     : findCommentAnchor(tracked.element);
@@ -129,15 +106,57 @@ function findPostAnchor(container: HTMLElement): HTMLElement | null {
     return visibilityIcon;
   }
 
-  const promotedAnchor: HTMLElement | null = findPromotedOrFollowersAnchor(container, containerRect);
-  if (promotedAnchor !== null) {
-    return promotedAnchor;
+  const followersAnchor: HTMLElement | null = findFollowersAnchor(container, containerRect);
+  if (followersAnchor !== null) {
+    return followersAnchor;
   }
 
-  return findConnectionBadgeAnchor(container, containerRect, 50);
+  return findConnectionBadge(container, containerRect, 50);
 }
 
-function findConnectionBadgeAnchor(
+function findCommentAnchor(container: HTMLElement): HTMLElement | null {
+  const containerRect: DOMRect = container.getBoundingClientRect();
+  return findConnectionBadge(container, containerRect, 40) ??
+    findTimestamp(container, containerRect, 40);
+}
+
+function findVisibilityIcon(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
+  const svgs: NodeListOf<SVGElement> = container.querySelectorAll('svg');
+
+  for (const svg of svgs) {
+    const rect: DOMRect = svg.getBoundingClientRect();
+    const relY: number = rect.y - containerRect.y;
+    if (relY < 30 || relY > 110 || rect.height === 0) continue;
+
+    const ariaLabel: string = svg.getAttribute('aria-label') ?? '';
+    if (ariaLabel.toLowerCase().startsWith('visibility:')) {
+      return svg as unknown as HTMLElement;
+    }
+  }
+
+  return null;
+}
+
+function findFollowersAnchor(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
+  const candidates: NodeListOf<HTMLElement> = container.querySelectorAll('p, div, span');
+
+  for (const el of candidates) {
+    const rect: DOMRect = el.getBoundingClientRect();
+    const relY: number = rect.y - containerRect.y;
+    if (relY < 20 || relY > 120 || rect.height === 0 || rect.width === 0) continue;
+
+    const text: string = el.textContent?.trim() ?? '';
+    if (el.children.length > 1 || text.length > 30) continue;
+
+    if (/^\d[\d,]*\s+followers$/.test(text)) {
+      return el;
+    }
+  }
+
+  return null;
+}
+
+function findConnectionBadge(
   container: HTMLElement,
   containerRect: DOMRect,
   maxRelY: number,
@@ -160,83 +179,11 @@ function findConnectionBadgeAnchor(
   return null;
 }
 
-function findCommentAnchor(container: HTMLElement): HTMLElement | null {
-  const containerRect: DOMRect = container.getBoundingClientRect();
-  const candidates: NodeListOf<HTMLElement> = container.querySelectorAll('span, p, div');
-
-  for (const el of candidates) {
-    const rect: DOMRect = el.getBoundingClientRect();
-    const relY: number = rect.y - containerRect.y;
-    if (relY < 0 || relY > 40 || rect.height === 0 || rect.width === 0) continue;
-
-    const text: string = el.textContent?.trim() ?? '';
-    if (text.length > 30 || el.children.length > 2) continue;
-
-    if (CONNECTION_PATTERN.test(text)) {
-      return el;
-    }
-  }
-
-  return findTimestampAnchor(container, 40);
-}
-
-function findPromotedOrFollowersAnchor(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
-  const candidates: NodeListOf<HTMLElement> = container.querySelectorAll('p, div, span');
-
-  for (const el of candidates) {
-    const rect: DOMRect = el.getBoundingClientRect();
-    const relY: number = rect.y - containerRect.y;
-    if (relY < 20 || relY > 120 || rect.height === 0 || rect.width === 0) continue;
-
-    const text: string = el.textContent?.trim() ?? '';
-    if (el.children.length > 1 || text.length > 30) continue;
-
-    if (/^\d[\d,]*\s+followers$/.test(text)) {
-      return el;
-    }
-  }
-
-  return null;
-}
-
-function findVisibilityIcon(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
-  const svgs: NodeListOf<SVGElement> = container.querySelectorAll('svg');
-
-  for (const svg of svgs) {
-    const rect: DOMRect = svg.getBoundingClientRect();
-    const relY: number = rect.y - containerRect.y;
-    if (relY < 30 || relY > 110 || rect.height === 0) continue;
-
-    const ariaLabel: string = svg.getAttribute('aria-label') ?? '';
-    if (ariaLabel.toLowerCase().startsWith('visibility:')) {
-      return svg as unknown as HTMLElement;
-    }
-  }
-
-  return null;
-}
-
-function findTimestampLineAnchor(container: HTMLElement, containerRect: DOMRect): HTMLElement | null {
-  const candidates: NodeListOf<HTMLElement> = container.querySelectorAll('p, div, span');
-
-  for (const el of candidates) {
-    const rect: DOMRect = el.getBoundingClientRect();
-    const relY: number = rect.y - containerRect.y;
-    if (relY < 50 || relY > 110 || rect.height === 0 || rect.width === 0) continue;
-
-    const text: string = el.textContent?.trim() ?? '';
-    if (text.length > 40 || el.children.length > 5) continue;
-
-    if (/\d+[hdwm]\s*[•·]/.test(text) || /[•·]\s*Edited/.test(text)) {
-      return el;
-    }
-  }
-
-  return findTimestampAnchor(container, 110);
-}
-
-function findTimestampAnchor(container: HTMLElement, maxRelY: number): HTMLElement | null {
-  const containerRect: DOMRect = container.getBoundingClientRect();
+function findTimestamp(
+  container: HTMLElement,
+  containerRect: DOMRect,
+  maxRelY: number,
+): HTMLElement | null {
   const candidates: NodeListOf<HTMLElement> = container.querySelectorAll('p, span, div');
 
   for (const el of candidates) {
@@ -253,18 +200,11 @@ function findTimestampAnchor(container: HTMLElement, maxRelY: number): HTMLEleme
   return null;
 }
 
-function calculateFallbackPosition(
+function fallbackPosition(
   rect: DOMRect,
   itemType: 'post' | 'comment',
-): { readonly x: number; readonly y: number; readonly isVisible: boolean } {
+): { readonly x: number; readonly y: number } {
   const rightOffset: number = itemType === 'post' ? 56 : 12;
   const topOffset: number = itemType === 'post' ? 8 : 4;
-  const x: number = rect.right - rightOffset;
-  const y: number = rect.top + topOffset;
-
-  if (x < rect.left || x > rect.right) {
-    return { x: rect.left + 8, y: rect.top + 8, isVisible: true };
-  }
-
-  return { x, y, isVisible: true };
+  return { x: rect.right - rightOffset, y: rect.top + topOffset };
 }
