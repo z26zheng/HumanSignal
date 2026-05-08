@@ -8,7 +8,7 @@ import { SignalSticker } from '@/overlay/signal-sticker';
 import { createContentHash } from '@/shared/hash';
 import { sendToBackground } from '@/shared/messaging';
 import { logger } from '@/shared/logger';
-import { getUserSettings, writeStorageValue } from '@/shared/storage';
+import { getUserSettings } from '@/shared/storage';
 
 import type { DetectedComment, DetectedPost } from '@/linkedin-adapter';
 import type {
@@ -328,9 +328,8 @@ async function cleanupStaleE2ETestData(): Promise<void> {
       'e2eFailNextScoreBatch',
       'diagnosticDump',
       'debugCommentDetection',
-      'userSettings',
+      'geminiIntegrationTest',
     ]);
-    logger.info('overlay.cleanup', 'Reset storage on startup');
   } catch {
     // Non-critical; continue normally
   }

@@ -17,18 +17,15 @@ import {
   setUserSettings,
 } from '@/shared/storage';
 import { ScoringCoordinator } from '@/scoring-coordinator';
-import { GeminiService } from '@/gemini';
 import { closeOffscreenDocument, ensureOffscreenDocument } from '@/background/offscreen-lifecycle';
 import {
   createE2EGeminiDownloadResponse,
   createE2EGeminiStatusResponse,
 } from '@/gemini/e2e-gemini-mock';
 import { DEFAULT_E2E_GEMINI_MOCK_CONFIG, DEFAULT_USER_SETTINGS } from '@/shared/types';
-import type { LogDataValue } from '@/shared/logger';
-import type { ContentHash, E2EGeminiMockConfig, ItemId } from '@/shared/types';
+import type { E2EGeminiMockConfig, ItemId } from '@/shared/types';
 
 const scoringCoordinator: ScoringCoordinator = new ScoringCoordinator();
-const geminiService: GeminiService = new GeminiService();
 
 export default defineBackground((): void => {
   logger.info('background.startup', 'HumanSignal background service worker started', {
@@ -36,62 +33,7 @@ export default defineBackground((): void => {
   });
 
   addMessageListener('background', handleBackgroundMessage);
-  void scoringCoordinator.initialize().then(async (): Promise<void> => {
-    const testResults: Record<string, unknown> = { startedAt: Date.now() };
-
-    try {
-      const statusPayload = await forwardToOffscreen({
-        type: 'CHECK_GEMINI_STATUS',
-        requestId: '',
-        source: 'background',
-        target: 'offscreen',
-      } as HumanSignalMessage);
-
-      testResults['checkStatus'] = { ok: true, type: statusPayload.type };
-
-      if (statusPayload.type === 'MODEL_STATUS') {
-        scoringCoordinator.onGeminiStatus(statusPayload.status);
-        testResults['availability'] = statusPayload.status.availability;
-        testResults['mode'] = scoringCoordinator.getMode();
-
-        logger.info('background.startup', 'Gemini status checked on startup', {
-          availability: statusPayload.status.availability,
-          mode: scoringCoordinator.getMode(),
-        });
-
-        if (statusPayload.status.availability === 'available') {
-          const promptPayload = await forwardToOffscreen({
-            type: 'GEMINI_PROMPT',
-            requestId: '',
-            source: 'background',
-            target: 'offscreen',
-            item: {
-              itemId: 'startup-test' as ItemId,
-              itemType: 'post',
-              text: 'I shipped a rollout in April and reduced failures by 27%.',
-              metadata: { contentHash: 'hash_startuptest' as ContentHash, sourceUrl: null, detectedAt: Date.now(), idStability: 'content-hash' },
-              isTruncated: false,
-            },
-          } as HumanSignalMessage);
-
-          testResults['promptResponse'] = {
-            ok: true,
-            type: promptPayload.type,
-            hasResult: promptPayload.type === 'GEMINI_RESULT' && promptPayload.result !== null,
-            label: promptPayload.type === 'GEMINI_RESULT' ? promptPayload.result?.label : null,
-            source: promptPayload.type === 'GEMINI_RESULT' ? promptPayload.result?.source : null,
-          };
-        }
-      }
-    } catch (error: unknown) {
-      testResults['error'] = error instanceof Error ? error.message : String(error);
-    }
-
-    testResults['completedAt'] = Date.now();
-    testResults['elapsedMs'] = (testResults['completedAt'] as number) - (testResults['startedAt'] as number);
-    await browser.storage.local.set({ geminiIntegrationTest: testResults });
-    logger.info('background.startup', 'Gemini integration test completed', testResults as Record<string, LogDataValue>);
-  }).catch((): void => {});
+  void checkGeminiOnStartup();
 
   browser.runtime.onInstalled.addListener((details: Browser.runtime.InstalledDetails): void => {
     logger.info('background.installed', 'Extension install event received', {
@@ -356,5 +298,28 @@ async function relayServiceWorkerAliveToLinkedInTabs(): Promise<void> {
       type: 'SERVICE_WORKER_ALIVE',
       source: 'background',
     });
+  }
+}
+
+async function checkGeminiOnStartup(): Promise<void> {
+  try {
+    await scoringCoordinator.initialize();
+
+    const statusPayload: MessagePayload = await forwardToOffscreen({
+      type: 'CHECK_GEMINI_STATUS',
+      requestId: '',
+      source: 'background',
+      target: 'offscreen',
+    } as HumanSignalMessage);
+
+    if (statusPayload.type === 'MODEL_STATUS') {
+      scoringCoordinator.onGeminiStatus(statusPayload.status);
+      logger.info('background.startup', 'Gemini status checked on startup', {
+        availability: statusPayload.status.availability,
+        mode: scoringCoordinator.getMode(),
+      });
+    }
+  } catch (error: unknown) {
+    logger.error('background.startup.gemini', error);
   }
 }
