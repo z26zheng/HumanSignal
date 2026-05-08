@@ -20,6 +20,7 @@ export interface PromptApiDownloadProgressEvent {
 }
 
 export interface PromptApiCreateOptions {
+  readonly systemPrompt?: string;
   readonly initialPrompts?: readonly PromptApiInitialPrompt[];
   readonly monitor?: (monitor: PromptApiMonitor) => void;
 }

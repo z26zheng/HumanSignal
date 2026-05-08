@@ -57,10 +57,7 @@ export class GeminiService {
     }
 
     try {
-      const availability: string = await this.languageModel.availability({
-        expectedInputs: [{ type: 'text', languages: ['en'] }],
-        expectedOutputs: [{ type: 'text', languages: ['en'] }],
-      });
+      const availability: string = await this.languageModel.availability();
 
       return await this.persistStatus({
         availability: mapAvailability(availability),
@@ -93,7 +90,7 @@ export class GeminiService {
       });
 
       this.session = await this.languageModel.create({
-        initialPrompts: [{ role: 'system', content: SYSTEM_PROMPT }],
+        systemPrompt: SYSTEM_PROMPT,
         monitor: (monitor): void => {
           monitor.addEventListener('downloadprogress', (event): void => {
             const percent: number = Math.round(event.loaded * 100);
@@ -133,7 +130,7 @@ export class GeminiService {
     try {
       const session: PromptApiSession = await this.getOrCreateSession();
       const prompt: string = buildScoringPrompt(item, false);
-      const rawResponse: unknown = await session.prompt(prompt);
+      const rawResponse: unknown = await session.prompt(prompt, { responseConstraint: RESULT_SCHEMA });
       const responseText: string = coerceToString(rawResponse);
       const firstResult: ScoringResult | null = validateGeminiResult(responseText, item);
 
@@ -142,7 +139,7 @@ export class GeminiService {
         return firstResult;
       }
 
-      const repairRaw: unknown = await session.prompt(buildScoringPrompt(item, true));
+      const repairRaw: unknown = await session.prompt(buildScoringPrompt(item, true), { responseConstraint: RESULT_SCHEMA });
       const repairResponse: string = coerceToString(repairRaw);
       const repairedResult: ScoringResult | null = validateGeminiResult(repairResponse, item);
 
@@ -182,7 +179,7 @@ export class GeminiService {
     }
 
     this.session = await this.languageModel.create({
-      initialPrompts: [{ role: 'system', content: SYSTEM_PROMPT }],
+      systemPrompt: SYSTEM_PROMPT,
     });
     this.resetIdleTimer();
     logger.info('gemini.session', 'Gemini session created');
@@ -369,11 +366,25 @@ const SYSTEM_PROMPT: string = [
 const RESULT_SCHEMA = {
   type: 'object',
   properties: {
-    primaryLabel: { type: 'string' },
+    primaryLabel: {
+      type: 'string',
+      enum: ['High Signal', 'Specific', 'Thoughtful', 'Question', 'Mixed', 'Generic', 'Low Effort', 'Engagement Bait', 'Low Signal', 'Unclear'],
+    },
     color: { type: 'string', enum: ['green', 'yellow', 'orange', 'red', 'gray'] },
     confidence: { type: 'string', enum: ['low', 'medium', 'high'] },
-    dimensions: { type: 'object' },
-    reasons: { type: 'array' },
+    dimensions: {
+      type: 'object',
+      properties: {
+        authenticity: { type: 'number' },
+        originality: { type: 'number' },
+        specificity: { type: 'number' },
+        engagementBait: { type: 'number' },
+        templating: { type: 'number' },
+        usefulness: { type: 'number' },
+      },
+      required: ['authenticity', 'originality', 'specificity', 'engagementBait', 'templating', 'usefulness'],
+    },
+    reasons: { type: 'array', items: { type: 'string' }, minItems: 2, maxItems: 3 },
   },
   required: ['primaryLabel', 'color', 'confidence', 'dimensions', 'reasons'],
 } as const;

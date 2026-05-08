@@ -46,11 +46,6 @@ export class ScoringCoordinator {
     items: readonly ExtractedItem[],
     tabId: number | null,
   ): Promise<ScoreBatchResult> {
-    if (!this.initialized) {
-      this.initialized = true;
-      await this.waitForGeminiCheck();
-    }
-
     const results: ScoringResult[] = [];
     const queued: string[] = [];
 
@@ -107,8 +102,8 @@ export class ScoringCoordinator {
       return;
     }
 
-    const maxWaitMs: number = 3000;
-    const pollIntervalMs: number = 200;
+    const maxWaitMs: number = 8000;
+    const pollIntervalMs: number = 250;
     const startedAt: number = Date.now();
 
     while (Date.now() - startedAt < maxWaitMs) {
