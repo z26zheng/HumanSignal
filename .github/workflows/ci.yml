@@ -71,8 +71,14 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
+      - name: Fetch bundled model assets
+        run: pnpm fetch-assets
+
       - name: Build extension
         run: pnpm build
+
+      - name: Zip extension
+        run: pnpm zip
 
       - name: Check package size
         run: pnpm release:check-package
