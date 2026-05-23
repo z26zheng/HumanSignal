@@ -4,7 +4,8 @@
   <title>HumanSignal Debug</title>
   <style>
     body { font: 13px/1.5 'SF Mono', 'Cascadia Code', 'Fira Code', monospace; background: #0f172a; color: #e2e8f0; padding: 20px; margin: 0; }
-    h1 { font-size: 16px; color: #f8fafc; margin: 0 0 16px; }
+    h1 { font-size: 16px; color: #f8fafc; margin: 0 0 16px; display: flex; align-items: center; gap: 10px; }
+    .brand-icon { width: 24px; height: 24px; border-radius: 6px; flex-shrink: 0; }
     h2 { font-size: 13px; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin: 20px 0 8px; border-bottom: 1px solid #1e293b; padding-bottom: 4px; }
     .section { background: #1e293b; border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; }
     dl { display: grid; grid-template-columns: 140px 1fr; gap: 4px 12px; margin: 0; }
@@ -33,7 +34,10 @@
   </style>
 </head>
 <body>
-  <h1>HumanSignal Debug Panel <span id="status"></span></h1>
+  <h1>
+    <img src="icon/48.png" class="brand-icon" alt="">
+    HumanSignal Debug Panel <span id="status"></span>
+  </h1>
   <div class="toolbar">
     <button class="refresh" id="refresh">Refresh</button>
     <div class="toggle-row">

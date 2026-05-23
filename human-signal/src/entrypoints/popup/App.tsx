@@ -176,13 +176,18 @@ export function App(): JSX.Element {
     return (
       <header className="brand">
         <div
-          className="brand-text"
+          className="brand-identity"
           onPointerDown={handleBrandPointerDown}
           onPointerUp={handleBrandPointerUp}
           onPointerLeave={handleBrandPointerUp}
         >
-          <p className="brand-name">HumanSignal</p>
-          <p className="brand-tagline">Make LinkedIn feel human again.</p>
+          <img src="icon/48.png" className="brand-icon" alt="" width="32" height="32" />
+          <div className="brand-text">
+            <p className="brand-wordmark">
+              <span className="brand-human">Human</span><span className="brand-signal">Signal</span>
+            </p>
+            <p className="brand-tagline">Make LinkedIn feel human again.</p>
+          </div>
         </div>
         {showToggle ? (
           <label className="toggle" aria-label="Enable HumanSignal">
