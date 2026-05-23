@@ -1,10 +1,10 @@
+import type { ScoringTelemetryEntry } from '@/shared/scoring-telemetry';
 import type {
   ExtensionContext,
   ExtractedItem,
   FeedbackType,
   GeminiStatus,
   HealthMetrics,
-  PriorityUpdate,
   ScoringLabel,
   ScoringResult,
   ScoringSource,
@@ -30,11 +30,6 @@ export interface ScoreBatchMessage extends BaseMessage {
 export interface ScoreResultMessage extends BaseMessage {
   readonly type: 'SCORE_RESULT';
   readonly results: readonly ScoringResult[];
-}
-
-export interface PriorityUpdateMessage extends BaseMessage {
-  readonly type: 'PRIORITY_UPDATE';
-  readonly updates: readonly PriorityUpdate[];
 }
 
 export interface GeminiPromptMessage extends BaseMessage {
@@ -100,11 +95,36 @@ export interface RediscoverContentMessage extends BaseMessage {
   readonly type: 'REDISCOVER_CONTENT';
 }
 
+export interface GetTelemetryMessage extends BaseMessage {
+  readonly type: 'GET_TELEMETRY';
+}
+
+export interface OpenPopupMessage extends BaseMessage {
+  readonly type: 'OPEN_POPUP';
+}
+
+export interface GetDebugStateMessage extends BaseMessage {
+  readonly type: 'GET_DEBUG_STATE';
+}
+
+export interface TmrClassifyMessage extends BaseMessage {
+  readonly type: 'TMR_CLASSIFY';
+  readonly itemId: string;
+  readonly text: string;
+}
+
+export interface TmrStatusMessage extends BaseMessage {
+  readonly type: 'TMR_STATUS';
+}
+
+export interface TmrLoadModelMessage extends BaseMessage {
+  readonly type: 'TMR_LOAD_MODEL';
+}
+
 export type HumanSignalMessage =
   | PingMessage
   | ScoreBatchMessage
   | ScoreResultMessage
-  | PriorityUpdateMessage
   | GeminiPromptMessage
   | CheckGeminiStatusMessage
   | TriggerDownloadMessage
@@ -118,7 +138,13 @@ export type HumanSignalMessage =
   | CloseOffscreenDocumentMessage
   | DestroyGeminiSessionMessage
   | ServiceWorkerAliveMessage
-  | RediscoverContentMessage;
+  | RediscoverContentMessage
+  | GetTelemetryMessage
+  | OpenPopupMessage
+  | GetDebugStateMessage
+  | TmrClassifyMessage
+  | TmrStatusMessage
+  | TmrLoadModelMessage;
 
 export interface PongPayload {
   readonly type: 'PONG';
@@ -165,6 +191,44 @@ export interface ServiceWorkerAlivePayload {
   readonly type: 'SERVICE_WORKER_ALIVE';
 }
 
+export interface TelemetryPayload {
+  readonly type: 'TELEMETRY_RESULT';
+  readonly entries: readonly ScoringTelemetryEntry[];
+  readonly mode: string;
+  readonly itemsScored: number;
+}
+
+export interface DebugLogEntry {
+  readonly timestamp: number;
+  readonly level: 'info' | 'warn' | 'error';
+  readonly context: string;
+  readonly message: string;
+  readonly data: Record<string, unknown>;
+}
+
+export interface DebugStatePayload {
+  readonly type: 'DEBUG_STATE_RESULT';
+  readonly health: HealthMetrics | null;
+  readonly geminiAvailability: string;
+  readonly scoringMode: string;
+  readonly recentLogs: readonly DebugLogEntry[];
+}
+
+export interface TmrClassifyResultPayload {
+  readonly type: 'TMR_CLASSIFY_RESULT';
+  readonly itemId: string;
+  readonly aiProbability: number;
+  readonly latencyMs: number;
+}
+
+export interface TmrStatusResultPayload {
+  readonly type: 'TMR_STATUS_RESULT';
+  readonly isLoaded: boolean;
+  readonly isLoading: boolean;
+  readonly downloadProgress: number | null;
+  readonly errorMessage: string | null;
+}
+
 export type MessagePayload =
   | PongPayload
   | ScoreBatchPayload
@@ -174,7 +238,11 @@ export type MessagePayload =
   | SettingsPayload
   | AckPayload
   | OffscreenLifecyclePayload
-  | ServiceWorkerAlivePayload;
+  | ServiceWorkerAlivePayload
+  | TelemetryPayload
+  | DebugStatePayload
+  | TmrClassifyResultPayload
+  | TmrStatusResultPayload;
 
 export interface MessageError {
   readonly code: string;

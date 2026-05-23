@@ -11,7 +11,7 @@ describe('validateGeminiResult', (): void => {
     const item = createRulesItem('I shipped a rollout with 27% fewer failures.', 'post');
     const result: ScoringResult | null = validateGeminiResult(
       JSON.stringify({
-        primaryLabel: 'Specific',
+        primaryLabel: 'Feels Human',
         color: 'green',
         confidence: 'medium',
         dimensions: {
@@ -27,7 +27,7 @@ describe('validateGeminiResult', (): void => {
       item,
     );
 
-    expect(result?.label).toBe('specific');
+    expect(result?.label).toBe('feels-human');
     expect(result?.source).toBe('gemini');
   });
 
@@ -38,7 +38,7 @@ describe('validateGeminiResult', (): void => {
     expect(
       validateGeminiResult(
         {
-          primaryLabel: 'Thoughtful',
+          primaryLabel: 'Feels Human',
           color: 'green',
           confidence: 'medium',
           dimensions: {
@@ -74,7 +74,7 @@ describe('GeminiService', (): void => {
     const session: PromptApiSession = {
       prompt: vi.fn(async (): Promise<string> => {
         return JSON.stringify({
-          primaryLabel: 'Specific',
+          primaryLabel: 'Feels Human',
           color: 'green',
           confidence: 'medium',
           dimensions: {
@@ -99,7 +99,7 @@ describe('GeminiService', (): void => {
       createRulesItem('I shipped a rollout with 27% fewer failures.', 'post'),
     );
 
-    expect(result?.label).toBe('specific');
+    expect(result?.label).toBe('feels-human');
 
     await service.destroySession();
   });
@@ -110,7 +110,7 @@ describe('GeminiService', (): void => {
       .mockResolvedValueOnce('not json')
       .mockResolvedValueOnce(
         JSON.stringify({
-          primaryLabel: 'Question',
+          primaryLabel: 'Feels Human',
           color: 'green',
           confidence: 'medium',
           dimensions: {
@@ -133,7 +133,7 @@ describe('GeminiService', (): void => {
       createRulesItem('How did you decide which tradeoffs mattered first?', 'comment'),
     );
 
-    expect(result?.label).toBe('question');
+    expect(result?.label).toBe('feels-human');
     expect(prompt).toHaveBeenCalledTimes(2);
 
     await service.destroySession();
@@ -279,7 +279,7 @@ describe('coerceToString and prompt response handling', (): void => {
   it('handles string prompt responses directly', async (): Promise<void> => {
     const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue(
       JSON.stringify({
-        primaryLabel: 'Specific',
+        primaryLabel: 'Feels Human',
         color: 'green',
         confidence: 'medium',
         dimensions: { authenticity: 0.7, originality: 0.6, specificity: 0.8, engagementBait: 0, templating: 0.1, usefulness: 0.7 },
@@ -293,18 +293,18 @@ describe('coerceToString and prompt response handling', (): void => {
     const service = new GeminiService(languageModel, persistStatus);
     const result = await service.scoreWithGemini(createRulesItem('I reduced failures by 27%.', 'post'));
 
-    expect(result?.label).toBe('specific');
+    expect(result?.label).toBe('feels-human');
     expect(result?.source).toBe('gemini');
     await service.destroySession();
   });
 
   it('handles object prompt responses via JSON.stringify coercion', async (): Promise<void> => {
     const responseObj = {
-      primaryLabel: 'Generic',
-      color: 'orange',
-      confidence: 'medium',
-      dimensions: { authenticity: 0.2, originality: 0.1, specificity: 0.1, engagementBait: 0, templating: 0.3, usefulness: 0.2 },
-      reasons: ['Vague claim.', 'No evidence.'],
+        primaryLabel: 'Likely AI',
+        color: 'orange',
+        confidence: 'medium',
+        dimensions: { authenticity: 0.2, originality: 0.1, specificity: 0.1, engagementBait: 0, templating: 0.3, usefulness: 0.2 },
+        reasons: ['Vague claim.', 'No evidence.'],
     };
     const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue(responseObj);
     const languageModel: PromptApiLanguageModel = {
@@ -314,7 +314,7 @@ describe('coerceToString and prompt response handling', (): void => {
     const service = new GeminiService(languageModel, persistStatus);
     const result = await service.scoreWithGemini(createRulesItem('Success is about mindset.', 'post'));
 
-    expect(result?.label).toBe('generic');
+    expect(result?.label).toBe('likely-ai');
     expect(result?.source).toBe('gemini');
     await service.destroySession();
   });
@@ -412,7 +412,7 @@ describe('session pre-warming', (): void => {
   it('reuses warm session for scoring without extra create call', async (): Promise<void> => {
     const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue(
       JSON.stringify({
-        primaryLabel: 'Specific',
+        primaryLabel: 'Feels Human',
         color: 'green',
         confidence: 'medium',
         dimensions: { authenticity: 0.7, originality: 0.6, specificity: 0.8, engagementBait: 0, templating: 0.1, usefulness: 0.7 },
@@ -439,7 +439,7 @@ describe('session pre-warming', (): void => {
   it('handles warmUp failure gracefully without affecting later scoring', async (): Promise<void> => {
     const prompt = vi.fn<PromptApiSession['prompt']>().mockResolvedValue(
       JSON.stringify({
-        primaryLabel: 'Generic',
+        primaryLabel: 'Likely AI',
         color: 'orange',
         confidence: 'medium',
         dimensions: { authenticity: 0.2, originality: 0.1, specificity: 0.1, engagementBait: 0, templating: 0.3, usefulness: 0.2 },

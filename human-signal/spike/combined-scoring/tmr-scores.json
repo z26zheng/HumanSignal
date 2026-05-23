@@ -1,0 +1,733 @@
+{
+  "itemCount": 104,
+  "items": [
+    {
+      "id": "post-ai-certain-1",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9353911876678467,
+      "tmrAiProbability": 0.0646,
+      "tmrLatencyMs": 131
+    },
+    {
+      "id": "post-ai-certain-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.936465322971344,
+      "tmrAiProbability": 0.9365,
+      "tmrLatencyMs": 249
+    },
+    {
+      "id": "post-ai-certain-3",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9302707314491272,
+      "tmrAiProbability": 0.0697,
+      "tmrLatencyMs": 113
+    },
+    {
+      "id": "post-ai-certain-4",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8530371189117432,
+      "tmrAiProbability": 0.853,
+      "tmrLatencyMs": 102
+    },
+    {
+      "id": "post-ai-certain-5",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9384598135948181,
+      "tmrAiProbability": 0.9385,
+      "tmrLatencyMs": 102
+    },
+    {
+      "id": "post-ai-certain-6",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9207958579063416,
+      "tmrAiProbability": 0.0792,
+      "tmrLatencyMs": 110
+    },
+    {
+      "id": "post-ai-certain-7",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9684756994247437,
+      "tmrAiProbability": 0.0315,
+      "tmrLatencyMs": 100
+    },
+    {
+      "id": "post-ai-certain-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.917360246181488,
+      "tmrAiProbability": 0.9174,
+      "tmrLatencyMs": 106
+    },
+    {
+      "id": "post-human-specific-1",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.8846944570541382,
+      "tmrAiProbability": 0.1153,
+      "tmrLatencyMs": 132
+    },
+    {
+      "id": "post-human-specific-2",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.6434909105300903,
+      "tmrAiProbability": 0.3565,
+      "tmrLatencyMs": 124
+    },
+    {
+      "id": "post-human-specific-3",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9271029233932495,
+      "tmrAiProbability": 0.0729,
+      "tmrLatencyMs": 126
+    },
+    {
+      "id": "post-human-specific-4",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9162878394126892,
+      "tmrAiProbability": 0.0837,
+      "tmrLatencyMs": 117
+    },
+    {
+      "id": "post-human-specific-5",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.5847285389900208,
+      "tmrAiProbability": 0.4153,
+      "tmrLatencyMs": 126
+    },
+    {
+      "id": "post-human-specific-6",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.8890308141708374,
+      "tmrAiProbability": 0.111,
+      "tmrLatencyMs": 120
+    },
+    {
+      "id": "post-human-specific-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.6389883160591125,
+      "tmrAiProbability": 0.639,
+      "tmrLatencyMs": 120
+    },
+    {
+      "id": "post-human-specific-8",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9540460705757141,
+      "tmrAiProbability": 0.046,
+      "tmrLatencyMs": 124
+    },
+    {
+      "id": "post-human-detailed-1",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.8855656981468201,
+      "tmrAiProbability": 0.1144,
+      "tmrLatencyMs": 145
+    },
+    {
+      "id": "post-human-detailed-2",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.8594403266906738,
+      "tmrAiProbability": 0.1406,
+      "tmrLatencyMs": 140
+    },
+    {
+      "id": "post-human-detailed-3",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.8842648267745972,
+      "tmrAiProbability": 0.1157,
+      "tmrLatencyMs": 139
+    },
+    {
+      "id": "post-human-detailed-4",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9654908180236816,
+      "tmrAiProbability": 0.0345,
+      "tmrLatencyMs": 140
+    },
+    {
+      "id": "post-human-detailed-5",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9558053016662598,
+      "tmrAiProbability": 0.0442,
+      "tmrLatencyMs": 130
+    },
+    {
+      "id": "post-human-detailed-6",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9585487842559814,
+      "tmrAiProbability": 0.0415,
+      "tmrLatencyMs": 136
+    },
+    {
+      "id": "post-human-detailed-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.6734780073165894,
+      "tmrAiProbability": 0.6735,
+      "tmrLatencyMs": 132
+    },
+    {
+      "id": "post-human-detailed-8",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9669580459594727,
+      "tmrAiProbability": 0.033,
+      "tmrLatencyMs": 136
+    },
+    {
+      "id": "post-ai-likely-generic-1",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8959290385246277,
+      "tmrAiProbability": 0.8959,
+      "tmrLatencyMs": 122
+    },
+    {
+      "id": "post-ai-likely-generic-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.6713844537734985,
+      "tmrAiProbability": 0.6714,
+      "tmrLatencyMs": 118
+    },
+    {
+      "id": "post-ai-likely-generic-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7630239725112915,
+      "tmrAiProbability": 0.763,
+      "tmrLatencyMs": 114
+    },
+    {
+      "id": "post-ai-likely-generic-4",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9453873634338379,
+      "tmrAiProbability": 0.0546,
+      "tmrLatencyMs": 106
+    },
+    {
+      "id": "post-ai-likely-generic-5",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.5323018431663513,
+      "tmrAiProbability": 0.4677,
+      "tmrLatencyMs": 106
+    },
+    {
+      "id": "post-ai-likely-generic-6",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9447572231292725,
+      "tmrAiProbability": 0.9448,
+      "tmrLatencyMs": 99
+    },
+    {
+      "id": "post-ai-likely-generic-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9154064059257507,
+      "tmrAiProbability": 0.9154,
+      "tmrLatencyMs": 109
+    },
+    {
+      "id": "post-ai-likely-generic-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8536799550056458,
+      "tmrAiProbability": 0.8537,
+      "tmrLatencyMs": 105
+    },
+    {
+      "id": "post-ai-likely-listicle-1",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.6268197298049927,
+      "tmrAiProbability": 0.3732,
+      "tmrLatencyMs": 97
+    },
+    {
+      "id": "post-ai-likely-listicle-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9613093733787537,
+      "tmrAiProbability": 0.9613,
+      "tmrLatencyMs": 106
+    },
+    {
+      "id": "post-ai-likely-listicle-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9430633783340454,
+      "tmrAiProbability": 0.9431,
+      "tmrLatencyMs": 99
+    },
+    {
+      "id": "post-ai-likely-listicle-4",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.6745995283126831,
+      "tmrAiProbability": 0.3254,
+      "tmrLatencyMs": 107
+    },
+    {
+      "id": "post-ai-likely-listicle-5",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9653651714324951,
+      "tmrAiProbability": 0.9654,
+      "tmrLatencyMs": 99
+    },
+    {
+      "id": "post-ai-likely-listicle-6",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9723047018051147,
+      "tmrAiProbability": 0.9723,
+      "tmrLatencyMs": 98
+    },
+    {
+      "id": "post-ai-likely-listicle-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9681616425514221,
+      "tmrAiProbability": 0.9682,
+      "tmrLatencyMs": 101
+    },
+    {
+      "id": "post-ai-likely-listicle-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7045571804046631,
+      "tmrAiProbability": 0.7046,
+      "tmrLatencyMs": 101
+    },
+    {
+      "id": "post-possibly-ai-1",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9716920256614685,
+      "tmrAiProbability": 0.9717,
+      "tmrLatencyMs": 132
+    },
+    {
+      "id": "post-possibly-ai-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9243711829185486,
+      "tmrAiProbability": 0.9244,
+      "tmrLatencyMs": 130
+    },
+    {
+      "id": "post-possibly-ai-3",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.7774076461791992,
+      "tmrAiProbability": 0.2226,
+      "tmrLatencyMs": 120
+    },
+    {
+      "id": "post-possibly-ai-4",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9286940693855286,
+      "tmrAiProbability": 0.9287,
+      "tmrLatencyMs": 112
+    },
+    {
+      "id": "post-possibly-ai-5",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.8614072799682617,
+      "tmrAiProbability": 0.1386,
+      "tmrLatencyMs": 110
+    },
+    {
+      "id": "post-possibly-ai-6",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.8232961297035217,
+      "tmrAiProbability": 0.1767,
+      "tmrLatencyMs": 110
+    },
+    {
+      "id": "post-possibly-ai-7",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.5359494686126709,
+      "tmrAiProbability": 0.4641,
+      "tmrLatencyMs": 113
+    },
+    {
+      "id": "post-possibly-ai-8",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.953904926776886,
+      "tmrAiProbability": 0.0461,
+      "tmrLatencyMs": 109
+    },
+    {
+      "id": "post-cant-tell-1",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.6943579912185669,
+      "tmrAiProbability": 0.6944,
+      "tmrLatencyMs": 80
+    },
+    {
+      "id": "post-cant-tell-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8974300622940063,
+      "tmrAiProbability": 0.8974,
+      "tmrLatencyMs": 77
+    },
+    {
+      "id": "post-cant-tell-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8731834292411804,
+      "tmrAiProbability": 0.8732,
+      "tmrLatencyMs": 77
+    },
+    {
+      "id": "post-cant-tell-4",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8253515958786011,
+      "tmrAiProbability": 0.8254,
+      "tmrLatencyMs": 77
+    },
+    {
+      "id": "post-cant-tell-5",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9183590412139893,
+      "tmrAiProbability": 0.9184,
+      "tmrLatencyMs": 75
+    },
+    {
+      "id": "post-cant-tell-6",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9440857172012329,
+      "tmrAiProbability": 0.9441,
+      "tmrLatencyMs": 77
+    },
+    {
+      "id": "post-cant-tell-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8452917337417603,
+      "tmrAiProbability": 0.8453,
+      "tmrLatencyMs": 81
+    },
+    {
+      "id": "post-cant-tell-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.709606409072876,
+      "tmrAiProbability": 0.7096,
+      "tmrLatencyMs": 75
+    },
+    {
+      "id": "comment-ai-certain-1",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.873092532157898,
+      "tmrAiProbability": 0.8731,
+      "tmrLatencyMs": 73
+    },
+    {
+      "id": "comment-ai-certain-2",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.6867384910583496,
+      "tmrAiProbability": 0.3133,
+      "tmrLatencyMs": 73
+    },
+    {
+      "id": "comment-ai-certain-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7263029217720032,
+      "tmrAiProbability": 0.7263,
+      "tmrLatencyMs": 77
+    },
+    {
+      "id": "comment-ai-certain-4",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.664607048034668,
+      "tmrAiProbability": 0.6646,
+      "tmrLatencyMs": 74
+    },
+    {
+      "id": "comment-ai-certain-5",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.5791520476341248,
+      "tmrAiProbability": 0.4208,
+      "tmrLatencyMs": 74
+    },
+    {
+      "id": "comment-ai-certain-6",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8931930065155029,
+      "tmrAiProbability": 0.8932,
+      "tmrLatencyMs": 73
+    },
+    {
+      "id": "comment-ai-certain-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.6598544120788574,
+      "tmrAiProbability": 0.6599,
+      "tmrLatencyMs": 84
+    },
+    {
+      "id": "comment-ai-certain-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.872043251991272,
+      "tmrAiProbability": 0.872,
+      "tmrLatencyMs": 78
+    },
+    {
+      "id": "comment-ai-likely-1",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.8836469650268555,
+      "tmrAiProbability": 0.1164,
+      "tmrLatencyMs": 113
+    },
+    {
+      "id": "comment-ai-likely-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8515294790267944,
+      "tmrAiProbability": 0.8515,
+      "tmrLatencyMs": 113
+    },
+    {
+      "id": "comment-ai-likely-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.940075159072876,
+      "tmrAiProbability": 0.9401,
+      "tmrLatencyMs": 107
+    },
+    {
+      "id": "comment-ai-likely-4",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.7405270338058472,
+      "tmrAiProbability": 0.2595,
+      "tmrLatencyMs": 106
+    },
+    {
+      "id": "comment-ai-likely-5",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.5744175314903259,
+      "tmrAiProbability": 0.5744,
+      "tmrLatencyMs": 113
+    },
+    {
+      "id": "comment-ai-likely-6",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7796986103057861,
+      "tmrAiProbability": 0.7797,
+      "tmrLatencyMs": 108
+    },
+    {
+      "id": "comment-ai-likely-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8945954442024231,
+      "tmrAiProbability": 0.8946,
+      "tmrLatencyMs": 111
+    },
+    {
+      "id": "comment-ai-likely-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9390055537223816,
+      "tmrAiProbability": 0.939,
+      "tmrLatencyMs": 111
+    },
+    {
+      "id": "comment-human-question-1",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9006951451301575,
+      "tmrAiProbability": 0.9007,
+      "tmrLatencyMs": 100
+    },
+    {
+      "id": "comment-human-question-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9237401485443115,
+      "tmrAiProbability": 0.9237,
+      "tmrLatencyMs": 103
+    },
+    {
+      "id": "comment-human-question-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8772227764129639,
+      "tmrAiProbability": 0.8772,
+      "tmrLatencyMs": 109
+    },
+    {
+      "id": "comment-human-question-4",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.872787356376648,
+      "tmrAiProbability": 0.1272,
+      "tmrLatencyMs": 101
+    },
+    {
+      "id": "comment-human-question-5",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8701949715614319,
+      "tmrAiProbability": 0.8702,
+      "tmrLatencyMs": 99
+    },
+    {
+      "id": "comment-human-question-6",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9235450625419617,
+      "tmrAiProbability": 0.9235,
+      "tmrLatencyMs": 97
+    },
+    {
+      "id": "comment-human-question-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7731704711914062,
+      "tmrAiProbability": 0.7732,
+      "tmrLatencyMs": 103
+    },
+    {
+      "id": "comment-human-question-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8349152207374573,
+      "tmrAiProbability": 0.8349,
+      "tmrLatencyMs": 107
+    },
+    {
+      "id": "comment-human-specific-1",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.6849791407585144,
+      "tmrAiProbability": 0.685,
+      "tmrLatencyMs": 109
+    },
+    {
+      "id": "comment-human-specific-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.5389930009841919,
+      "tmrAiProbability": 0.539,
+      "tmrLatencyMs": 113
+    },
+    {
+      "id": "comment-human-specific-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.6854994893074036,
+      "tmrAiProbability": 0.6855,
+      "tmrLatencyMs": 105
+    },
+    {
+      "id": "comment-human-specific-4",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9314872026443481,
+      "tmrAiProbability": 0.9315,
+      "tmrLatencyMs": 106
+    },
+    {
+      "id": "comment-human-specific-5",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.9060424566268921,
+      "tmrAiProbability": 0.906,
+      "tmrLatencyMs": 111
+    },
+    {
+      "id": "comment-human-specific-6",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.643900454044342,
+      "tmrAiProbability": 0.6439,
+      "tmrLatencyMs": 105
+    },
+    {
+      "id": "comment-human-specific-7",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9627463817596436,
+      "tmrAiProbability": 0.0373,
+      "tmrLatencyMs": 107
+    },
+    {
+      "id": "comment-human-specific-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.739201009273529,
+      "tmrAiProbability": 0.7392,
+      "tmrLatencyMs": 113
+    },
+    {
+      "id": "comment-human-thoughtful-1",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.9187687635421753,
+      "tmrAiProbability": 0.0812,
+      "tmrLatencyMs": 190
+    },
+    {
+      "id": "comment-human-thoughtful-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.5979666113853455,
+      "tmrAiProbability": 0.598,
+      "tmrLatencyMs": 175
+    },
+    {
+      "id": "comment-human-thoughtful-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.741457998752594,
+      "tmrAiProbability": 0.7415,
+      "tmrLatencyMs": 163
+    },
+    {
+      "id": "comment-human-thoughtful-4",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.5918136835098267,
+      "tmrAiProbability": 0.4082,
+      "tmrLatencyMs": 165
+    },
+    {
+      "id": "comment-human-thoughtful-5",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.6546700596809387,
+      "tmrAiProbability": 0.3453,
+      "tmrLatencyMs": 152
+    },
+    {
+      "id": "comment-human-thoughtful-6",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.5917001962661743,
+      "tmrAiProbability": 0.5917,
+      "tmrLatencyMs": 166
+    },
+    {
+      "id": "comment-human-thoughtful-7",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.6129601001739502,
+      "tmrAiProbability": 0.387,
+      "tmrLatencyMs": 171
+    },
+    {
+      "id": "comment-human-thoughtful-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8408042192459106,
+      "tmrAiProbability": 0.8408,
+      "tmrLatencyMs": 170
+    },
+    {
+      "id": "comment-cant-tell-1",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.6160407662391663,
+      "tmrAiProbability": 0.384,
+      "tmrLatencyMs": 95
+    },
+    {
+      "id": "comment-cant-tell-2",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7683954238891602,
+      "tmrAiProbability": 0.7684,
+      "tmrLatencyMs": 84
+    },
+    {
+      "id": "comment-cant-tell-3",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7588858008384705,
+      "tmrAiProbability": 0.7589,
+      "tmrLatencyMs": 81
+    },
+    {
+      "id": "comment-cant-tell-4",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7967095971107483,
+      "tmrAiProbability": 0.7967,
+      "tmrLatencyMs": 80
+    },
+    {
+      "id": "comment-cant-tell-5",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.7600225806236267,
+      "tmrAiProbability": 0.76,
+      "tmrLatencyMs": 77
+    },
+    {
+      "id": "comment-cant-tell-6",
+      "tmrLabel": "human",
+      "tmrRawScore": 0.608116090297699,
+      "tmrAiProbability": 0.3919,
+      "tmrLatencyMs": 77
+    },
+    {
+      "id": "comment-cant-tell-7",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.6092956066131592,
+      "tmrAiProbability": 0.6093,
+      "tmrLatencyMs": 87
+    },
+    {
+      "id": "comment-cant-tell-8",
+      "tmrLabel": "ai",
+      "tmrRawScore": 0.8703545331954956,
+      "tmrAiProbability": 0.8704,
+      "tmrLatencyMs": 81
+    }
+  ]
+}

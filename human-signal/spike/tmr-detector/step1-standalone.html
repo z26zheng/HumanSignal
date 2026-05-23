@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TMR Detector - Step 1: Standalone Test</title>
+  <style>
+    body { font: 14px/1.6 system-ui, sans-serif; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    #status { padding: 12px; border-radius: 8px; background: #f1f5f9; margin: 12px 0; }
+    #results { white-space: pre-wrap; font: 12px/1.5 monospace; background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 8px; max-height: 600px; overflow-y: auto; }
+    .pass { color: #22c55e; }
+    .fail { color: #ef4444; }
+    button { padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; font: inherit; margin: 4px; }
+    select { padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+  </style>
+</head>
+<body>
+  <h1>TMR AI Text Detector - Step 1</h1>
+  <p>Tests that the model loads and runs in a plain page.</p>
+
+  <div>
+    <label>Variant: <select id="variant">
+      <option value="q4">q4 (smallest)</option>
+      <option value="q4f16">q4f16</option>
+      <option value="int8">int8</option>
+      <option value="uint8">uint8</option>
+      <option value="fp16">fp16</option>
+    </select></label>
+    <button id="loadBtn" onclick="loadModel()">Load Model</button>
+    <button id="testBtn" onclick="runTests()" disabled>Run 5 Functional Tests</button>
+  </div>
+
+  <div id="status">Select a variant and click Load Model.</div>
+  <div id="results"></div>
+
+  <script type="module">
+    let detector = null;
+
+    const statusEl = document.getElementById('status');
+    const resultsEl = document.getElementById('results');
+
+    function log(text, cls) {
+      const span = document.createElement('span');
+      span.className = cls || '';
+      span.textContent = text + '\n';
+      resultsEl.appendChild(span);
+      resultsEl.scrollTop = resultsEl.scrollHeight;
+    }
+
+    window.loadModel = async function() {
+      const variant = document.getElementById('variant').value;
+      statusEl.textContent = `Loading model with dtype="${variant}"... (first time downloads from HuggingFace)`;
+      resultsEl.textContent = '';
+      document.getElementById('loadBtn').disabled = true;
+
+      const t0 = performance.now();
+
+      try {
+        const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1');
+
+        statusEl.textContent = `Transformers.js loaded. Creating pipeline with dtype="${variant}"...`;
+
+        detector = await pipeline(
+          'text-classification',
+          'onnx-community/tmr-ai-text-detector-ONNX',
+          { dtype: variant }
+        );
+
+        const loadTime = Math.round(performance.now() - t0);
+        statusEl.textContent = `Model loaded! Variant: ${variant}, Load time: ${loadTime}ms`;
+        log(`✓ Model loaded: variant=${variant}, loadTime=${loadTime}ms`, 'pass');
+        document.getElementById('testBtn').disabled = false;
+
+      } catch (err) {
+        statusEl.textContent = `ERROR loading model: ${err.message}`;
+        log(`✗ Load failed: ${err.message}`, 'fail');
+        log(`  Stack: ${err.stack}`, 'fail');
+      }
+
+      document.getElementById('loadBtn').disabled = false;
+    };
+
+    window.runTests = async function() {
+      if (!detector) {
+        statusEl.textContent = 'Load the model first.';
+        return;
+      }
+
+      document.getElementById('testBtn').disabled = true;
+
+      const tests = [
+        {
+          text: "I shipped a billing fix in April and false positives dropped from 18% to 4%.",
+          expectedDirection: "Human",
+          description: "Human: specific metric + date + first person"
+        },
+        {
+          text: "Here's what I learned about leadership: most people don't realize that consistency beats talent.",
+          expectedDirection: "AI",
+          description: "AI: generic motivational template"
+        },
+        {
+          text: "Great insights, this really resonates with how leaders should think about growth.",
+          expectedDirection: "AI",
+          description: "AI: generic praise comment"
+        },
+        {
+          text: "Comment AI and I will send you the full template.",
+          expectedDirection: "AI",
+          description: "AI: engagement bait"
+        },
+        {
+          text: "Big week.",
+          expectedDirection: "Uncertain",
+          description: "Edge: too short to classify"
+        },
+      ];
+
+      log('\n── Functional Tests ──');
+
+      for (const test of tests) {
+        statusEl.textContent = `Testing: ${test.description}`;
+        const t0 = performance.now();
+
+        try {
+          const result = await detector(test.text);
+          const latency = Math.round(performance.now() - t0);
+          const top = result[0];
+
+          const labelMatch = test.expectedDirection === "Uncertain" ||
+            top.label.toLowerCase() === test.expectedDirection.toLowerCase();
+
+          const icon = labelMatch ? '✓' : '✗';
+          const cls = labelMatch ? 'pass' : 'fail';
+
+          log(`${icon} ${test.description}`, cls);
+          log(`  Text: "${test.text.substring(0, 60)}${test.text.length > 60 ? '...' : ''}"`, cls);
+          log(`  Result: label=${top.label}, score=${top.score.toFixed(4)}, latency=${latency}ms`);
+          log(`  Expected direction: ${test.expectedDirection}`);
+          log(`  Full output: ${JSON.stringify(result)}`);
+          log('');
+
+        } catch (err) {
+          log(`✗ ${test.description}: ERROR ${err.message}`, 'fail');
+        }
+      }
+
+      // Summary
+      log('── Summary ──');
+      log('Key questions:');
+      log('  1. Does score appear to be continuous (not just 0.0 or 1.0)?');
+      log('  2. Does the label direction match expectations?');
+      log('  3. Is latency acceptable (<500ms per item)?');
+
+      statusEl.textContent = 'Tests complete. See results below.';
+      document.getElementById('testBtn').disabled = false;
+
+      // Write to body for Playwright to read
+      document.body.dataset.testsComplete = 'true';
+    };
+  </script>
+</body>
+</html>

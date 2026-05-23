@@ -18,9 +18,9 @@ interface GoldenCategory {
 
 const CATEGORIES: readonly GoldenCategory[] = [
   {
-    prefix: 'post-engagement',
+    prefix: 'post-ai-certain',
     itemType: 'post',
-    expectedLabel: 'engagement-bait',
+    expectedLabel: 'almost-certainly-ai',
     samples: [
       'Comment AI and I will send you the hiring dashboard template.',
       'Like if you agree and repost for reach so more founders see this.',
@@ -33,9 +33,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'post-specific',
+    prefix: 'post-human-specific',
     itemType: 'post',
-    expectedLabel: 'specific',
+    expectedLabel: 'feels-human',
     samples: [
       'I shipped a billing alert change in April 2026 and reduced false positives from 18% to 4%.',
       'We migrated 14 teams last quarter and cut review time by 27% after three iterations.',
@@ -48,9 +48,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'post-high',
+    prefix: 'post-human-detailed',
     itemType: 'post',
-    expectedLabel: 'high-signal',
+    expectedLabel: 'feels-human',
     samples: [
       'At ExampleCo I led the rollout with LinkedIn and Chrome partners. I wrote the migration guide and shared the review notes.',
       'At Example Labs I built the API review process with Platform and Security. I learned where the handoffs failed.',
@@ -63,9 +63,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'post-generic',
+    prefix: 'post-ai-likely-generic',
     itemType: 'post',
-    expectedLabel: 'generic',
+    expectedLabel: 'likely-ai',
     samples: [
       "Here's what I learned about success: most people don't realize consistency beats talent.",
       'Hard truth: the secret to success is showing up when nobody is watching.',
@@ -78,9 +78,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'post-low-signal',
+    prefix: 'post-ai-likely-listicle',
     itemType: 'post',
-    expectedLabel: 'low-signal',
+    expectedLabel: 'likely-ai',
     samples: [
       'Here are lessons nobody tells you about leadership.',
       'Here are ways to build a personal brand without burning out.',
@@ -93,9 +93,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'post-mixed',
+    prefix: 'post-possibly-ai',
     itemType: 'post',
-    expectedLabel: 'mixed',
+    expectedLabel: 'possibly-ai',
     samples: [
       'I learned a useful lesson while helping a team untangle planning, but the details are still messy.',
       'We tried a different approach to reviews and it helped, although I need more data before sharing.',
@@ -108,9 +108,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'post-unclear',
+    prefix: 'post-cant-tell',
     itemType: 'post',
-    expectedLabel: 'unclear',
+    expectedLabel: 'cant-tell',
     samples: [
       'Big week ahead.',
       'More soon.',
@@ -123,9 +123,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'comment-low-effort',
+    prefix: 'comment-ai-certain',
     itemType: 'comment',
-    expectedLabel: 'low-effort',
+    expectedLabel: 'almost-certainly-ai',
     samples: [
       'Great insights',
       'Well said',
@@ -138,9 +138,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'comment-generic',
+    prefix: 'comment-ai-likely',
     itemType: 'comment',
-    expectedLabel: 'generic',
+    expectedLabel: 'likely-ai',
     samples: [
       'Great insights, this really resonates with the way teams should think.',
       'Well said, this is such an important reminder for everyone in leadership.',
@@ -153,9 +153,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'comment-question',
+    prefix: 'comment-human-question',
     itemType: 'comment',
-    expectedLabel: 'question',
+    expectedLabel: 'feels-human',
     samples: [
       'How did you decide which tradeoffs mattered first?',
       'What changed in the review process after the first rollout?',
@@ -168,9 +168,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'comment-specific',
+    prefix: 'comment-human-specific',
     itemType: 'comment',
-    expectedLabel: 'specific',
+    expectedLabel: 'feels-human',
     samples: [
       'We saw a 19% drop after changing the onboarding checklist.',
       'At ExampleCo, this worked best when Platform owned the rollout notes.',
@@ -183,9 +183,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'comment-thoughtful',
+    prefix: 'comment-human-thoughtful',
     itemType: 'comment',
-    expectedLabel: 'thoughtful',
+    expectedLabel: 'feels-human',
     samples: [
       'The useful part here is the sequencing. Teams often jump to process before they agree on what pain they are solving, and that makes every later decision feel heavier than it needs to be.',
       'I appreciate the focus on writing things down before the meeting. It gives quieter people a better way to contribute and keeps the conversation from rewarding only the fastest speaker.',
@@ -198,9 +198,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'comment-unclear',
+    prefix: 'comment-cant-tell',
     itemType: 'comment',
-    expectedLabel: 'unclear',
+    expectedLabel: 'cant-tell',
     samples: [
       'Interesting angle.',
       'Useful framing.',

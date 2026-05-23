@@ -1,24 +1,20 @@
-import type { ExtractedItem, GeminiStatus, ScoringResult } from '@/shared/types';
+import type { ExtractedItem, ScoringResult } from '@/shared/types';
+import type { GeminiStatus } from '@/shared/types';
 
 const GEMINI_SCORING_VERSION: string = 'gemini-1';
 const MAX_PROMPT_CHARS: number = 6_000;
 
-const GEMINI_POST_LABELS: readonly ScoringResult['label'][] = [
-  'high-signal', 'specific', 'mixed', 'generic', 'engagement-bait', 'low-signal', 'unclear',
-];
-const GEMINI_COMMENT_LABELS: readonly ScoringResult['label'][] = [
-  'thoughtful', 'specific', 'question', 'generic', 'low-effort', 'repeated', 'unclear',
-];
 const DIMENSION_KEYS: readonly (keyof ScoringResult['dimensions'])[] = [
   'authenticity', 'originality', 'specificity', 'engagementBait', 'templating', 'usefulness',
 ];
 
 export const SYSTEM_PROMPT: string = [
   'You are a content quality classifier for LinkedIn posts and comments.',
-  'Classify the given text and return a JSON object.',
-  'Do not make binary AI detection claims.',
-  'Focus on signal quality, specificity, and originality.',
-  'Be conservative: prefer Unclear over overconfident negative labels for ambiguous content.',
+  'Your job is to assess whether the content feels genuinely human-written or AI-generated.',
+  'Focus on personal specificity, concrete details, original thinking, and human voice.',
+  'Do not make binary AI detection claims. Use probabilistic language.',
+  'Be conservative: prefer "Can\'t Tell" over overconfident negative labels for ambiguous content.',
+  'Describe the content signals, never judge the author.',
 ].join(' ');
 
 export const RESULT_SCHEMA = {
@@ -26,7 +22,7 @@ export const RESULT_SCHEMA = {
   properties: {
     primaryLabel: {
       type: 'string',
-      enum: ['High Signal', 'Specific', 'Thoughtful', 'Question', 'Mixed', 'Generic', 'Low Effort', 'Engagement Bait', 'Low Signal', 'Unclear'],
+      enum: ['Feels Human', 'Possibly AI', 'Likely AI', 'Almost Certainly AI', "Can't Tell"],
     },
     color: { type: 'string', enum: ['green', 'yellow', 'orange', 'red', 'gray'] },
     confidence: { type: 'string', enum: ['low', 'medium', 'high'] },
@@ -54,7 +50,7 @@ export function validateGeminiResult(raw: unknown, item: ExtractedItem): Scoring
     return null;
   }
 
-  const label: ScoringResult['label'] | null = mapGeminiLabel(parsedValue.primaryLabel, item.itemType);
+  const label: ScoringResult['label'] | null = mapGeminiLabel(parsedValue.primaryLabel);
 
   if (
     label === null ||
@@ -99,7 +95,17 @@ export function buildScoringPrompt(item: ExtractedItem, isRepairAttempt: boolean
     return `Return only valid JSON for this LinkedIn ${itemKind}: ${text}`;
   }
 
-  return `Classify this LinkedIn ${itemKind}:\n\n---\n${text}\n---\n\nReturn JSON matching the schema.`;
+  return [
+    `Classify this LinkedIn ${itemKind}:`,
+    '',
+    '---',
+    text,
+    '---',
+    '',
+    'Assess whether it feels genuinely human-written or AI-generated.',
+    'Focus on personal specificity, concrete details, and original voice.',
+    'Return JSON matching the schema.',
+  ].join('\n');
 }
 
 export function mapAvailability(value: string): GeminiStatus['availability'] {
@@ -128,18 +134,22 @@ function truncatePromptText(text: string): string {
   return `${text.slice(0, MAX_PROMPT_CHARS)}\n[truncated]`;
 }
 
-function mapGeminiLabel(value: unknown, itemType: ExtractedItem['itemType']): ScoringResult['label'] | null {
+function mapGeminiLabel(value: unknown): ScoringResult['label'] | null {
   if (typeof value !== 'string') {
     return null;
   }
 
-  const normalizedValue: string = value.trim().toLowerCase().replace(/\s+/g, '-');
-  const allowedLabels: readonly ScoringResult['label'][] =
-    itemType === 'post' ? GEMINI_POST_LABELS : GEMINI_COMMENT_LABELS;
+  const normalized: string = value.trim().toLowerCase();
+  const labelMap: Record<string, ScoringResult['label']> = {
+    'feels human': 'feels-human',
+    'possibly ai': 'possibly-ai',
+    'likely ai': 'likely-ai',
+    'almost certainly ai': 'almost-certainly-ai',
+    "can't tell": 'cant-tell',
+    'cant tell': 'cant-tell',
+  };
 
-  return allowedLabels.includes(normalizedValue as ScoringResult['label'])
-    ? (normalizedValue as ScoringResult['label'])
-    : null;
+  return labelMap[normalized] ?? null;
 }
 
 function parseJson(raw: string): unknown {

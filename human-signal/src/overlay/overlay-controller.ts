@@ -1,10 +1,15 @@
 import { LinkedInAdapter } from '@/linkedin-adapter';
+import { DebugPill } from '@/overlay/debug-pill';
+import { DebugPopover } from '@/overlay/debug-popover';
 import { ExplanationPopover } from '@/overlay/explanation-popover';
 import { ItemRegistry, type RegistryEntry } from '@/overlay/item-registry';
 import { OverlayRoot } from '@/overlay/overlay-root';
 import { PositionSync } from '@/overlay/position-sync';
 import { getLabelText, getStickerColor } from '@/overlay/score-display';
 import { SignalSticker } from '@/overlay/signal-sticker';
+import { StickerContextMenu } from '@/overlay/sticker-context-menu';
+import { applyTraceEvents } from '@/overlay/trace-event-emitter';
+import { EventTraceStore, type TraceEventType } from '@/shared/event-trace';
 import { createContentHash } from '@/shared/hash';
 import { sendToBackground } from '@/shared/messaging';
 import { logger } from '@/shared/logger';
@@ -27,10 +32,15 @@ export class OverlayController {
   private readonly registry: ItemRegistry = new ItemRegistry(50, (itemId: string): void => {
     this.positionSync.removeItem(itemId);
   });
+  private readonly traceStore: EventTraceStore = new EventTraceStore();
+  private readonly debugPills: Map<string, DebugPill> = new Map();
   private popover: ExplanationPopover | null = null;
+  private debugPopover: DebugPopover | null = null;
+  private contextMenu: StickerContextMenu | null = null;
   private mutationObserver: MutationObserver | null = null;
   private discoveryTimeoutId: ReturnType<typeof setTimeout> | null = null;
   private settings: UserSettings | null = null;
+  private geminiAvailable: boolean = false;
 
   public async start(): Promise<void> {
     this.settings = await getUserSettings();
@@ -40,16 +50,48 @@ export class OverlayController {
     });
     const root: HTMLDivElement = this.overlayRoot.create();
     this.popover = new ExplanationPopover(root);
+    this.debugPopover = new DebugPopover(root);
+    this.contextMenu = new StickerContextMenu(root);
+    this.positionSync.setOnPosition((itemId: string, x: number, y: number, stickerWidth: number, isVisible: boolean): void => {
+      const pill: DebugPill | undefined = this.debugPills.get(itemId);
+      if (pill === undefined) return;
+
+      if (!isVisible) {
+        pill.hide();
+        return;
+      }
+
+      const entry: RegistryEntry | null = this.registry.get(itemId);
+      const stickerHidden: boolean = entry !== null && entry.sticker.isMinimized();
+      const effectiveWidth: number = stickerHidden ? 12 : Math.max(stickerWidth, 20);
+
+      pill.setPosition(x, y, effectiveWidth);
+      pill.show();
+    });
     this.positionSync.startLoop();
     await this.discoverAndScore();
     this.observeMutations();
+
+    this.syncDevModePills();
   }
 
   public stop(): void {
+    if (this.discoveryTimeoutId !== null) {
+      clearTimeout(this.discoveryTimeoutId);
+      this.discoveryTimeoutId = null;
+    }
     this.mutationObserver?.disconnect();
     this.positionSync.stopLoop();
     this.popover?.destroy();
     this.popover = null;
+    this.debugPopover?.destroy();
+    this.debugPopover = null;
+    this.contextMenu?.destroy();
+    this.contextMenu = null;
+    for (const pill of this.debugPills.values()) {
+      pill.destroy();
+    }
+    this.debugPills.clear();
     this.registry.clear();
     this.overlayRoot.destroy();
   }
@@ -67,27 +109,82 @@ export class OverlayController {
         entry.sticker.hide();
       }
     }
+
+    this.syncDevModePills();
+  }
+
+  private syncDevModePills(): void {
+    const devMode: boolean = this.settings?.isDeveloperMode === true;
+
+    if (devMode) {
+      for (const entry of this.registry.getAll()) {
+        if (!this.debugPills.has(entry.itemId)) {
+          this.createDebugPill(entry.itemId, entry.sticker);
+          this.updateDebugPill(entry.itemId);
+        }
+      }
+    } else {
+      for (const pill of this.debugPills.values()) {
+        pill.destroy();
+      }
+      this.debugPills.clear();
+      this.debugPopover?.close();
+    }
   }
 
   public handleScoreResults(results: readonly ScoringResult[]): void {
     for (const result of results) {
       const entry: RegistryEntry | null = this.registry.get(result.itemId);
-
       if (entry === null) {
         continue;
       }
 
+      if (result.source === 'gemini' && !this.geminiAvailable) {
+        this.geminiAvailable = true;
+        this.popover?.setGeminiAvailable(true);
+      }
+
+      const isAiUpgrade: boolean = entry.score !== null &&
+        (result.source === 'gemini' || result.source === 'combined');
+      const previousLabel: string | null = entry.score?.label ?? null;
+      const previousScoredAt: number | null = entry.score?.scoredAt ?? null;
       this.registry.updateScore(result.itemId, result);
-      entry.sticker.update({
-        label: getLabelText(result.label),
-        color: getStickerColor(result.label),
-        state: result.label === 'unavailable' ? 'unavailable' : 'labeled',
-      });
+
+      if (result.traceEvents !== undefined && result.traceEvents.length > 0) {
+        for (const te of result.traceEvents) {
+          this.traceStore.addEvent(result.itemId, te.event as TraceEventType, te.detail);
+        }
+      }
+
+      this.emitTraceEvents(result, isAiUpgrade, previousLabel, previousScoredAt);
+      this.updateDebugPill(result.itemId);
+
+      const showInfoIcon: boolean = !this.geminiAvailable && result.source !== 'gemini';
+      const labelText: string = getLabelText(result.label);
+      const color = getStickerColor(result.label);
+      const state = result.label === 'unavailable' ? 'unavailable' as const : 'labeled' as const;
+
+      if (isAiUpgrade) {
+        entry.sticker.update({ state: 'ai-enhancing' });
+        setTimeout((): void => {
+          if (!entry.sticker.isMinimized()) {
+            entry.sticker.update({ label: labelText, color, state, showInfoIcon: false });
+          }
+          this.updateDebugPill(result.itemId);
+        }, 400);
+      } else {
+        entry.sticker.update({ label: labelText, color, state, showInfoIcon });
+      }
 
       if (this.popover?.isOpen()) {
         this.popover.updateScore(result);
       }
     }
+  }
+
+  public setGeminiAvailable(available: boolean): void {
+    this.geminiAvailable = available;
+    this.popover?.setGeminiAvailable(available);
   }
 
   public handleScoreFailure(itemIds: readonly string[], reason: string): void {
@@ -138,6 +235,21 @@ export class OverlayController {
     await this.discoverAndScore();
   }
 
+  public async rescoreAll(): Promise<void> {
+    const allItems: readonly ExtractedItem[] = this.registry
+      .getAll()
+      .map((entry: RegistryEntry): ExtractedItem => entry.item);
+
+    if (allItems.length === 0) {
+      return;
+    }
+
+    logger.info('overlay.rescore', 'Re-scoring all items for TMR upgrade', {
+      itemCount: allItems.length,
+    });
+    await this.scoreItems(allItems);
+  }
+
   private async discoverAndScore(): Promise<void> {
     if (this.settings?.isEnabled === false || this.settings?.stickerVisibility === 'off') {
       return;
@@ -176,6 +288,11 @@ export class OverlayController {
 
     if (response.ok && response.payload.type === 'SCORE_RESULT') {
       this.handleScoreResults(response.payload.results);
+
+      for (const queuedId of response.payload.queued) {
+        this.traceStore.addEvent(queuedId, 'AI_QUEUED', 'Priority: 1 (in viewport)');
+      }
+
       logger.info('overlay.scoring', 'Score batch completed', {
         requested: items.length,
         immediate: response.payload.results.length,
@@ -184,9 +301,14 @@ export class OverlayController {
       return;
     }
 
+    const errorCode: string = response.ok ? 'unexpected-response' : response.error.code;
+    for (const item of items) {
+      this.traceStore.addEvent(item.itemId, 'ERROR', errorCode);
+    }
+
     this.handleScoreFailure(
       items.map((item: ExtractedItem): string => item.itemId),
-      response.ok ? 'unexpected-response' : response.error.code,
+      errorCode,
     );
   }
 
@@ -244,7 +366,17 @@ export class OverlayController {
       color: 'gray',
       state: 'loading',
       itemId: item.itemId,
-      onClick: (): void => this.openPopover(item.itemId),
+      onClick: (): void => {
+        if (sticker.isMinimized()) {
+          sticker.restore();
+        } else {
+          this.openPopover(item.itemId);
+        }
+      },
+      onContextMenu: (): void => this.openContextMenu(item.itemId, element),
+      onInfoClick: (): void => {
+        void sendToBackground({ type: 'OPEN_POPUP', source: 'content-script' }).catch((): void => {});
+      },
     });
     this.overlayRoot.getRoot().append(sticker.getElement());
     this.registry.add({
@@ -259,7 +391,87 @@ export class OverlayController {
       inViewport: true,
     });
     this.positionSync.addItem(item.itemId, item.itemType, element, sticker);
+
+    this.traceStore.startTrace(
+      item.itemId, item.itemType, item.metadata.contentHash, item.text.length, item.isTruncated,
+    );
+    this.traceStore.addEvent(item.itemId, 'DISCOVERED', `DOM adapter found ${item.itemType} element`);
+    this.traceStore.addEvent(item.itemId, 'EXTRACTED', `${item.text.length} chars, hash ${item.metadata.contentHash.slice(0, 12)}`);
+
+    if (this.settings?.isDeveloperMode === true) {
+      this.createDebugPill(item.itemId, sticker);
+    }
+
     return true;
+  }
+
+  private emitTraceEvents(
+    result: ScoringResult,
+    isAiUpgrade: boolean,
+    previousLabel: string | null,
+    previousScoredAt: number | null,
+  ): void {
+    const trace = this.traceStore.getTrace(result.itemId);
+    if (trace === null) return;
+
+    applyTraceEvents(this.traceStore, result.itemId, trace, {
+      result,
+      isAiUpgrade,
+      previousLabel,
+      previousScoredAt,
+      now: Date.now(),
+    });
+  }
+
+  private createDebugPill(itemId: string, sticker: SignalSticker): void {
+    const pill: DebugPill = new DebugPill(itemId, (): void => {
+      this.popover?.close();
+      this.openDebugPopover(itemId);
+    });
+    pill.show();
+    this.overlayRoot.getRoot().append(pill.getElement());
+    this.debugPills.set(itemId, pill);
+  }
+
+  private updateDebugPill(itemId: string): void {
+    const pill: DebugPill | undefined = this.debugPills.get(itemId);
+    if (pill === undefined) return;
+    pill.updateText(this.traceStore.getDebugPillText(itemId));
+  }
+
+  private openDebugPopover(itemId: string): void {
+    const entry: RegistryEntry | null = this.registry.get(itemId);
+    if (entry === null || this.debugPopover === null) return;
+
+    this.debugPopover.open(
+      entry.sticker.getElement(),
+      this.traceStore,
+      itemId,
+      entry.score,
+      this.geminiAvailable,
+    );
+  }
+
+  private openContextMenu(itemId: string, postElement: HTMLElement): void {
+    const entry: RegistryEntry | null = this.registry.get(itemId);
+
+    if (entry === null || this.contextMenu === null) {
+      return;
+    }
+
+    const rect: DOMRect = entry.sticker.getElement().getBoundingClientRect();
+    this.contextMenu.show(rect.right + 4, rect.top, {
+      onHideThis: (): void => {
+        entry.sticker.minimize();
+      },
+      onHideAllOnPost: (): void => {
+        for (const other of this.registry.getAll()) {
+          if (other.element === postElement || postElement.contains(other.element)) {
+            other.sticker.minimize();
+          }
+        }
+      },
+    });
   }
 
   private openPopover(itemId: string): void {
@@ -269,6 +481,7 @@ export class OverlayController {
       return;
     }
 
+    this.debugPopover?.close();
     this.popover.open(entry.sticker, entry.score);
   }
 
@@ -299,8 +512,18 @@ export class OverlayController {
       }
 
       this.positionSync.removeItem(entry.itemId);
+      if (entry.state === 'loading') {
+        this.traceStore.addEvent(entry.itemId, 'CANCELLED', 'Item scrolled out of viewport');
+      }
+      this.traceStore.removeTrace(entry.itemId);
+      const pill: DebugPill | undefined = this.debugPills.get(entry.itemId);
+      if (pill !== undefined) {
+        pill.destroy();
+        this.debugPills.delete(entry.itemId);
+      }
       this.registry.remove(entry.itemId);
       this.popover?.close();
+      this.debugPopover?.close();
     }
   }
 
@@ -318,19 +541,5 @@ function mapIdStability(method: DetectedPost['postIdMethod']): IdStability {
       return 'permalink';
     case 'contentHash':
       return 'content-hash';
-  }
-}
-
-async function cleanupStaleE2ETestData(): Promise<void> {
-  try {
-    await browser.storage.local.remove([
-      'e2eGeminiMock',
-      'e2eFailNextScoreBatch',
-      'diagnosticDump',
-      'debugCommentDetection',
-      'geminiIntegrationTest',
-    ]);
-  } catch {
-    // Non-critical; continue normally
   }
 }

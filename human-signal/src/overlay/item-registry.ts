@@ -1,7 +1,7 @@
 import type { SignalSticker } from '@/overlay/signal-sticker';
 import type { ExtractedItem, ScoringResult } from '@/shared/types';
 
-export type RegistryState = 'loading' | 'scored' | 'hidden' | 'failed';
+export type RegistryState = 'loading' | 'scored' | 'failed';
 
 export interface RegistryEntry {
   readonly itemId: string;

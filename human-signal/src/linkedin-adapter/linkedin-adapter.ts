@@ -1,4 +1,5 @@
 import { resolveCommentId, resolvePostId } from '@/linkedin-adapter/ids';
+import { LINKEDIN_DOM } from '@/linkedin-adapter/linkedin-dom';
 import { getPageType } from '@/linkedin-adapter/page-type';
 import {
   COMMENT_CONTAINER_STRATEGIES,
@@ -98,7 +99,7 @@ export class LinkedInAdapter {
 
   public getObserverConfig(): AdapterObserverConfig {
     return {
-      feedContainerSelector: 'main, [role="main"], body',
+      feedContainerSelector: LINKEDIN_DOM.FEED_CONTAINER_SELECTOR,
       observerOptions: {
         childList: true,
         subtree: true,
@@ -205,8 +206,8 @@ function findFirstPostText(postElement: HTMLElement): HTMLElement | null {
   const candidates: readonly HTMLElement[] = queryByStrategies(postElement, POST_TEXT_STRATEGIES);
 
   for (const candidate of candidates) {
-    if (candidate.closest('[componentkey*="replaceableComment"]') !== null ||
-        candidate.closest('[componentkey*="commentsSectionContainer"]') !== null) {
+    if (candidate.closest(LINKEDIN_DOM.REPLACEABLE_COMMENT_SELECTOR) !== null ||
+        candidate.closest(LINKEDIN_DOM.COMMENT_SECTION_SELECTOR) !== null) {
       continue;
     }
 
@@ -217,12 +218,12 @@ function findFirstPostText(postElement: HTMLElement): HTMLElement | null {
 }
 
 function isInsideCommentSection(element: HTMLElement): boolean {
-  return element.closest('[componentkey*="commentsSectionContainer"]') !== null ||
-    element.closest('[componentkey*="replaceableComment"]') !== null;
+  return element.closest(LINKEDIN_DOM.COMMENT_SECTION_SELECTOR) !== null ||
+    element.closest(LINKEDIN_DOM.REPLACEABLE_COMMENT_SELECTOR) !== null;
 }
 
 function deduplicateByComponentKey(elements: readonly HTMLElement[]): readonly HTMLElement[] {
-  const seen: Set<string> = new Set();
+  const byKey: Map<string, HTMLElement> = new Map();
   const result: HTMLElement[] = [];
 
   for (const element of elements) {
@@ -233,11 +234,15 @@ function deduplicateByComponentKey(elements: readonly HTMLElement[]): readonly H
       continue;
     }
 
-    if (seen.has(key)) {
-      continue;
+    const existing: HTMLElement | undefined = byKey.get(key);
+    if (existing === undefined) {
+      byKey.set(key, element);
+    } else if (existing.contains(element)) {
+      byKey.set(key, element);
     }
+  }
 
-    seen.add(key);
+  for (const element of byKey.values()) {
     result.push(element);
   }
 
@@ -250,6 +255,6 @@ function hasSeeMoreControl(element: HTMLElement): boolean {
   return controls.some((control: HTMLElement): boolean => {
     const text: string = control.textContent?.trim().toLowerCase() ?? '';
     const ariaLabel: string = control.getAttribute('aria-label')?.trim().toLowerCase() ?? '';
-    return text === 'see more' || ariaLabel === 'see more';
+    return text === LINKEDIN_DOM.SEE_MORE_TEXT || ariaLabel === LINKEDIN_DOM.SEE_MORE_TEXT;
   });
 }

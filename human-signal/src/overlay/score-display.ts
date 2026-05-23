@@ -4,17 +4,11 @@ export type StickerColor = 'green' | 'yellow' | 'orange' | 'red' | 'gray';
 
 export function getLabelText(label: ScoringLabel): string {
   const labels: Record<ScoringLabel, string> = {
-    'high-signal': 'High Signal',
-    specific: 'Specific',
-    thoughtful: 'Thoughtful',
-    question: 'Question',
-    mixed: 'Mixed',
-    generic: 'Generic',
-    'low-effort': 'Low Effort',
-    'low-signal': 'Low Signal',
-    'engagement-bait': 'Engagement Bait',
-    repeated: 'Repeated',
-    unclear: 'Unclear',
+    'feels-human': 'Feels Human',
+    'possibly-ai': 'Possibly AI',
+    'likely-ai': 'Likely AI',
+    'almost-certainly-ai': 'Almost Certainly AI',
+    'cant-tell': "Can't Tell",
     unavailable: 'Unavailable',
   };
 
@@ -23,21 +17,15 @@ export function getLabelText(label: ScoringLabel): string {
 
 export function getStickerColor(label: ScoringLabel): StickerColor {
   switch (label) {
-    case 'high-signal':
-    case 'specific':
-    case 'thoughtful':
-    case 'question':
+    case 'feels-human':
       return 'green';
-    case 'mixed':
+    case 'possibly-ai':
       return 'yellow';
-    case 'generic':
-    case 'low-effort':
-    case 'low-signal':
-    case 'repeated':
+    case 'likely-ai':
       return 'orange';
-    case 'engagement-bait':
+    case 'almost-certainly-ai':
       return 'red';
-    case 'unclear':
+    case 'cant-tell':
     case 'unavailable':
       return 'gray';
   }

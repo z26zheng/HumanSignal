@@ -34,6 +34,7 @@ export class ExplanationPopover {
     }
   };
   private anchorSticker: SignalSticker | null = null;
+  private geminiAvailable: boolean = false;
 
   public constructor(private readonly root: HTMLElement) {
     this.element = document.createElement('div');
@@ -85,6 +86,10 @@ export class ExplanationPopover {
     return this.anchorSticker !== null;
   }
 
+  public setGeminiAvailable(available: boolean): void {
+    this.geminiAvailable = available;
+  }
+
   private render(score: ScoringResult): void {
     const title: HTMLHeadingElement = document.createElement('h2');
     title.textContent = `${getLabelText(score.label)} · ${score.confidence}`;
@@ -97,14 +102,17 @@ export class ExplanationPopover {
     }
 
     const source: HTMLParagraphElement = document.createElement('p');
-    source.textContent = `Source: ${score.source === 'gemini' ? 'AI-enhanced' : 'Rules-based'}`;
+    source.textContent = `Source: ${formatScoringSource(score.source)}`;
+
+    const children: Node[] = [title, reasons, source];
 
     const actions: HTMLDivElement = document.createElement('div');
     for (const feedback of ['agree', 'disagree', 'notUseful'] as const) {
       actions.append(createFeedbackButton(score, feedback));
     }
+    children.push(actions);
 
-    this.element.replaceChildren(title, reasons, source, actions);
+    this.element.replaceChildren(...children);
     this.element.dataset.color = getStickerColor(score.label);
   }
 
@@ -148,6 +156,7 @@ function createFeedbackButton(score: ScoringResult, feedback: FeedbackType): HTM
   const button: HTMLButtonElement = document.createElement('button');
   button.type = 'button';
   button.textContent = feedback === 'notUseful' ? 'Not useful' : feedback;
+  button.setAttribute('aria-pressed', 'false');
   button.addEventListener('click', (): void => {
     void sendToBackground({
       type: 'FEEDBACK',
@@ -159,7 +168,7 @@ function createFeedbackButton(score: ScoringResult, feedback: FeedbackType): HTM
     }).then((): void => {
       button.setAttribute('aria-pressed', 'true');
       button.disabled = true;
-    });
+    }).catch((): void => {});
   });
   return button;
 }
@@ -172,6 +181,13 @@ function splitReasons(explanation: string): readonly string[] {
     .slice(0, 3);
 
   return reasons.length > 0 ? reasons : ['No explanation available.'];
+}
+
+function formatScoringSource(source: ScoringResult['source']): string {
+  if (source === 'combined') return 'TMR + Rules';
+  if (source === 'gemini') return 'AI-enhanced';
+  if (source === 'tmr') return 'TMR';
+  return 'Rules-based';
 }
 
 function getFocusableElements(root: HTMLElement): readonly HTMLElement[] {

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HumanSignal Gemini Benchmark</title>
+  <style>
+    body { font: 14px/1.6 system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    h1 { font-size: 20px; }
+    #status { padding: 12px; border-radius: 8px; background: #f1f5f9; margin: 12px 0; }
+    #results { white-space: pre-wrap; font: 12px/1.5 monospace; background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 8px; max-height: 600px; overflow-y: auto; }
+    .pass { color: #22c55e; }
+    .fail { color: #ef4444; }
+    .warn { color: #eab308; }
+    button { padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; font: inherit; }
+    button:hover { border-color: #2563eb; }
+    select, input { padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font: inherit; }
+    .controls { display: flex; gap: 12px; align-items: center; margin: 12px 0; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+  <h1>🔬 HumanSignal Gemini Nano Benchmark</h1>
+
+  <div class="controls">
+    <label>Prompt config: <input type="text" id="promptConfigName" value="baseline" size="20"></label>
+    <label>Repeat per item: <select id="repeatCount"><option value="1">1</option><option value="3">3</option></select></label>
+    <button id="runBtn" onclick="runBenchmark()">Run Benchmark</button>
+    <button onclick="exportResults()">Export JSON</button>
+  </div>
+
+  <div id="status">Ready. Load a prompt config and click Run.</div>
+  <div id="results"></div>
+
+  <script type="module" src="evaluate.js"></script>
+</body>
+</html>

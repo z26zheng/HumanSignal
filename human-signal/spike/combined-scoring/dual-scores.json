@@ -1,0 +1,1357 @@
+{
+  "itemCount": 104,
+  "items": [
+    {
+      "id": "post-ai-certain-1",
+      "text": "Comment AI and I will send you the hiring dashboard template.",
+      "itemType": "post",
+      "charCount": 61,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.0646
+    },
+    {
+      "id": "post-ai-certain-2",
+      "text": "Like if you agree and repost for reach so more founders see this.",
+      "itemType": "post",
+      "charCount": 65,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.9365
+    },
+    {
+      "id": "post-ai-certain-3",
+      "text": "DM me the word GUIDE and I will send the full checklist.",
+      "itemType": "post",
+      "charCount": 56,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.0697
+    },
+    {
+      "id": "post-ai-certain-4",
+      "text": "Tag someone who needs this before their next planning meeting.",
+      "itemType": "post",
+      "charCount": 62,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.853
+    },
+    {
+      "id": "post-ai-certain-5",
+      "text": "Follow for more daily lessons on growing your career.",
+      "itemType": "post",
+      "charCount": 53,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.9385
+    },
+    {
+      "id": "post-ai-certain-6",
+      "text": "Drop a yes below and I will send you the worksheet.",
+      "itemType": "post",
+      "charCount": 51,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.0792
+    },
+    {
+      "id": "post-ai-certain-7",
+      "text": "Comment interested and I will share the private playbook.",
+      "itemType": "post",
+      "charCount": 57,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.0315
+    },
+    {
+      "id": "post-ai-certain-8",
+      "text": "Share this with your network if you want the full template.",
+      "itemType": "post",
+      "charCount": 59,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.9174
+    },
+    {
+      "id": "post-human-specific-1",
+      "text": "I shipped a billing alert change in April 2026 and reduced false positives from 18% to 4%.",
+      "itemType": "post",
+      "charCount": 90,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.1153
+    },
+    {
+      "id": "post-human-specific-2",
+      "text": "We migrated 14 teams last quarter and cut review time by 27% after three iterations.",
+      "itemType": "post",
+      "charCount": 84,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.3565
+    },
+    {
+      "id": "post-human-specific-3",
+      "text": "I built a Chrome extension prototype in Q2 and removed 31 minutes from the daily workflow.",
+      "itemType": "post",
+      "charCount": 90,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.0729
+    },
+    {
+      "id": "post-human-specific-4",
+      "text": "I wrote the onboarding guide in 2025 and support tickets dropped by 42%.",
+      "itemType": "post",
+      "charCount": 72,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.0837
+    },
+    {
+      "id": "post-human-specific-5",
+      "text": "We tested three rollout paths last quarter and picked the one with 12% fewer failures.",
+      "itemType": "post",
+      "charCount": 86,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.4153
+    },
+    {
+      "id": "post-human-specific-6",
+      "text": "I led the incident review in March and reduced paging noise by 33%.",
+      "itemType": "post",
+      "charCount": 67,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.111
+    },
+    {
+      "id": "post-human-specific-7",
+      "text": "We shipped two API changes in Q4 and kept latency under 90ms.",
+      "itemType": "post",
+      "charCount": 61,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.639
+    },
+    {
+      "id": "post-human-specific-8",
+      "text": "I measured the funnel in January and found 23% of users left at setup.",
+      "itemType": "post",
+      "charCount": 70,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.046
+    },
+    {
+      "id": "post-human-detailed-1",
+      "text": "At ExampleCo I led the rollout with LinkedIn and Chrome partners. I wrote the migration guide and shared the review notes.",
+      "itemType": "post",
+      "charCount": 122,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.1144
+    },
+    {
+      "id": "post-human-detailed-2",
+      "text": "At Example Labs I built the API review process with Platform and Security. I learned where the handoffs failed.",
+      "itemType": "post",
+      "charCount": 111,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.1406
+    },
+    {
+      "id": "post-human-detailed-3",
+      "text": "At ExampleCo I shipped the SDK workflow with Design and Support. I documented the tradeoffs for every team.",
+      "itemType": "post",
+      "charCount": 107,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.1157
+    },
+    {
+      "id": "post-human-detailed-4",
+      "text": "At Example Labs I led the launch with Sales and Product. I wrote the enablement notes after customer calls.",
+      "itemType": "post",
+      "charCount": 107,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.0345
+    },
+    {
+      "id": "post-human-detailed-5",
+      "text": "At ExampleCo I rebuilt the PM workflow with Engineering and Ops. I learned why approvals stalled.",
+      "itemType": "post",
+      "charCount": 97,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.0442
+    },
+    {
+      "id": "post-human-detailed-6",
+      "text": "At Example Labs I guided the Chrome extension rollout with Legal and Support. I wrote the fallback plan.",
+      "itemType": "post",
+      "charCount": 104,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.0415
+    },
+    {
+      "id": "post-human-detailed-7",
+      "text": "At ExampleCo I built the API dashboard with Data and Platform. I learned which metrics changed behavior.",
+      "itemType": "post",
+      "charCount": 104,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.6735
+    },
+    {
+      "id": "post-human-detailed-8",
+      "text": "At Example Labs I led the onboarding system with Product and Success. I wrote the durable operating notes.",
+      "itemType": "post",
+      "charCount": 106,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.033
+    },
+    {
+      "id": "post-ai-likely-generic-1",
+      "text": "Here's what I learned about success: most people don't realize consistency beats talent.",
+      "itemType": "post",
+      "charCount": 88,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.8959
+    },
+    {
+      "id": "post-ai-likely-generic-2",
+      "text": "Hard truth: the secret to success is showing up when nobody is watching.",
+      "itemType": "post",
+      "charCount": 72,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.6714
+    },
+    {
+      "id": "post-ai-likely-generic-3",
+      "text": "Unpopular opinion: stop doing busy work and start doing meaningful work.",
+      "itemType": "post",
+      "charCount": 72,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.763
+    },
+    {
+      "id": "post-ai-likely-generic-4",
+      "text": "Most people do not realize that mindset is the real advantage.",
+      "itemType": "post",
+      "charCount": 62,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.0546
+    },
+    {
+      "id": "post-ai-likely-generic-5",
+      "text": "Read that again: discipline creates freedom and freedom creates opportunity.",
+      "itemType": "post",
+      "charCount": 76,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.4677
+    },
+    {
+      "id": "post-ai-likely-generic-6",
+      "text": "Let that sink in before your next career move.",
+      "itemType": "post",
+      "charCount": 46,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.9448
+    },
+    {
+      "id": "post-ai-likely-generic-7",
+      "text": "The secret to success is simple, but most people ignore it.",
+      "itemType": "post",
+      "charCount": 59,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9154
+    },
+    {
+      "id": "post-ai-likely-generic-8",
+      "text": "Stop doing what everyone expects and start doing what actually matters.",
+      "itemType": "post",
+      "charCount": 71,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.8537
+    },
+    {
+      "id": "post-ai-likely-listicle-1",
+      "text": "Here are lessons nobody tells you about leadership.",
+      "itemType": "post",
+      "charCount": 51,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.3732
+    },
+    {
+      "id": "post-ai-likely-listicle-2",
+      "text": "Here are ways to build a personal brand without burning out.",
+      "itemType": "post",
+      "charCount": 60,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9613
+    },
+    {
+      "id": "post-ai-likely-listicle-3",
+      "text": "Here are tips for becoming the teammate everyone trusts.",
+      "itemType": "post",
+      "charCount": 56,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9431
+    },
+    {
+      "id": "post-ai-likely-listicle-4",
+      "text": "Here are rules for better meetings and stronger follow-through.",
+      "itemType": "post",
+      "charCount": 63,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.3254
+    },
+    {
+      "id": "post-ai-likely-listicle-5",
+      "text": "Here are lessons for managers who want better teams.",
+      "itemType": "post",
+      "charCount": 52,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9654
+    },
+    {
+      "id": "post-ai-likely-listicle-6",
+      "text": "Here are ways to improve your career narrative.",
+      "itemType": "post",
+      "charCount": 47,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.9723
+    },
+    {
+      "id": "post-ai-likely-listicle-7",
+      "text": "Here are tips for becoming more strategic at work.",
+      "itemType": "post",
+      "charCount": 50,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9682
+    },
+    {
+      "id": "post-ai-likely-listicle-8",
+      "text": "Here are rules for building influence without a title.",
+      "itemType": "post",
+      "charCount": 54,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.7046
+    },
+    {
+      "id": "post-possibly-ai-1",
+      "text": "I learned a useful lesson while helping a team untangle planning, but the details are still messy.",
+      "itemType": "post",
+      "charCount": 98,
+      "expectedLabel": "possibly-ai",
+      "acceptableLabels": [
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.9717
+    },
+    {
+      "id": "post-possibly-ai-2",
+      "text": "We tried a different approach to reviews and it helped, although I need more data before sharing.",
+      "itemType": "post",
+      "charCount": 97,
+      "expectedLabel": "possibly-ai",
+      "acceptableLabels": [
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.9244
+    },
+    {
+      "id": "post-possibly-ai-3",
+      "text": "I changed how I think about product work after a hard conversation with the team.",
+      "itemType": "post",
+      "charCount": 81,
+      "expectedLabel": "possibly-ai",
+      "acceptableLabels": [
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.2226
+    },
+    {
+      "id": "post-possibly-ai-4",
+      "text": "We found a better path through the rollout after listening closely to support.",
+      "itemType": "post",
+      "charCount": 78,
+      "expectedLabel": "possibly-ai",
+      "acceptableLabels": [
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.9287
+    },
+    {
+      "id": "post-possibly-ai-5",
+      "text": "I learned that alignment is fragile when people skip the uncomfortable context.",
+      "itemType": "post",
+      "charCount": 79,
+      "expectedLabel": "possibly-ai",
+      "acceptableLabels": [
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.1386
+    },
+    {
+      "id": "post-possibly-ai-6",
+      "text": "We improved the handoff by writing down assumptions before the meeting.",
+      "itemType": "post",
+      "charCount": 71,
+      "expectedLabel": "possibly-ai",
+      "acceptableLabels": [
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.1767
+    },
+    {
+      "id": "post-possibly-ai-7",
+      "text": "I saw the team move faster once the goals became easier to explain.",
+      "itemType": "post",
+      "charCount": 67,
+      "expectedLabel": "possibly-ai",
+      "acceptableLabels": [
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.4641
+    },
+    {
+      "id": "post-possibly-ai-8",
+      "text": "We had a better launch after slowing down and naming the risks.",
+      "itemType": "post",
+      "charCount": 63,
+      "expectedLabel": "possibly-ai",
+      "acceptableLabels": [
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.0461
+    },
+    {
+      "id": "post-cant-tell-1",
+      "text": "Big week ahead.",
+      "itemType": "post",
+      "charCount": 15,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.6944
+    },
+    {
+      "id": "post-cant-tell-2",
+      "text": "More soon.",
+      "itemType": "post",
+      "charCount": 10,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.8974
+    },
+    {
+      "id": "post-cant-tell-3",
+      "text": "This matters.",
+      "itemType": "post",
+      "charCount": 13,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.8732
+    },
+    {
+      "id": "post-cant-tell-4",
+      "text": "New chapter.",
+      "itemType": "post",
+      "charCount": 12,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.8254
+    },
+    {
+      "id": "post-cant-tell-5",
+      "text": "Stay tuned.",
+      "itemType": "post",
+      "charCount": 11,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.9184
+    },
+    {
+      "id": "post-cant-tell-6",
+      "text": "Important reminder.",
+      "itemType": "post",
+      "charCount": 19,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.9441
+    },
+    {
+      "id": "post-cant-tell-7",
+      "text": "Keep going.",
+      "itemType": "post",
+      "charCount": 11,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.8453
+    },
+    {
+      "id": "post-cant-tell-8",
+      "text": "Small wins.",
+      "itemType": "post",
+      "charCount": 11,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.7096
+    },
+    {
+      "id": "comment-ai-certain-1",
+      "text": "Great insights",
+      "itemType": "comment",
+      "charCount": 14,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.8731
+    },
+    {
+      "id": "comment-ai-certain-2",
+      "text": "Well said",
+      "itemType": "comment",
+      "charCount": 9,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.3133
+    },
+    {
+      "id": "comment-ai-certain-3",
+      "text": "This is gold",
+      "itemType": "comment",
+      "charCount": 12,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.7263
+    },
+    {
+      "id": "comment-ai-certain-4",
+      "text": "Love this",
+      "itemType": "comment",
+      "charCount": 9,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.6646
+    },
+    {
+      "id": "comment-ai-certain-5",
+      "text": "So true",
+      "itemType": "comment",
+      "charCount": 7,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.4208
+    },
+    {
+      "id": "comment-ai-certain-6",
+      "text": "Spot on",
+      "itemType": "comment",
+      "charCount": 7,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.8932
+    },
+    {
+      "id": "comment-ai-certain-7",
+      "text": "Needed to hear this",
+      "itemType": "comment",
+      "charCount": 19,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.6599
+    },
+    {
+      "id": "comment-ai-certain-8",
+      "text": "Thanks for sharing",
+      "itemType": "comment",
+      "charCount": 18,
+      "expectedLabel": "almost-certainly-ai",
+      "acceptableLabels": [
+        "almost-certainly-ai"
+      ],
+      "rulesLabel": "almost-certainly-ai",
+      "rulesConfidence": "high",
+      "tmrAiProbability": 0.872
+    },
+    {
+      "id": "comment-ai-likely-1",
+      "text": "Great insights, this really resonates with the way teams should think.",
+      "itemType": "comment",
+      "charCount": 70,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.1164
+    },
+    {
+      "id": "comment-ai-likely-2",
+      "text": "Well said, this is such an important reminder for everyone in leadership.",
+      "itemType": "comment",
+      "charCount": 73,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.8515
+    },
+    {
+      "id": "comment-ai-likely-3",
+      "text": "Love this perspective and thanks for sharing it with the community.",
+      "itemType": "comment",
+      "charCount": 67,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9401
+    },
+    {
+      "id": "comment-ai-likely-4",
+      "text": "This is gold because it captures what so many people miss.",
+      "itemType": "comment",
+      "charCount": 58,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.2595
+    },
+    {
+      "id": "comment-ai-likely-5",
+      "text": "Spot on, this is exactly the kind of mindset shift people need.",
+      "itemType": "comment",
+      "charCount": 63,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.5744
+    },
+    {
+      "id": "comment-ai-likely-6",
+      "text": "So true, this message applies to almost every career conversation.",
+      "itemType": "comment",
+      "charCount": 66,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.7797
+    },
+    {
+      "id": "comment-ai-likely-7",
+      "text": "Needed to hear this, especially during a season of change.",
+      "itemType": "comment",
+      "charCount": 58,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.8946
+    },
+    {
+      "id": "comment-ai-likely-8",
+      "text": "Inspiring post and a very timely reminder for all of us.",
+      "itemType": "comment",
+      "charCount": 56,
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.939
+    },
+    {
+      "id": "comment-human-question-1",
+      "text": "How did you decide which tradeoffs mattered first?",
+      "itemType": "comment",
+      "charCount": 50,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9007
+    },
+    {
+      "id": "comment-human-question-2",
+      "text": "What changed in the review process after the first rollout?",
+      "itemType": "comment",
+      "charCount": 59,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9237
+    },
+    {
+      "id": "comment-human-question-3",
+      "text": "How would you adapt this for a team without dedicated ops support?",
+      "itemType": "comment",
+      "charCount": 66,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.8772
+    },
+    {
+      "id": "comment-human-question-4",
+      "text": "What signal told you the first version was not working?",
+      "itemType": "comment",
+      "charCount": 55,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.1272
+    },
+    {
+      "id": "comment-human-question-5",
+      "text": "How did the team respond when the timeline changed?",
+      "itemType": "comment",
+      "charCount": 51,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.8702
+    },
+    {
+      "id": "comment-human-question-6",
+      "text": "What would you measure before repeating this approach?",
+      "itemType": "comment",
+      "charCount": 54,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9235
+    },
+    {
+      "id": "comment-human-question-7",
+      "text": "How did you keep the migration from blocking product work?",
+      "itemType": "comment",
+      "charCount": 58,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.7732
+    },
+    {
+      "id": "comment-human-question-8",
+      "text": "What did you remove from the process to make it lighter?",
+      "itemType": "comment",
+      "charCount": 56,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.8349
+    },
+    {
+      "id": "comment-human-specific-1",
+      "text": "We saw a 19% drop after changing the onboarding checklist.",
+      "itemType": "comment",
+      "charCount": 58,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.685
+    },
+    {
+      "id": "comment-human-specific-2",
+      "text": "At ExampleCo, this worked best when Platform owned the rollout notes.",
+      "itemType": "comment",
+      "charCount": 69,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.539
+    },
+    {
+      "id": "comment-human-specific-3",
+      "text": "Our team needed 3 cycles before the new review habit stuck.",
+      "itemType": "comment",
+      "charCount": 59,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.6855
+    },
+    {
+      "id": "comment-human-specific-4",
+      "text": "Chrome extension teams hit a similar issue with permission prompts.",
+      "itemType": "comment",
+      "charCount": 67,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.9315
+    },
+    {
+      "id": "comment-human-specific-5",
+      "text": "The API review improved after we added 2 explicit rollback checks.",
+      "itemType": "comment",
+      "charCount": 66,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.906
+    },
+    {
+      "id": "comment-human-specific-6",
+      "text": "LinkedIn posts with examples tend to drive better internal discussion.",
+      "itemType": "comment",
+      "charCount": 70,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.6439
+    },
+    {
+      "id": "comment-human-specific-7",
+      "text": "We had 11 support tickets tied to the old handoff.",
+      "itemType": "comment",
+      "charCount": 50,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.0373
+    },
+    {
+      "id": "comment-human-specific-8",
+      "text": "Example Labs solved this by pairing Product and Support for one sprint.",
+      "itemType": "comment",
+      "charCount": 71,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.7392
+    },
+    {
+      "id": "comment-human-thoughtful-1",
+      "text": "The useful part here is the sequencing. Teams often jump to process before they agree on what pain they are solving, and that makes every later decision feel heavier than it needs to be.",
+      "itemType": "comment",
+      "charCount": 186,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.0812
+    },
+    {
+      "id": "comment-human-thoughtful-2",
+      "text": "I appreciate the focus on writing things down before the meeting. It gives quieter people a better way to contribute and keeps the conversation from rewarding only the fastest speaker.",
+      "itemType": "comment",
+      "charCount": 184,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.598
+    },
+    {
+      "id": "comment-human-thoughtful-3",
+      "text": "This framing is helpful because it separates the workflow problem from the trust problem. Those often look similar in the moment, but they need different fixes.",
+      "itemType": "comment",
+      "charCount": 160,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.7415
+    },
+    {
+      "id": "comment-human-thoughtful-4",
+      "text": "The part that resonates is making the fallback explicit. A plan gets much easier to support when people know what happens if the first path fails.",
+      "itemType": "comment",
+      "charCount": 146,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.4082
+    },
+    {
+      "id": "comment-human-thoughtful-5",
+      "text": "There is a subtle lesson here about reducing coordination cost. The best process change is usually the one that makes the next decision easier.",
+      "itemType": "comment",
+      "charCount": 143,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.3453
+    },
+    {
+      "id": "comment-human-thoughtful-6",
+      "text": "I like that this does not treat alignment as a one-time meeting. It is more durable when the context stays visible after people leave the room.",
+      "itemType": "comment",
+      "charCount": 143,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.5917
+    },
+    {
+      "id": "comment-human-thoughtful-7",
+      "text": "The practical takeaway for me is to make assumptions reviewable. That gives the team a way to challenge the plan without turning it into a personal debate.",
+      "itemType": "comment",
+      "charCount": 155,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.387
+    },
+    {
+      "id": "comment-human-thoughtful-8",
+      "text": "This is a strong reminder that rollout quality depends on recovery paths as much as launch paths. That is easy to forget when the first milestone is urgent.",
+      "itemType": "comment",
+      "charCount": 156,
+      "expectedLabel": "feels-human",
+      "acceptableLabels": [
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium",
+      "tmrAiProbability": 0.8408
+    },
+    {
+      "id": "comment-cant-tell-1",
+      "text": "Interesting angle.",
+      "itemType": "comment",
+      "charCount": 18,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.384
+    },
+    {
+      "id": "comment-cant-tell-2",
+      "text": "Useful framing.",
+      "itemType": "comment",
+      "charCount": 15,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.7684
+    },
+    {
+      "id": "comment-cant-tell-3",
+      "text": "Makes sense.",
+      "itemType": "comment",
+      "charCount": 12,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.7589
+    },
+    {
+      "id": "comment-cant-tell-4",
+      "text": "Worth considering.",
+      "itemType": "comment",
+      "charCount": 18,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.7967
+    },
+    {
+      "id": "comment-cant-tell-5",
+      "text": "Good reminder.",
+      "itemType": "comment",
+      "charCount": 14,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.76
+    },
+    {
+      "id": "comment-cant-tell-6",
+      "text": "Fair point.",
+      "itemType": "comment",
+      "charCount": 11,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.3919
+    },
+    {
+      "id": "comment-cant-tell-7",
+      "text": "I can see that.",
+      "itemType": "comment",
+      "charCount": 15,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.6093
+    },
+    {
+      "id": "comment-cant-tell-8",
+      "text": "Helpful thought.",
+      "itemType": "comment",
+      "charCount": 16,
+      "expectedLabel": "cant-tell",
+      "acceptableLabels": [
+        "cant-tell"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low",
+      "tmrAiProbability": 0.8704
+    }
+  ]
+}

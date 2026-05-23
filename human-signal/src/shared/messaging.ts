@@ -1,4 +1,5 @@
 import { logger } from '@/shared/logger';
+import { errorMessage } from '@/shared/safe-catch';
 
 import type { ExtensionContext } from '@/shared/types';
 import type {
@@ -25,12 +26,14 @@ type DistributiveOmit<TValue, TKeys extends PropertyKey> = TValue extends unknow
   : never;
 
 const KNOWN_MESSAGE_TYPES: readonly string[] = [
-  'PING', 'SCORE_BATCH', 'SCORE_RESULT', 'PRIORITY_UPDATE',
+  'PING', 'SCORE_BATCH', 'SCORE_RESULT',
   'GEMINI_PROMPT', 'CHECK_GEMINI_STATUS', 'TRIGGER_DOWNLOAD',
   'SHOW_EXPLANATION', 'SETTINGS_CHANGED', 'FEEDBACK',
   'GET_HEALTH', 'CLEAR_CACHE', 'DELETE_ALL_DATA',
   'ENSURE_OFFSCREEN_DOCUMENT', 'CLOSE_OFFSCREEN_DOCUMENT',
   'DESTROY_GEMINI_SESSION', 'SERVICE_WORKER_ALIVE', 'REDISCOVER_CONTENT',
+  'GET_TELEMETRY', 'OPEN_POPUP', 'GET_DEBUG_STATE',
+  'TMR_CLASSIFY', 'TMR_STATUS', 'TMR_LOAD_MODEL',
 ];
 
 const EXTENSION_CONTEXTS: readonly ExtensionContext[] = [
@@ -103,7 +106,7 @@ export function addMessageListener(
           createErrorResponse(
             rawMessage.requestId,
             'HANDLER_FAILED',
-            error instanceof Error ? error.message : String(error),
+            errorMessage(error),
           ),
         );
       });
@@ -169,7 +172,7 @@ export async function sendToContentScript(
     return createErrorResponse(
       targetedMessage.requestId,
       'SEND_FAILED',
-      error instanceof Error ? error.message : String(error),
+      errorMessage(error),
     );
   }
 }
@@ -197,7 +200,7 @@ async function sendRuntimeMessage(message: HumanSignalMessage): Promise<MessageR
     return createErrorResponse(
       message.requestId,
       'SEND_FAILED',
-      error instanceof Error ? error.message : String(error),
+      errorMessage(error),
     );
   }
 }

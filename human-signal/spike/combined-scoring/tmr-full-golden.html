@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TMR - Full Golden Set Scoring</title>
+  <style>
+    body { font: 14px/1.6 system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    #status { padding: 12px; border-radius: 8px; background: #f1f5f9; margin: 12px 0; }
+    #results { white-space: pre-wrap; font: 11px/1.4 monospace; background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 8px; max-height: 500px; overflow-y: auto; }
+    button { padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; font: inherit; }
+  </style>
+</head>
+<body>
+  <h1>TMR Scoring: Full Golden Set</h1>
+  <button id="runBtn" onclick="run()">Run All Items</button>
+  <div id="status">Click Run to load model and score all items.</div>
+  <div id="results"></div>
+
+  <script type="module">
+    // Load golden set items from rules-scores.json (already has the text and metadata)
+    let rulesData = null;
+
+    async function loadRulesData() {
+      const resp = await fetch('rules-scores.json');
+      rulesData = await resp.json();
+      document.getElementById('status').textContent = `Loaded ${rulesData.itemCount} items from rules-scores.json. Click Run.`;
+    }
+
+    window.run = async function() {
+      if (!rulesData) await loadRulesData();
+
+      const statusEl = document.getElementById('status');
+      const resultsEl = document.getElementById('results');
+      resultsEl.textContent = '';
+      document.getElementById('runBtn').disabled = true;
+
+      statusEl.textContent = 'Loading TMR model (q4)...';
+
+      const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1');
+      const detector = await pipeline('text-classification', 'onnx-community/tmr-ai-text-detector-ONNX', { dtype: 'q4' });
+
+      statusEl.textContent = 'Model loaded. Scoring...';
+
+      const items = rulesData.items;
+      const tmrResults = [];
+
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        statusEl.textContent = `Scoring ${i+1}/${items.length}: ${item.id}`;
+
+        const t0 = performance.now();
+        const result = await detector(item.text);
+        const latency = Math.round(performance.now() - t0);
+
+        const top = result[0];
+        const aiScore = top.label === 'ai' ? top.score : 1 - top.score;
+
+        tmrResults.push({
+          id: item.id,
+          tmrLabel: top.label,
+          tmrRawScore: top.score,
+          tmrAiProbability: parseFloat(aiScore.toFixed(4)),
+          tmrLatencyMs: latency,
+        });
+
+        const line = `${item.id.padEnd(25)} tmr=${top.label.padEnd(6)} ai=${aiScore.toFixed(3)} ${latency}ms`;
+        resultsEl.textContent += line + '\n';
+        resultsEl.scrollTop = resultsEl.scrollHeight;
+      }
+
+      // Write results to DOM for extraction
+      const output = JSON.stringify({ itemCount: tmrResults.length, items: tmrResults }, null, 2);
+      document.body.dataset.complete = 'true';
+      document.body.dataset.tmrResults = output;
+
+      statusEl.textContent = `Done! ${tmrResults.length} items scored. Copy results from console.`;
+      console.log('TMR Results JSON:');
+      console.log(output);
+
+      document.getElementById('runBtn').disabled = false;
+    };
+
+    loadRulesData().catch(e => {
+      document.getElementById('status').textContent = `Error loading rules data: ${e.message}`;
+    });
+  </script>
+</body>
+</html>

@@ -25,3 +25,14 @@ export async function safeCatchAsync<TValue>(
     return fallback;
   }
 }
+
+export function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+export function toErrorData(error: unknown): { errorName: string; errorMessage: string } {
+  return {
+    errorName: error instanceof Error ? error.name : 'unknown',
+    errorMessage: errorMessage(error),
+  };
+}

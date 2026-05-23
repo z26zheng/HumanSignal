@@ -1,0 +1,5675 @@
+{
+  "timestamp": "2026-05-14T00:43:59.914Z",
+  "strategies": [
+    {
+      "name": "Rules Only (baseline)",
+      "total": 104,
+      "exactCount": 102,
+      "acceptableCount": 102,
+      "exactAccuracy": 0.9807692307692307,
+      "acceptableAccuracy": 0.9807692307692307,
+      "flickerCount": 0,
+      "flickerRate": 0,
+      "tmrItemsUsed": 0,
+      "tmrUsageRate": 0,
+      "perCategory": {
+        "post-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-detailed": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-ai-likely-generic": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-ai-likely-listicle": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-possibly-ai": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-likely": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-question": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-thoughtful": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        }
+      },
+      "falsePositiveOnHuman": 0,
+      "items": [
+        {
+          "id": "post-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-1",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-2",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-3",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-4",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-5",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-6",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-7",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-8",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-6",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        }
+      ]
+    },
+    {
+      "name": "TMR Only (threshold)",
+      "total": 104,
+      "exactCount": 38,
+      "acceptableCount": 38,
+      "exactAccuracy": 0.36538461538461536,
+      "acceptableAccuracy": 0.36538461538461536,
+      "flickerCount": 64,
+      "flickerRate": 0.6153846153846154,
+      "tmrItemsUsed": 64,
+      "tmrUsageRate": 0.6153846153846154,
+      "perCategory": {
+        "post-ai-certain": {
+          "total": 8,
+          "acceptable": 4,
+          "rate": 50
+        },
+        "post-human-specific": {
+          "total": 8,
+          "acceptable": 5,
+          "rate": 63
+        },
+        "post-human-detailed": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-ai-likely-generic": {
+          "total": 8,
+          "acceptable": 2,
+          "rate": 25
+        },
+        "post-ai-likely-listicle": {
+          "total": 8,
+          "acceptable": 0,
+          "rate": 0
+        },
+        "post-possibly-ai": {
+          "total": 8,
+          "acceptable": 0,
+          "rate": 0
+        },
+        "post-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-certain": {
+          "total": 8,
+          "acceptable": 0,
+          "rate": 0
+        },
+        "comment-ai-likely": {
+          "total": 8,
+          "acceptable": 1,
+          "rate": 13
+        },
+        "comment-human-question": {
+          "total": 8,
+          "acceptable": 1,
+          "rate": 13
+        },
+        "comment-human-specific": {
+          "total": 8,
+          "acceptable": 1,
+          "rate": 13
+        },
+        "comment-human-thoughtful": {
+          "total": 8,
+          "acceptable": 1,
+          "rate": 13
+        },
+        "comment-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        }
+      },
+      "falsePositiveOnHuman": 20,
+      "items": [
+        {
+          "id": "post-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-human-detailed-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-1",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-2",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-3",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-4",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-5",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-6",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-7",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-8",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-likely-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-likely-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-likely-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-likely-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-likely-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-6",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-likely-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-likely-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-question-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-question-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-question-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-question-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-question-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-question-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-question-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-thoughtful-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-thoughtful-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-thoughtful-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-thoughtful-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-thoughtful-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-thoughtful-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-human-thoughtful-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "almost-certainly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        }
+      ]
+    },
+    {
+      "name": "Strategy A: Override + Weighted (100 cutoff)",
+      "total": 104,
+      "exactCount": 102,
+      "acceptableCount": 102,
+      "exactAccuracy": 0.9807692307692307,
+      "acceptableAccuracy": 0.9807692307692307,
+      "flickerCount": 0,
+      "flickerRate": 0,
+      "tmrItemsUsed": 0,
+      "tmrUsageRate": 0,
+      "perCategory": {
+        "post-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-detailed": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-ai-likely-generic": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-ai-likely-listicle": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-possibly-ai": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-likely": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-question": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-thoughtful": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        }
+      },
+      "falsePositiveOnHuman": 0,
+      "items": [
+        {
+          "id": "post-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-1",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-2",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-3",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-4",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-5",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-6",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-7",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-8",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-6",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        }
+      ]
+    },
+    {
+      "name": "Strategy A: Override + Weighted (75 cutoff)",
+      "total": 104,
+      "exactCount": 98,
+      "acceptableCount": 98,
+      "exactAccuracy": 0.9423076923076923,
+      "acceptableAccuracy": 0.9423076923076923,
+      "flickerCount": 4,
+      "flickerRate": 0.038461538461538464,
+      "tmrItemsUsed": 4,
+      "tmrUsageRate": 0.038461538461538464,
+      "perCategory": {
+        "post-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-detailed": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-ai-likely-generic": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-ai-likely-listicle": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-possibly-ai": {
+          "total": 8,
+          "acceptable": 4,
+          "rate": 50
+        },
+        "post-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-likely": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-question": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-thoughtful": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        }
+      },
+      "falsePositiveOnHuman": 0,
+      "items": [
+        {
+          "id": "post-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-1",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-2",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-3",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-4",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-5",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-6",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-7",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-8",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-6",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        }
+      ]
+    },
+    {
+      "name": "Strategy A: Override + Weighted (150 cutoff)",
+      "total": 104,
+      "exactCount": 102,
+      "acceptableCount": 102,
+      "exactAccuracy": 0.9807692307692307,
+      "acceptableAccuracy": 0.9807692307692307,
+      "flickerCount": 0,
+      "flickerRate": 0,
+      "tmrItemsUsed": 0,
+      "tmrUsageRate": 0,
+      "perCategory": {
+        "post-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-detailed": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-ai-likely-generic": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-ai-likely-listicle": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-possibly-ai": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-likely": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-question": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-thoughtful": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        }
+      },
+      "falsePositiveOnHuman": 0,
+      "items": [
+        {
+          "id": "post-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-1",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-2",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-3",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-4",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-5",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-6",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-7",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-8",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-6",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        }
+      ]
+    },
+    {
+      "name": "Strategy B: TMR as Tiebreaker",
+      "total": 104,
+      "exactCount": 85,
+      "acceptableCount": 85,
+      "exactAccuracy": 0.8173076923076923,
+      "acceptableAccuracy": 0.8173076923076923,
+      "flickerCount": 21,
+      "flickerRate": 0.20192307692307693,
+      "tmrItemsUsed": 21,
+      "tmrUsageRate": 0.20192307692307693,
+      "perCategory": {
+        "post-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-detailed": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-ai-likely-generic": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-ai-likely-listicle": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-possibly-ai": {
+          "total": 8,
+          "acceptable": 1,
+          "rate": 13
+        },
+        "post-cant-tell": {
+          "total": 8,
+          "acceptable": 1,
+          "rate": 13
+        },
+        "comment-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-likely": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-question": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-thoughtful": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-cant-tell": {
+          "total": 8,
+          "acceptable": 3,
+          "rate": 38
+        }
+      },
+      "falsePositiveOnHuman": 0,
+      "items": [
+        {
+          "id": "post-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-1",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-2",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-3",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-4",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-5",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-6",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-possibly-ai-7",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-8",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "feels-human",
+          "acceptable": false
+        },
+        {
+          "id": "post-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-6",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "likely-ai",
+          "acceptable": false
+        }
+      ]
+    },
+    {
+      "name": "Strategy C: TMR as Confidence Modifier",
+      "total": 104,
+      "exactCount": 100,
+      "acceptableCount": 100,
+      "exactAccuracy": 0.9615384615384616,
+      "acceptableAccuracy": 0.9615384615384616,
+      "flickerCount": 2,
+      "flickerRate": 0.019230769230769232,
+      "tmrItemsUsed": 2,
+      "tmrUsageRate": 0.019230769230769232,
+      "perCategory": {
+        "post-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-human-detailed": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-ai-likely-generic": {
+          "total": 8,
+          "acceptable": 6,
+          "rate": 75
+        },
+        "post-ai-likely-listicle": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "post-possibly-ai": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "post-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-certain": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-ai-likely": {
+          "total": 8,
+          "acceptable": 7,
+          "rate": 88
+        },
+        "comment-human-question": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-specific": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-human-thoughtful": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        },
+        "comment-cant-tell": {
+          "total": 8,
+          "acceptable": 8,
+          "rate": 100
+        }
+      },
+      "falsePositiveOnHuman": 0,
+      "items": [
+        {
+          "id": "post-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-human-detailed-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-generic-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-generic-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-6",
+          "expected": "likely-ai",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": false
+        },
+        {
+          "id": "post-ai-likely-listicle-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-ai-likely-listicle-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-1",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-2",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-3",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-4",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-5",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-6",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-7",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-possibly-ai-8",
+          "expected": "possibly-ai",
+          "rules": "possibly-ai",
+          "combined": "possibly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "post-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-1",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-2",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-3",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-4",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-5",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-6",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-7",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-certain-8",
+          "expected": "almost-certainly-ai",
+          "rules": "almost-certainly-ai",
+          "combined": "almost-certainly-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-1",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "possibly-ai",
+          "acceptable": false
+        },
+        {
+          "id": "comment-ai-likely-2",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-3",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-4",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-5",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-6",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-7",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-ai-likely-8",
+          "expected": "likely-ai",
+          "rules": "likely-ai",
+          "combined": "likely-ai",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-question-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-specific-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-1",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-2",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-3",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-4",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-5",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-6",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-7",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-human-thoughtful-8",
+          "expected": "feels-human",
+          "rules": "feels-human",
+          "combined": "feels-human",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-1",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-2",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-3",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-4",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-5",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-6",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-7",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        },
+        {
+          "id": "comment-cant-tell-8",
+          "expected": "cant-tell",
+          "rules": "cant-tell",
+          "combined": "cant-tell",
+          "acceptable": true
+        }
+      ]
+    }
+  ]
+}

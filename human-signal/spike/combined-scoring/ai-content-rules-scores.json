@@ -1,0 +1,237 @@
+{
+  "itemCount": 16,
+  "items": [
+    {
+      "id": "ai-polished-01",
+      "text": "The conversation around engineering productivity metrics has reached an inflection point. Organizations that continue to measure output through lines of code or story points are fundamentally misunderstanding the nature of knowledge work. What we should be measuring instead is the rate at which a team can reduce uncertainty about customer needs and translate that understanding into reliable software. This requires a different measurement framework entirely — one that prioritizes learning velocity over delivery velocity.",
+      "itemType": "post",
+      "charCount": 525,
+      "category": "ai-polished",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai"
+      ],
+      "rulesLabel": "likely-ai",
+      "rulesConfidence": "medium"
+    },
+    {
+      "id": "ai-polished-02",
+      "text": "It is worth examining why so many digital transformation initiatives fail despite substantial investment. The root cause is rarely technological. Instead, it stems from a fundamental misalignment between organizational incentive structures and the collaborative behaviors that modern software delivery demands. When individual performance metrics reward siloed optimization, no amount of tooling investment will produce the cross-functional flow that transformation requires.",
+      "itemType": "post",
+      "charCount": 475,
+      "category": "ai-polished",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low"
+    },
+    {
+      "id": "ai-polished-03",
+      "text": "The distinction between technical leadership and engineering management deserves more nuanced discussion. These are not merely different levels on the same ladder — they are fundamentally different disciplines that happen to share a common domain. A strong technical leader optimizes for architectural clarity and technical decision quality. A strong engineering manager optimizes for team health and delivery predictability. Conflating the two leads to role confusion and suboptimal outcomes in both dimensions.",
+      "itemType": "post",
+      "charCount": 512,
+      "category": "ai-polished",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low"
+    },
+    {
+      "id": "ai-polished-04",
+      "text": "One of the most consequential decisions a platform team makes is determining the boundary between platform capability and product team autonomy. Set the boundary too narrowly and you create bottlenecks. Set it too broadly and you create fragmentation. The optimal boundary is not static — it should evolve as organizational maturity increases and the cost of coordination decreases.",
+      "itemType": "post",
+      "charCount": 382,
+      "category": "ai-polished",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low"
+    },
+    {
+      "id": "ai-polished-05",
+      "text": "The relationship between code review practices and team trust is more nuanced than most engineering organizations appreciate. In high-trust environments, code reviews function as knowledge sharing and collective learning opportunities. In low-trust environments, the same process becomes a gatekeeping mechanism that slows delivery and erodes psychological safety. The review process itself does not create trust — it reveals and amplifies the existing trust dynamics.",
+      "itemType": "post",
+      "charCount": 468,
+      "category": "ai-polished",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low"
+    },
+    {
+      "id": "ai-polished-06",
+      "text": "There is a persistent myth in software engineering that architectural decisions are primarily technical in nature. In practice, the most impactful architectural choices are shaped by organizational constraints, team topology, and communication patterns far more than by technical tradeoffs. Conway's Law is not merely an observation — it is an actionable design principle that mature organizations leverage deliberately.",
+      "itemType": "post",
+      "charCount": 420,
+      "category": "ai-polished",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low"
+    },
+    {
+      "id": "ai-polished-07",
+      "text": "The current enthusiasm for AI-assisted development tools presents an interesting organizational challenge. Teams that adopt these tools without adjusting their code review, testing, and quality assurance practices may inadvertently increase their technical debt at a rate that exceeds their ability to manage it. The productivity gains are real, but they must be accompanied by proportional investment in validation infrastructure.",
+      "itemType": "post",
+      "charCount": 431,
+      "category": "ai-polished",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai"
+      ],
+      "rulesLabel": "possibly-ai",
+      "rulesConfidence": "low"
+    },
+    {
+      "id": "ai-polished-08",
+      "text": "What makes incident management genuinely effective is not the process or the tooling — it is the organization's relationship with failure. Teams that treat incidents as systemic learning opportunities consistently outperform those that treat them as individual performance failures. This distinction may seem philosophical, but its practical implications are profound: it determines whether post-incident analysis produces actionable improvements or merely assigns blame.",
+      "itemType": "post",
+      "charCount": 471,
+      "category": "ai-polished",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai"
+      ],
+      "rulesLabel": "cant-tell",
+      "rulesConfidence": "low"
+    },
+    {
+      "id": "ai-fake-01",
+      "text": "At Meridian Labs, I led the infrastructure migration that reduced our cloud costs by 34% in Q3. The team of 8 engineers worked through 47 service cutover plans over 12 weeks. The key insight was migrating the least-used services first to build team confidence before tackling the critical path.",
+      "itemType": "post",
+      "charCount": 294,
+      "category": "ai-fake-stats",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai",
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium"
+    },
+    {
+      "id": "ai-fake-02",
+      "text": "When I joined Apex Systems as VP of Engineering, the team was shipping once a month with a 22% rollback rate. Within 6 months, we moved to weekly releases with a 3% rollback rate. The investment was straightforward: a proper staging environment and automated regression tests.",
+      "itemType": "post",
+      "charCount": 276,
+      "category": "ai-fake-stats",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai",
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium"
+    },
+    {
+      "id": "ai-fake-03",
+      "text": "Last quarter at NovaTech, our customer success team identified that 67% of churn was happening within the first 14 days. I worked with the product team to redesign the onboarding flow, and early retention improved by 28% in just 6 weeks.",
+      "itemType": "post",
+      "charCount": 237,
+      "category": "ai-fake-stats",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai",
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium"
+    },
+    {
+      "id": "ai-fake-04",
+      "text": "I built a custom analytics pipeline at DataForge that processes 2.3 million events per day with an average latency of 140ms. The previous system was hitting 3-second delays at peak. Three months of work, one junior engineer as my partner, and a significant amount of late-night debugging.",
+      "itemType": "post",
+      "charCount": 288,
+      "category": "ai-fake-stats",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai",
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium"
+    },
+    {
+      "id": "ai-fake-05",
+      "text": "At Orion Health, I led the HIPAA compliance overhaul across 12 microservices. It took our team of 5 engineers four months. The audit went from 23 findings to zero. The most challenging aspect was not the technical work — it was convincing the leadership team to prioritize compliance over feature development.",
+      "itemType": "post",
+      "charCount": 309,
+      "category": "ai-fake-stats",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai",
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium"
+    },
+    {
+      "id": "ai-fake-06",
+      "text": "Our mobile app at Pulse Health had a 2.8-star rating when I joined. In 6 months it was at 4.4 stars. The three changes that mattered most: fixing the appointment booking crash, adding offline mode, and reducing the login flow from 5 steps to 2.",
+      "itemType": "post",
+      "charCount": 244,
+      "category": "ai-fake-stats",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai",
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium"
+    },
+    {
+      "id": "ai-fake-07",
+      "text": "At StackLayer, our API response times were averaging 890ms at the 99th percentile. After profiling, we found that 60% of the latency came from a single database query. One index change and a connection pool tweak brought us to 210ms. Sometimes the fix is embarrassingly simple.",
+      "itemType": "post",
+      "charCount": 277,
+      "category": "ai-fake-stats",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai",
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium"
+    },
+    {
+      "id": "ai-fake-08",
+      "text": "I rearchitected the notification system at BrightPath to handle 500K push notifications per hour. The previous system maxed out at 50K. The approach was switching from synchronous delivery to a message queue with partitioned consumers. Total investment: 2 engineers, 6 weeks.",
+      "itemType": "post",
+      "charCount": 275,
+      "category": "ai-fake-stats",
+      "expectedLabel": "likely-ai",
+      "acceptableLabels": [
+        "likely-ai",
+        "possibly-ai",
+        "feels-human"
+      ],
+      "rulesLabel": "feels-human",
+      "rulesConfidence": "medium"
+    }
+  ]
+}

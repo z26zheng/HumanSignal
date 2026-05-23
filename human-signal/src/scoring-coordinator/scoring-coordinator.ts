@@ -1,102 +1,121 @@
-import { ModeManager } from '@/scoring-coordinator/mode-manager';
 import { ScoreCache } from '@/scoring-coordinator/score-cache';
-import { ScoringQueue, type QueueItem } from '@/scoring-coordinator/scoring-queue';
 import { sendToContentScript, sendToOffscreen } from '@/shared/messaging';
 import { logger } from '@/shared/logger';
 import { RULES_SCORING_VERSION, scoreWithRules } from '@/rules-engine';
-import { createE2EGeminiScoringResult } from '@/gemini/e2e-gemini-mock';
-import { readStorageValue } from '@/shared/storage';
-import { DEFAULT_E2E_GEMINI_MOCK_CONFIG } from '@/shared/types';
+import { combineScores, COMBINED_SCORING_VERSION } from '@/scoring-coordinator/score-combiner';
+import { ScoringTelemetry, type ScoringTelemetryEntry } from '@/shared/scoring-telemetry';
 
 import type { MessageResponse } from '@/shared/messaging';
 import type {
   ContentHash,
-  E2EGeminiMockConfig,
   ExtractedItem,
-  GeminiStatus,
   HealthMetrics,
-  PriorityUpdate,
   ScoringResult,
+  ScoringTraceEvent,
 } from '@/shared/types';
 
 export interface ScoreBatchResult {
   readonly results: readonly ScoringResult[];
-  readonly queued: readonly string[];
+}
+
+interface TmrQueueItem {
+  readonly item: ExtractedItem;
+  readonly rulesResult: ScoringResult;
+  readonly tabId: number | null;
 }
 
 export class ScoringCoordinator {
-  private readonly modeManager: ModeManager = new ModeManager();
   private readonly cache: ScoreCache = new ScoreCache();
-  private readonly queue: ScoringQueue = new ScoringQueue();
-  private readonly inFlightByHash: Map<ContentHash, Promise<ScoringResult>> = new Map();
-  private isProcessing: boolean = false;
+  private readonly telemetry: ScoringTelemetry = new ScoringTelemetry();
+  private ensureOffscreen: (() => Promise<boolean>) | null = null;
+  private isTmrProcessing: boolean = false;
+  private tmrAvailable: boolean = false;
+  private readonly tmrQueue: TmrQueueItem[] = [];
   private itemsScored: number = 0;
   private cacheHits: number = 0;
   private cacheLookups: number = 0;
   private failureCount: number = 0;
   private totalLatencyMs: number = 0;
+  private latencySamples: number = 0;
 
-  private initPromise: Promise<void> | null = null;
+  public setEnsureOffscreen(fn: () => Promise<boolean>): void {
+    this.ensureOffscreen = fn;
+  }
 
-  public async initialize(): Promise<void> {
-    this.initPromise ??= this.modeManager.initialize();
-    await this.initPromise;
+  public setTmrAvailable(available: boolean): void {
+    this.tmrAvailable = available;
   }
 
   public async handleScoreBatch(
     items: readonly ExtractedItem[],
     tabId: number | null,
   ): Promise<ScoreBatchResult> {
-    await this.initialize();
-
     const results: ScoringResult[] = [];
-    const queued: string[] = [];
 
     for (const item of items) {
+      this.telemetry.recordImpression(item.itemId, item.itemType, item.metadata.contentHash);
+      const traces: ScoringTraceEvent[] = [];
+
       const cachedResult: ScoringResult | null = await this.getCachedResult(item);
 
       if (cachedResult !== null) {
-        results.push(cachedResult);
+        this.telemetry.recordCacheHit(item.itemId, cachedResult.source);
+        traces.push({ event: 'CACHE_HIT', timestamp: Date.now(), detail: `Cached ${cachedResult.source} result, version ${cachedResult.scoringVersion}` });
+        // Override itemId with the current request's itemId. The cache is keyed by
+        // contentHash, so the cached result may have an older itemId from a previous
+        // detection. Returning a result with a stale itemId would break content-script
+        // routing (the overlay registry wouldn't find a matching entry).
+        results.push({ ...cachedResult, itemId: item.itemId, traceEvents: traces });
         continue;
       }
 
-      const rulesResult: ScoringResult = scoreWithRules(item);
-      await this.cache.set(item.metadata.contentHash, rulesResult);
-      this.itemsScored += 1;
-      results.push(rulesResult);
+      traces.push({ event: 'CACHE_MISS', timestamp: Date.now(), detail: 'No cached result for this hash + version' });
 
-      if (this.modeManager.getMode() === 'gemini') {
-        queued.push(item.itemId);
-        this.queue.enqueue({
-          item,
-          contentHash: item.metadata.contentHash,
-          priority: 1,
-          tabId,
-          addedAt: Date.now(),
-        });
+      const rulesStartedAt: number = Date.now();
+      traces.push({ event: 'RULES_STARTED', timestamp: rulesStartedAt, detail: '' });
+      this.telemetry.recordRulesStart(item.itemId);
+      const rulesResult: ScoringResult = scoreWithRules(item);
+      this.telemetry.recordRulesEnd(item.itemId, rulesResult.label);
+      const rulesEndedAt: number = Date.now();
+      traces.push({ event: 'RULES_COMPLETED', timestamp: rulesEndedAt, detail: `${rulesResult.label}, confidence: ${rulesResult.confidence}` });
+
+      await this.cache.set(item.metadata.contentHash, rulesResult);
+      results.push({ ...rulesResult, traceEvents: traces });
+      this.itemsScored += 1;
+      this.totalLatencyMs += rulesEndedAt - rulesStartedAt;
+      this.latencySamples += 1;
+
+      if (this.tmrAvailable) {
+        this.tmrQueue.push({ item, rulesResult: { ...rulesResult, traceEvents: traces }, tabId });
+        logger.info('scoringCoordinator.tmrQueued', 'Queued fresh item for TMR', { itemId: item.itemId.slice(0, 20) });
       }
     }
 
-    void this.processQueue();
-    return { results, queued };
-  }
-
-  public handlePriorityUpdates(updates: readonly PriorityUpdate[]): void {
-    for (const update of updates) {
-      this.queue.updatePriority(update.itemId, update.inViewport ? 1 : 3);
-    }
+    logger.info('scoringCoordinator.batch', 'Batch complete', {
+      results: results.length,
+      tmrAvailable: this.tmrAvailable,
+      tmrQueueDepth: this.tmrQueue.length,
+    });
+    void this.processTmrQueue();
+    return { results };
   }
 
   public async clearCache(): Promise<void> {
     await this.cache.clear();
+    this.itemsScored = 0;
+    this.cacheHits = 0;
+    this.cacheLookups = 0;
+    this.failureCount = 0;
+    this.totalLatencyMs = 0;
+    this.latencySamples = 0;
   }
 
-  public onGeminiStatus(status: GeminiStatus): void {
-    this.modeManager.onGeminiStatus(status);
-  }
-
-  public getMode(): string {
-    return this.modeManager.getMode();
+  public getTelemetrySummary(): { entries: readonly ScoringTelemetryEntry[]; mode: string; itemsScored: number } {
+    return {
+      entries: this.telemetry.getRecentEntries(),
+      mode: 'rules',
+      itemsScored: this.itemsScored,
+    };
   }
 
   public async getHealth(logEntryCount: number, adapterSuccessRate: number): Promise<HealthMetrics> {
@@ -104,10 +123,10 @@ export class ScoringCoordinator {
       itemsScored: this.itemsScored,
       cacheEntries: await this.cache.getSize(),
       cacheHitRate: this.cacheLookups === 0 ? 0 : this.cacheHits / this.cacheLookups,
-      avgLatencyMs: this.itemsScored === 0 ? 0 : this.totalLatencyMs / this.itemsScored,
+      avgLatencyMs: this.latencySamples === 0 ? 0 : this.totalLatencyMs / this.latencySamples,
       failureCount: this.failureCount,
-      queueDepth: this.queue.getDepth(),
-      scoringMode: this.modeManager.getMode(),
+      queueDepth: this.tmrQueue.length,
+      scoringMode: 'rules',
       adapterSuccessRate,
       logEntryCount,
     };
@@ -115,124 +134,118 @@ export class ScoringCoordinator {
 
   private async getCachedResult(item: ExtractedItem): Promise<ScoringResult | null> {
     this.cacheLookups += 1;
-    const expectedVersion: string =
-      this.modeManager.getMode() === 'gemini' ? 'gemini-1' : RULES_SCORING_VERSION;
-    const cachedResult: ScoringResult | null = await this.cache.get(
+
+    const combinedResult: ScoringResult | null = await this.cache.get(
       item.metadata.contentHash,
-      expectedVersion,
+      COMBINED_SCORING_VERSION,
+    );
+    if (combinedResult !== null) {
+      this.cacheHits += 1;
+      return combinedResult;
+    }
+
+    if (this.tmrAvailable) {
+      return null;
+    }
+
+    const rulesResult: ScoringResult | null = await this.cache.get(
+      item.metadata.contentHash,
+      RULES_SCORING_VERSION,
     );
 
-    if (cachedResult !== null) {
+    if (rulesResult !== null) {
       this.cacheHits += 1;
     }
 
-    return cachedResult;
+    return rulesResult;
   }
 
-  private async processQueue(): Promise<void> {
-    if (this.isProcessing) {
+  private async processTmrQueue(): Promise<void> {
+    if (this.isTmrProcessing) {
       return;
     }
 
-    this.isProcessing = true;
+    if (this.tmrQueue.length === 0) {
+      return;
+    }
+
+    this.isTmrProcessing = true;
+    logger.info('scoringCoordinator.tmrQueue', 'Processing TMR queue', { depth: this.tmrQueue.length });
 
     try {
-      while (this.queue.getDepth() > 0) {
-        const queueItem: QueueItem | null = this.queue.dequeue();
-
-        if (queueItem === null) {
-          break;
-        }
-
-        const result: ScoringResult = await this.scoreGeminiWithFallback(queueItem.item);
-        await this.cache.set(queueItem.contentHash, result);
-
-        if (queueItem.tabId !== null) {
-          await this.sendResultToTab(queueItem.tabId, result);
-        }
+      while (this.tmrQueue.length > 0) {
+        const queueItem: TmrQueueItem | undefined = this.tmrQueue.shift();
+        if (queueItem === undefined) break;
+        await this.classifyWithTmr(queueItem);
       }
+      logger.info('scoringCoordinator.tmrQueue', 'TMR queue complete');
     } catch (error: unknown) {
       this.failureCount += 1;
-      logger.error('scoringCoordinator.queue', error);
+      logger.error('scoringCoordinator.tmrQueue', error);
     } finally {
-      this.isProcessing = false;
+      this.isTmrProcessing = false;
     }
   }
 
-  private async scoreGeminiWithFallback(item: ExtractedItem): Promise<ScoringResult> {
-    const contentHash: ContentHash = item.metadata.contentHash;
-    const existingPromise: Promise<ScoringResult> | undefined = this.inFlightByHash.get(contentHash);
-
-    if (existingPromise !== undefined) {
-      return await existingPromise;
+  private async classifyWithTmr(
+    { item, rulesResult, tabId }: TmrQueueItem,
+  ): Promise<void> {
+    if (this.ensureOffscreen !== null) {
+      const ready: boolean = await this.ensureOffscreen();
+      if (!ready) return;
     }
 
-    const promise: Promise<ScoringResult> = this.runGeminiRequest(item);
-    this.inFlightByHash.set(contentHash, promise);
+    const tmrTraces: ScoringTraceEvent[] = [
+      { event: 'TMR_STARTED', timestamp: Date.now(), detail: `Rules: ${rulesResult.label} (${rulesResult.confidence})` },
+    ];
 
-    try {
-      return await promise;
-    } finally {
-      this.inFlightByHash.delete(contentHash);
-    }
-  }
-
-  private async runGeminiRequest(item: ExtractedItem): Promise<ScoringResult> {
-    const startedAt: number = Date.now();
-    const mockResult: ScoringResult | null | undefined = await this.scoreWithE2EGeminiMock(item);
-
-    if (mockResult !== undefined) {
-      if (mockResult !== null) {
-        this.recordScoringLatency(startedAt);
-        return mockResult;
-      }
-
-      this.failureCount += 1;
-      logger.warn('scoringCoordinator.geminiFallback', 'E2E Gemini mock returned null; falling back to rules', {
-        itemType: item.itemType,
-      });
-      const fallbackResult: ScoringResult = scoreWithRules(item);
-      this.recordScoringLatency(startedAt);
-      return fallbackResult;
-    }
-
-    const response: MessageResponse = await sendToOffscreen({
-      type: 'GEMINI_PROMPT',
+    const tmrResponse: MessageResponse = await sendToOffscreen({
+      type: 'TMR_CLASSIFY',
       source: 'background',
-      item,
+      itemId: item.itemId,
+      text: item.text,
     });
 
-    if (response.ok && response.payload.type === 'GEMINI_RESULT') {
-      this.onGeminiStatus(response.payload.status);
-
-      if (response.payload.result !== null) {
-        this.recordScoringLatency(startedAt);
-        return response.payload.result;
-      }
+    if (!tmrResponse.ok || tmrResponse.payload.type !== 'TMR_CLASSIFY_RESULT') {
+      tmrTraces.push({ event: 'TMR_FAILED', timestamp: Date.now(), detail: 'TMR classify failed' });
+      logger.warn('scoringCoordinator.tmr', 'TMR classify failed', { itemId: item.itemId });
+      return;
     }
 
-    this.failureCount += 1;
-    logger.warn('scoringCoordinator.geminiFallback', 'Gemini failed; falling back to rules', {
+    const aiProb: number = tmrResponse.payload.aiProbability;
+    const latencyMs: number = tmrResponse.payload.latencyMs;
+
+    const combined = combineScores({
+      text: item.text,
       itemType: item.itemType,
+      charCount: item.text.length,
+      rulesLabel: rulesResult.label,
+      rulesConfidence: rulesResult.confidence,
+      rulesDimensions: rulesResult.dimensions,
+      rulesReasons: rulesResult.reasons ?? [rulesResult.explanation],
+      tmrAiProbability: aiProb,
     });
-    const fallbackResult: ScoringResult = scoreWithRules(item);
-    this.recordScoringLatency(startedAt);
-    return fallbackResult;
-  }
 
-  private async scoreWithE2EGeminiMock(item: ExtractedItem): Promise<ScoringResult | null | undefined> {
-    const config: E2EGeminiMockConfig = await readStorageValue('e2eGeminiMock', DEFAULT_E2E_GEMINI_MOCK_CONFIG);
+    tmrTraces.push({
+      event: 'TMR_COMPLETED',
+      timestamp: Date.now(),
+      detail: `P(AI)=${aiProb.toFixed(3)}, ${latencyMs}ms → ${combined.label} (${combined.confidence})`,
+    });
 
-    if (!config.isEnabled || config.availability !== 'available') {
-      return undefined;
+    const updatedResult: ScoringResult = {
+      ...rulesResult,
+      label: combined.label,
+      confidence: combined.confidence,
+      source: 'combined',
+      scoringVersion: COMBINED_SCORING_VERSION,
+      traceEvents: [...(rulesResult.traceEvents ?? []), ...tmrTraces],
+    };
+
+    await this.cache.set(item.metadata.contentHash, updatedResult);
+
+    if (tabId !== null) {
+      await this.sendResultToTab(tabId, updatedResult);
     }
-
-    return createE2EGeminiScoringResult(item, config);
-  }
-
-  private recordScoringLatency(startedAt: number): void {
-    this.itemsScored += 1;
-    this.totalLatencyMs += Date.now() - startedAt;
   }
 
   private async sendResultToTab(tabId: number, result: ScoringResult): Promise<void> {

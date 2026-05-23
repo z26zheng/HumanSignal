@@ -1,5 +1,6 @@
 import { DEFAULT_GEMINI_STATUS, type ExtractedItem, type GeminiStatus, type ScoringResult } from '@/shared/types';
 import { logger } from '@/shared/logger';
+import { errorMessage } from '@/shared/safe-catch';
 import { setGeminiStatus } from '@/shared/storage';
 import { getLanguageModel } from '@/gemini/prompt-api';
 import {
@@ -30,6 +31,16 @@ export class GeminiService {
   ) {}
 
   public async checkGeminiAvailability(): Promise<GeminiStatus> {
+    if (this.session !== null) {
+      logger.info('gemini.availability', 'Active session exists, reporting available');
+      return await this.persistStatus({
+        availability: 'available',
+        downloadProgress: null,
+        lastCheckedAt: Date.now(),
+        errorMessage: null,
+      });
+    }
+
     if (this.languageModel === null) {
       return await this.persistStatus({
         ...DEFAULT_GEMINI_STATUS,
@@ -53,7 +64,7 @@ export class GeminiService {
         availability: 'error',
         downloadProgress: null,
         lastCheckedAt: Date.now(),
-        errorMessage: error instanceof Error ? error.message : String(error),
+        errorMessage: errorMessage(error),
       });
     }
   }
@@ -99,7 +110,7 @@ export class GeminiService {
         availability: 'error',
         downloadProgress: null,
         lastCheckedAt: Date.now(),
-        errorMessage: error instanceof Error ? error.message : String(error),
+        errorMessage: errorMessage(error),
       });
     }
   }
@@ -132,25 +143,42 @@ export class GeminiService {
       return null;
     } catch (error: unknown) {
       logger.error('gemini.score', error);
-      await this.markFailure(error instanceof Error ? error.message : String(error));
+      await this.markFailure(errorMessage(error));
       return null;
     }
   }
 
-  public async warmUp(): Promise<void> {
+  public async warmUp(): Promise<GeminiStatus> {
     if (this.languageModel === null) {
       logger.info('gemini.warmUp', 'Skipped warm-up: LanguageModel not available');
-      return;
+      return await this.persistStatus({
+        ...DEFAULT_GEMINI_STATUS,
+        availability: 'unavailable',
+        lastCheckedAt: Date.now(),
+      });
     }
 
     try {
       await this.getOrCreateSession();
       logger.info('gemini.warmUp', 'Session pre-warmed successfully');
+      return await this.persistStatus({
+        availability: 'available',
+        downloadProgress: null,
+        lastCheckedAt: Date.now(),
+        errorMessage: null,
+      });
     } catch (error: unknown) {
+      const message: string = errorMessage(error);
       logger.warn('gemini.warmUp', 'Session warm-up failed; will retry on first prompt', {
-        errorMessage: error instanceof Error ? error.message : String(error),
+        errorMessage: message,
       });
       this.session = null;
+      return await this.persistStatus({
+        availability: 'error',
+        downloadProgress: null,
+        lastCheckedAt: Date.now(),
+        errorMessage: message,
+      });
     }
   }
 

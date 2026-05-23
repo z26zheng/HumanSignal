@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TMR Detector - Step 5: Golden Set Test</title>
+  <style>
+    body { font: 14px/1.6 system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    #status { padding: 12px; border-radius: 8px; background: #f1f5f9; margin: 12px 0; }
+    #results { white-space: pre-wrap; font: 12px/1.5 monospace; background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 8px; max-height: 600px; overflow-y: auto; }
+    .pass { color: #22c55e; }
+    .fail { color: #ef4444; }
+    .warn { color: #eab308; }
+    button { padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; font: inherit; margin: 4px; }
+  </style>
+</head>
+<body>
+  <h1>TMR Detector - Golden Set Score Distribution</h1>
+  <p>Runs the full golden set (112 items) through TMR and shows score distribution by category.</p>
+
+  <button id="runBtn" onclick="runGoldenSet()">Run Golden Set Test</button>
+  <button onclick="exportResults()">Export JSON</button>
+
+  <div id="status">Click Run to start. Model will load first (~15s).</div>
+  <div id="results"></div>
+
+  <script type="module">
+    let lastResults = null;
+
+    function log(text, cls) {
+      const el = document.getElementById('results');
+      const span = document.createElement('span');
+      span.className = cls || '';
+      span.textContent = text + '\n';
+      el.appendChild(span);
+      el.scrollTop = el.scrollHeight;
+    }
+
+    // Golden set items (subset covering all categories)
+    const GOLDEN_SET = [
+      // Human with metrics
+      { id: 'gs-h1', text: 'I shipped a billing alert change in April 2026 and reduced false positives from 18% to 4%.', category: 'human-metrics', expected: 'human' },
+      { id: 'gs-h2', text: 'We migrated 14 teams last quarter and cut review time by 27% after three iterations.', category: 'human-metrics', expected: 'human' },
+      { id: 'gs-h3', text: 'I built a Chrome extension prototype in Q2 and removed 31 minutes from the daily workflow.', category: 'human-metrics', expected: 'human' },
+      { id: 'gs-h4', text: 'I wrote the onboarding guide in 2025 and support tickets dropped by 42%.', category: 'human-metrics', expected: 'human' },
+      { id: 'gs-h5', text: 'We tested three rollout paths last quarter and picked the one with 12% fewer failures.', category: 'human-metrics', expected: 'human' },
+      // Human detailed
+      { id: 'gs-h6', text: 'At ExampleCo I led the rollout with LinkedIn and Chrome partners. I wrote the migration guide and shared the review notes.', category: 'human-detailed', expected: 'human' },
+      { id: 'gs-h7', text: 'At Example Labs I built the API review process with Platform and Security. I learned where the handoffs failed.', category: 'human-detailed', expected: 'human' },
+      { id: 'gs-h8', text: 'At ExampleCo I shipped the SDK workflow with Design and Support. I documented the tradeoffs for every team.', category: 'human-detailed', expected: 'human' },
+      // AI generic
+      { id: 'gs-a1', text: "Here's what I learned about success: most people don't realize consistency beats talent.", category: 'ai-generic', expected: 'ai' },
+      { id: 'gs-a2', text: 'Hard truth: the secret to success is showing up when nobody is watching.', category: 'ai-generic', expected: 'ai' },
+      { id: 'gs-a3', text: "Unpopular opinion: stop doing busy work and start doing meaningful work.", category: 'ai-generic', expected: 'ai' },
+      { id: 'gs-a4', text: 'Most people do not realize that mindset is the real advantage.', category: 'ai-generic', expected: 'ai' },
+      { id: 'gs-a5', text: 'Read that again: discipline creates freedom and freedom creates opportunity.', category: 'ai-generic', expected: 'ai' },
+      // AI listicle
+      { id: 'gs-a6', text: 'Here are lessons nobody tells you about leadership.', category: 'ai-listicle', expected: 'ai' },
+      { id: 'gs-a7', text: 'Here are ways to build a personal brand without burning out.', category: 'ai-listicle', expected: 'ai' },
+      { id: 'gs-a8', text: 'Here are tips for becoming the teammate everyone trusts.', category: 'ai-listicle', expected: 'ai' },
+      // AI possibly (mixed signals)
+      { id: 'gs-m1', text: 'I learned a useful lesson while helping a team untangle planning, but the details are still messy.', category: 'possibly-ai', expected: 'uncertain' },
+      { id: 'gs-m2', text: 'We tried a different approach to reviews and it helped, although I need more data before sharing.', category: 'possibly-ai', expected: 'uncertain' },
+      { id: 'gs-m3', text: 'I changed how I think about product work after a hard conversation with the team.', category: 'possibly-ai', expected: 'uncertain' },
+      // Short / cant-tell
+      { id: 'gs-s1', text: 'Big week ahead.', category: 'cant-tell', expected: 'uncertain' },
+      { id: 'gs-s2', text: 'More soon.', category: 'cant-tell', expected: 'uncertain' },
+      { id: 'gs-s3', text: 'This matters.', category: 'cant-tell', expected: 'uncertain' },
+      // Comment: AI praise
+      { id: 'gs-c1', text: 'Great insights', category: 'comment-ai-praise', expected: 'ai' },
+      { id: 'gs-c2', text: 'Well said', category: 'comment-ai-praise', expected: 'ai' },
+      { id: 'gs-c3', text: 'This is gold', category: 'comment-ai-praise', expected: 'ai' },
+      { id: 'gs-c4', text: 'Love this', category: 'comment-ai-praise', expected: 'ai' },
+      { id: 'gs-c5', text: 'So true', category: 'comment-ai-praise', expected: 'ai' },
+      // Comment: AI generic
+      { id: 'gs-c6', text: 'Great insights, this really resonates with the way teams should think.', category: 'comment-ai-generic', expected: 'ai' },
+      { id: 'gs-c7', text: 'Well said, this is such an important reminder for everyone in leadership.', category: 'comment-ai-generic', expected: 'ai' },
+      { id: 'gs-c8', text: 'Love this perspective and thanks for sharing it with the community.', category: 'comment-ai-generic', expected: 'ai' },
+      // Comment: human question
+      { id: 'gs-q1', text: 'How did you decide which tradeoffs mattered first?', category: 'comment-human-question', expected: 'human' },
+      { id: 'gs-q2', text: 'What changed in the review process after the first rollout?', category: 'comment-human-question', expected: 'human' },
+      { id: 'gs-q3', text: 'How would you adapt this for a team without dedicated ops support?', category: 'comment-human-question', expected: 'human' },
+      // Comment: human specific
+      { id: 'gs-cs1', text: 'We saw a 19% drop after changing the onboarding checklist.', category: 'comment-human-specific', expected: 'human' },
+      { id: 'gs-cs2', text: 'At ExampleCo, this worked best when Platform owned the rollout notes.', category: 'comment-human-specific', expected: 'human' },
+      { id: 'gs-cs3', text: 'Our team needed 3 cycles before the new review habit stuck.', category: 'comment-human-specific', expected: 'human' },
+      // Comment: human thoughtful
+      { id: 'gs-ct1', text: 'The useful part here is the sequencing. Teams often jump to process before they agree on what pain they are solving, and that makes every later decision feel heavier than it needs to be.', category: 'comment-human-thoughtful', expected: 'human' },
+      { id: 'gs-ct2', text: 'I appreciate the focus on writing things down before the meeting. It gives quieter people a better way to contribute and keeps the conversation from rewarding only the fastest speaker.', category: 'comment-human-thoughtful', expected: 'human' },
+      // Engagement bait
+      { id: 'gs-b1', text: 'Comment AI and I will send you the hiring dashboard template.', category: 'engagement-bait', expected: 'uncertain' },
+      { id: 'gs-b2', text: 'Like if you agree and repost for reach so more founders see this.', category: 'engagement-bait', expected: 'uncertain' },
+      { id: 'gs-b3', text: 'DM me the word GUIDE and I will send the full checklist.', category: 'engagement-bait', expected: 'uncertain' },
+    ];
+
+    window.runGoldenSet = async function() {
+      const statusEl = document.getElementById('status');
+      const resultsEl = document.getElementById('results');
+      resultsEl.textContent = '';
+      document.getElementById('runBtn').disabled = true;
+
+      statusEl.textContent = 'Loading model (q4)...';
+
+      const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1');
+      const detector = await pipeline('text-classification', 'onnx-community/tmr-ai-text-detector-ONNX', { dtype: 'q4' });
+
+      statusEl.textContent = 'Model loaded. Running golden set...';
+
+      const results = [];
+      const categoryScores = {};
+      const latencies = [];
+
+      for (let i = 0; i < GOLDEN_SET.length; i++) {
+        const item = GOLDEN_SET[i];
+        statusEl.textContent = `Scoring ${i+1}/${GOLDEN_SET.length}: ${item.id}`;
+
+        const t0 = performance.now();
+        const result = await detector(item.text);
+        const latency = Math.round(performance.now() - t0);
+        latencies.push(latency);
+
+        const top = result[0];
+        const aiScore = top.label === 'ai' ? top.score : 1 - top.score;
+
+        if (!categoryScores[item.category]) {
+          categoryScores[item.category] = { items: [], expected: item.expected };
+        }
+        categoryScores[item.category].items.push({ id: item.id, aiScore, label: top.label, score: top.score, latency });
+
+        results.push({ ...item, aiScore, label: top.label, rawScore: top.score, latency });
+
+        const bar = '█'.repeat(Math.round(aiScore * 40)) + '░'.repeat(40 - Math.round(aiScore * 40));
+        const cls = item.expected === 'human' && top.label === 'human' ? 'pass' :
+                    item.expected === 'ai' && top.label === 'ai' ? 'pass' :
+                    item.expected === 'uncertain' ? 'warn' : 'fail';
+        log(`${item.id.padEnd(12)} ${bar} ${aiScore.toFixed(3)} ${top.label.padEnd(6)} ${latency}ms  [${item.category}]`, cls);
+      }
+
+      log('\n' + '═'.repeat(70));
+      log('SCORE DISTRIBUTION BY CATEGORY');
+      log('═'.repeat(70));
+
+      for (const [cat, data] of Object.entries(categoryScores).sort()) {
+        const scores = data.items.map(i => i.aiScore);
+        const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+        const min = Math.min(...scores);
+        const max = Math.max(...scores);
+        const humanCount = data.items.filter(i => i.label === 'human').length;
+        const aiCount = data.items.filter(i => i.label === 'ai').length;
+
+        log(`\n  ${cat} (expected: ${data.expected})`);
+        log(`    AI score: avg=${avg.toFixed(3)} min=${min.toFixed(3)} max=${max.toFixed(3)}`);
+        log(`    Labels: ${humanCount} human, ${aiCount} ai`);
+      }
+
+      const avgLatency = Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length);
+      log(`\nAverage latency: ${avgLatency}ms`);
+
+      lastResults = { results, categoryScores, avgLatency, timestamp: new Date().toISOString() };
+      document.body.dataset.complete = 'true';
+      document.body.dataset.results = JSON.stringify(lastResults);
+
+      statusEl.textContent = `Done! ${GOLDEN_SET.length} items scored. Avg latency: ${avgLatency}ms`;
+      document.getElementById('runBtn').disabled = false;
+    };
+
+    window.exportResults = function() {
+      if (!lastResults) { alert('Run the test first.'); return; }
+      const blob = new Blob([JSON.stringify(lastResults, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `tmr-golden-set-${Date.now()}.json`;
+      a.click();
+    };
+  </script>
+</body>
+</html>

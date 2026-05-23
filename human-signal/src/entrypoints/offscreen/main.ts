@@ -10,6 +10,7 @@ import {
   createE2EGeminiScoringResult,
   createE2EGeminiStatusResponse,
 } from '@/gemini/e2e-gemini-mock';
+import { TmrService } from '@/tmr';
 import { logger } from '@/shared/logger';
 import { readStorageValue } from '@/shared/storage';
 import { DEFAULT_E2E_GEMINI_MOCK_CONFIG } from '@/shared/types';
@@ -18,9 +19,25 @@ import type { E2EGeminiMockConfig } from '@/shared/types';
 
 logger.info('offscreen.startup', 'HumanSignal offscreen document loaded');
 
-const geminiService: GeminiService = new GeminiService();
+let geminiService: GeminiService | null = null;
+const tmrService: TmrService = new TmrService();
 
-void geminiService.warmUp();
+void tmrService.initialize().then((): void => {
+  const status = tmrService.getStatus();
+  logger.info('offscreen.tmrInit', 'TMR model initialized eagerly', {
+    isLoaded: status.isLoaded,
+    errorMessage: status.errorMessage ?? 'none',
+  });
+}).catch((): void => {
+  logger.warn('offscreen.tmrInit', 'TMR eager initialization failed');
+});
+
+function getGemini(): GeminiService {
+  if (geminiService === null) {
+    geminiService = new GeminiService();
+  }
+  return geminiService;
+}
 
 addMessageListener('offscreen', handleOffscreenMessage);
 
@@ -39,17 +56,16 @@ async function handleOffscreenMessage(message: HumanSignalMessage): Promise<Mess
       };
 
     case 'CHECK_GEMINI_STATUS':
-      logger.info('offscreen.gemini', 'Checking Gemini status');
       return {
         type: 'MODEL_STATUS',
-        status: await geminiService.checkGeminiAvailability(),
+        status: await getGemini().checkGeminiAvailability(),
       };
 
     case 'TRIGGER_DOWNLOAD':
       logger.info('offscreen.gemini', 'Triggering Gemini download');
       return {
         type: 'MODEL_STATUS',
-        status: await geminiService.triggerModelDownload(),
+        status: await getGemini().triggerModelDownload(),
       };
 
     case 'GEMINI_PROMPT':
@@ -60,29 +76,43 @@ async function handleOffscreenMessage(message: HumanSignalMessage): Promise<Mess
       });
       return {
         type: 'GEMINI_RESULT',
-        result: await geminiService.scoreWithGemini(message.item),
-        status: await geminiService.checkGeminiAvailability(),
+        result: await getGemini().scoreWithGemini(message.item),
+        status: await getGemini().checkGeminiAvailability(),
       };
 
     case 'DESTROY_GEMINI_SESSION':
-      await geminiService.destroySession();
+      if (geminiService !== null) {
+        await geminiService.destroySession();
+      }
       return {
         type: 'ACK',
       };
 
-    case 'SCORE_BATCH':
-    case 'SCORE_RESULT':
-    case 'PRIORITY_UPDATE':
-    case 'SHOW_EXPLANATION':
-    case 'SETTINGS_CHANGED':
-    case 'FEEDBACK':
-    case 'GET_HEALTH':
-    case 'CLEAR_CACHE':
-    case 'DELETE_ALL_DATA':
-    case 'ENSURE_OFFSCREEN_DOCUMENT':
-    case 'CLOSE_OFFSCREEN_DOCUMENT':
-    case 'SERVICE_WORKER_ALIVE':
-    case 'REDISCOVER_CONTENT':
+    case 'TMR_CLASSIFY': {
+      const tmrResult = await tmrService.classify(message.text);
+      return {
+        type: 'TMR_CLASSIFY_RESULT',
+        itemId: message.itemId,
+        aiProbability: tmrResult.aiProbability,
+        latencyMs: tmrResult.latencyMs,
+      };
+    }
+
+    case 'TMR_STATUS':
+      return {
+        type: 'TMR_STATUS_RESULT',
+        ...tmrService.getStatus(),
+      };
+
+    case 'TMR_LOAD_MODEL': {
+      const tmrStatus = await tmrService.initialize();
+      return {
+        type: 'TMR_STATUS_RESULT',
+        ...tmrStatus,
+      };
+    }
+
+    default:
       return {
         type: 'ACK',
       };

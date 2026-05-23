@@ -50,23 +50,7 @@ async function handleContentMessage(message: HumanSignalMessage): Promise<Messag
 
     case 'REDISCOVER_CONTENT':
       await overlayController.rediscoverForTest();
-      return {
-        type: 'ACK',
-      };
-
-    case 'SHOW_EXPLANATION':
-    case 'FEEDBACK':
-    case 'PRIORITY_UPDATE':
-    case 'SCORE_BATCH':
-    case 'GEMINI_PROMPT':
-    case 'CHECK_GEMINI_STATUS':
-    case 'TRIGGER_DOWNLOAD':
-    case 'GET_HEALTH':
-    case 'CLEAR_CACHE':
-    case 'DELETE_ALL_DATA':
-    case 'ENSURE_OFFSCREEN_DOCUMENT':
-    case 'CLOSE_OFFSCREEN_DOCUMENT':
-    case 'DESTROY_GEMINI_SESSION':
+      await overlayController.rescoreAll();
       return {
         type: 'ACK',
       };
@@ -79,6 +63,11 @@ async function handleContentMessage(message: HumanSignalMessage): Promise<Messag
 
     case 'SCORE_RESULT':
       overlayController.handleScoreResults(message.results);
+      return {
+        type: 'ACK',
+      };
+
+    default:
       return {
         type: 'ACK',
       };

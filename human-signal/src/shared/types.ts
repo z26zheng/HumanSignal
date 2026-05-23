@@ -31,17 +31,11 @@ export interface ExtractedItem {
 export type FeedbackType = 'agree' | 'disagree' | 'notUseful';
 
 export type ScoringLabel =
-  | 'high-signal'
-  | 'specific'
-  | 'thoughtful'
-  | 'question'
-  | 'mixed'
-  | 'generic'
-  | 'low-effort'
-  | 'low-signal'
-  | 'engagement-bait'
-  | 'repeated'
-  | 'unclear'
+  | 'feels-human'
+  | 'possibly-ai'
+  | 'likely-ai'
+  | 'almost-certainly-ai'
+  | 'cant-tell'
   | 'unavailable';
 
 export type ConfidenceLabel = 'low' | 'medium' | 'high';
@@ -55,7 +49,7 @@ export interface ScoreDimensions {
   readonly templating: number;
 }
 
-export type ScoringSource = 'rules' | 'gemini' | 'system';
+export type ScoringSource = 'rules' | 'gemini' | 'tmr' | 'combined' | 'system';
 
 export interface ScoringResult {
   readonly itemId: ItemId;
@@ -67,6 +61,14 @@ export interface ScoringResult {
   readonly scoringVersion: string;
   readonly scoredAt: number;
   readonly isTextTruncated: boolean;
+  readonly traceEvents?: readonly ScoringTraceEvent[];
+  readonly reasons?: readonly string[];
+}
+
+export interface ScoringTraceEvent {
+  readonly event: string;
+  readonly timestamp: number;
+  readonly detail: string;
 }
 
 export type GeminiAvailability =
@@ -109,6 +111,7 @@ export interface UserSettings {
   readonly weeklySummaryEnabled: boolean;
   readonly showExplanations: boolean;
   readonly stickerOpacity: number;
+  readonly isDeveloperMode: boolean;
 }
 
 export interface FeedbackEntry {
@@ -135,11 +138,6 @@ export const DEFAULT_E2E_GEMINI_MOCK_CONFIG: E2EGeminiMockConfig = {
   downloadProgress: null,
 };
 
-export interface PriorityUpdate {
-  readonly itemId: ItemId;
-  readonly inViewport: boolean;
-}
-
 export const DEFAULT_SCORE_DIMENSIONS: ScoreDimensions = {
   authenticity: 0,
   specificity: 0,
@@ -164,6 +162,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   weeklySummaryEnabled: false,
   showExplanations: true,
   stickerOpacity: 1,
+  isDeveloperMode: false,
 };
 
 export function createUnavailableResult(item: ExtractedItem): ScoringResult {

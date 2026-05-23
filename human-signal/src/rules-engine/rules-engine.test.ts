@@ -31,14 +31,14 @@ describe('rules feature extraction', (): void => {
 });
 
 describe('rules classification', (): void => {
-  it('classifies obvious engagement bait as high-confidence engagement bait', (): void => {
+  it('classifies obvious engagement bait as almost-certainly-ai', (): void => {
     const item: ExtractedItem = createRulesItem(
       'Comment AI and I will send you the full template.',
       'post',
     );
     const result = scoreWithRules(item);
 
-    expect(result.label).toBe('engagement-bait');
+    expect(result.label).toBe('almost-certainly-ai');
     expect(result.confidence).toBe('high');
     expect(result.source).toBe('rules');
   });
@@ -70,7 +70,7 @@ describe('rules classification', (): void => {
       questionMinChars: 30,
     });
 
-    expect(result.label).toBe('low-signal');
+    expect(result.label).toBe('likely-ai');
   });
 });
 

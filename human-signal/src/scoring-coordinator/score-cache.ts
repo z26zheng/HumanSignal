@@ -1,4 +1,5 @@
 import { logger } from '@/shared/logger';
+import { toErrorData } from '@/shared/safe-catch';
 
 import type { ContentHash, ScoringResult } from '@/shared/types';
 
@@ -36,8 +37,12 @@ export class ScoreCache {
       return null;
     }
 
-    if (entry.scoringVersion !== scoringVersion || this.isExpired(entry)) {
+    if (this.isExpired(entry)) {
       this.entries.delete(contentHash);
+      return null;
+    }
+
+    if (entry.scoringVersion !== scoringVersion) {
       return null;
     }
 
@@ -83,10 +88,7 @@ export class ScoreCache {
         database.transaction('scoreCache', 'readonly').objectStore('scoreCache').count(),
       );
     } catch (error: unknown) {
-      logger.warn('scoreCache.size', 'Persisted cache size unavailable; using memory size', {
-        errorName: error instanceof Error ? error.name : 'unknown',
-        errorMessage: error instanceof Error ? error.message : String(error),
-      });
+      logger.warn('scoreCache.size', 'Persisted cache size unavailable; using memory size', toErrorData(error));
       return this.entries.size;
     }
   }
@@ -135,8 +137,7 @@ export class ScoreCache {
     } catch (error: unknown) {
       logger.warn('scoreCache.read', 'Persisted cache read failed; using memory cache', {
         contentHash,
-        errorName: error instanceof Error ? error.name : 'unknown',
-        errorMessage: error instanceof Error ? error.message : String(error),
+        ...toErrorData(error),
       });
       return undefined;
     }
@@ -160,8 +161,7 @@ export class ScoreCache {
     } catch (error: unknown) {
       logger.warn('scoreCache.persist', 'Persisted cache write failed; trying eviction before memory fallback', {
         contentHash: entry.contentHash,
-        errorName: error instanceof Error ? error.name : 'unknown',
-        errorMessage: error instanceof Error ? error.message : String(error),
+        ...toErrorData(error),
       });
       await this.retryPersistAfterEviction(entry);
     }
@@ -174,8 +174,7 @@ export class ScoreCache {
     } catch (error: unknown) {
       logger.warn('scoreCache.persistFallback', 'Persisted cache retry failed; memory cache retained', {
         contentHash: entry.contentHash,
-        errorName: error instanceof Error ? error.name : 'unknown',
-        errorMessage: error instanceof Error ? error.message : String(error),
+        ...toErrorData(error),
       });
     }
   }

@@ -15,6 +15,7 @@ interface StorageSchema {
   readonly feedbackEntries: readonly FeedbackEntry[];
   readonly e2eGeminiMock: E2EGeminiMockConfig;
   readonly e2eFailNextScoreBatch: boolean;
+  readonly devModeExplicitlySet: boolean;
 }
 
 export type StorageKey = keyof StorageSchema;

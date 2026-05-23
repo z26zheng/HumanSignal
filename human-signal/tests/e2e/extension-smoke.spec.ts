@@ -57,17 +57,16 @@ test.describe('extension smoke', () => {
       const stickerLabels = await page
         .locator('.human-signal-sticker')
         .evaluateAll((stickers) => stickers.map((sticker) => sticker.textContent ?? ''));
-      expect(stickerLabels).toContain('Specific');
-      expect(stickerLabels).toContain('Engagement Bait');
-      expect(stickerLabels).toContain('Low Effort');
+      expect(stickerLabels).toContain('Feels Human');
+      expect(stickerLabels).toContain('Almost Certainly AI');
 
-      await page.locator('.human-signal-sticker', { hasText: 'Specific' }).click();
-      await expect(page.locator('.human-signal-popover[role="dialog"] h2')).toContainText('Specific');
+      await page.locator('.human-signal-sticker', { hasText: 'Feels Human' }).click();
+      await expect(page.locator('.human-signal-popover[role="dialog"] h2')).toContainText('Feels Human');
       await expect(page.locator('.human-signal-popover')).toContainText('Source: Rules-based');
 
       await page.keyboard.press('Escape');
       await expect(page.locator('.human-signal-popover')).toBeEmpty();
-      await expect(page.locator('.human-signal-sticker', { hasText: 'Specific' })).toBeFocused();
+      await expect(page.locator('.human-signal-sticker', { hasText: 'Feels Human' })).toBeFocused();
     } finally {
       await context.close();
     }
@@ -120,7 +119,7 @@ test.describe('extension smoke', () => {
       });
       await expect(page.locator('.human-signal-sticker')).toHaveCount(3);
 
-      const beforeLayoutChange = await getStickerPosition(page, 'Specific');
+      const beforeLayoutChange = await getStickerPosition(page, 'Feels Human');
       await page.evaluate(() => {
         const firstPost = document.querySelector<HTMLElement>('article[data-urn="urn:li:activity:1001"]');
 
@@ -130,9 +129,9 @@ test.describe('extension smoke', () => {
 
         firstPost.style.width = '720px';
       });
-      await expect.poll(async () => (await getStickerPosition(page, 'Specific')).x).not.toBe(beforeLayoutChange.x);
+      await expect.poll(async () => (await getStickerPosition(page, 'Feels Human')).x).not.toBe(beforeLayoutChange.x);
 
-      const beforeViewportChange = await getStickerPosition(page, 'Specific');
+      const beforeViewportChange = await getStickerPosition(page, 'Feels Human');
       await page.setViewportSize({ width: 700, height: 720 });
       await page.evaluate(() => {
         const firstPost = document.querySelector<HTMLElement>('article[data-urn="urn:li:activity:1001"]');
@@ -143,7 +142,7 @@ test.describe('extension smoke', () => {
 
         firstPost.style.width = '520px';
       });
-      await expect.poll(async () => (await getStickerPosition(page, 'Specific')).x).not.toBe(beforeViewportChange.x);
+      await expect.poll(async () => (await getStickerPosition(page, 'Feels Human')).x).not.toBe(beforeViewportChange.x);
     } finally {
       await context.close();
     }
@@ -163,14 +162,14 @@ test.describe('extension smoke', () => {
       });
       await expect(page.locator('.human-signal-sticker')).toHaveCount(3);
 
-      const beforeFontChange = await getStickerPosition(page, 'Engagement Bait');
+      const beforeFontChange = await getStickerPosition(page, 'Almost Certainly AI');
       await page.evaluate(() => {
         for (const article of document.querySelectorAll<HTMLElement>('main > article')) {
           article.style.fontSize = '32px';
         }
       });
 
-      await expect.poll(async () => (await getStickerPosition(page, 'Engagement Bait')).y).not.toBe(beforeFontChange.y);
+      await expect.poll(async () => (await getStickerPosition(page, 'Almost Certainly AI')).y).not.toBe(beforeFontChange.y);
     } finally {
       await context.close();
     }
@@ -218,7 +217,7 @@ test.describe('extension smoke', () => {
       await setupLinkedInFixtureRoute(context);
       const page = await openLinkedInFixturePage(context);
 
-      await page.locator('.human-signal-sticker', { hasText: 'Specific' }).click();
+      await page.locator('.human-signal-sticker', { hasText: 'Feels Human' }).click();
       const agreeButton = page.locator('.human-signal-popover').getByRole('button', {
         name: 'agree',
         exact: true,
@@ -267,7 +266,7 @@ test.describe('extension smoke', () => {
       await setupLinkedInFixtureRoute(context);
       const page = await openLinkedInFixturePage(context);
 
-      await expect(page.locator('.human-signal-sticker', { hasText: 'Specific' })).toHaveCount(1);
+      await expect(page.locator('.human-signal-sticker', { hasText: 'Feels Human' })).toHaveCount(1);
 
       await configureGeminiMock(context, extensionId, {
         isEnabled: true,
@@ -313,8 +312,8 @@ test.describe('extension smoke', () => {
       });
 
       await expect(page.locator('.human-signal-sticker')).toHaveCount(4);
-      await expect(page.locator('.human-signal-sticker', { hasText: 'High Signal' })).toHaveCount(1);
-      await page.locator('.human-signal-sticker', { hasText: 'High Signal' }).click();
+      await expect(page.locator('.human-signal-sticker', { hasText: 'Feels Human' }).first()).toBeVisible();
+      await page.locator('.human-signal-sticker', { hasText: 'Feels Human' }).first().click();
       await expect(page.locator('.human-signal-popover')).toContainText('Source: AI-enhanced');
     } finally {
       await context.close();
@@ -355,7 +354,7 @@ test.describe('extension smoke', () => {
 
       await expect(page.locator('.human-signal-sticker--loading')).toHaveCount(0);
       await expect(page.locator('.human-signal-sticker', { hasText: 'Unavailable' })).toHaveCount(0);
-      await expect(page.locator('.human-signal-sticker', { hasText: 'High Signal' })).toHaveCount(0);
+      await expect(page.locator('.human-signal-sticker')).toHaveCount(3);
     } finally {
       await context.close();
     }
@@ -382,7 +381,7 @@ test.describe('extension smoke', () => {
 
       await expect(page.locator('.human-signal-sticker--loading')).toHaveCount(0);
       await expect(page.locator('.human-signal-sticker', { hasText: 'Unavailable' })).toHaveCount(0);
-      await expect(page.locator('.human-signal-sticker', { hasText: 'Specific' })).toHaveCount(1);
+      await expect(page.locator('.human-signal-sticker', { hasText: 'Feels Human' })).toHaveCount(1);
     } finally {
       await context.close();
     }
@@ -410,9 +409,8 @@ test.describe('extension smoke', () => {
       await expect(popupPage.getByText('E2E Gemini mock error')).toBeVisible();
 
       await page.bringToFront();
-      await expect(page.locator('.human-signal-sticker', { hasText: 'Specific' })).toHaveCount(1);
-      await expect(page.locator('.human-signal-sticker', { hasText: 'Engagement Bait' })).toHaveCount(1);
-      await expect(page.locator('.human-signal-sticker', { hasText: 'High Signal' })).toHaveCount(0);
+      await expect(page.locator('.human-signal-sticker', { hasText: 'Feels Human' })).toHaveCount(1);
+      await expect(page.locator('.human-signal-sticker', { hasText: 'Almost Certainly AI' })).toHaveCount(2);
     } finally {
       await context.close();
     }
@@ -426,8 +424,8 @@ test.describe('extension smoke', () => {
       const page = await openLinkedInFixturePage(context);
 
       await expect(page.locator('.human-signal-sticker')).toHaveCount(3);
-      await page.locator('.human-signal-sticker', { hasText: 'Specific' }).click();
-      await expect(page.locator('.human-signal-popover[role="dialog"] h2')).toContainText('Specific');
+      await page.locator('.human-signal-sticker', { hasText: 'Feels Human' }).click();
+      await expect(page.locator('.human-signal-popover[role="dialog"] h2')).toContainText('Feels Human');
 
       await page.evaluate(() => {
         document.querySelector('article[data-urn="urn:li:activity:1001"]')?.remove();
@@ -447,14 +445,14 @@ test.describe('extension smoke', () => {
       await setupLinkedInFixtureRoute(context);
       const page = await openLinkedInFixturePage(context);
 
-      await page.locator('.human-signal-sticker', { hasText: 'Specific' }).click();
-      await expect(page.locator('.human-signal-popover[role="dialog"] h2')).toContainText('Specific');
+      await page.locator('.human-signal-sticker', { hasText: 'Feels Human' }).click();
+      await expect(page.locator('.human-signal-popover[role="dialog"] h2')).toContainText('Feels Human');
 
       await page.locator('main').click({ position: { x: 4, y: 4 } });
       await expect(page.locator('.human-signal-popover')).toBeEmpty();
 
-      await page.locator('.human-signal-sticker', { hasText: 'Specific' }).click();
-      await expect(page.locator('.human-signal-popover[role="dialog"] h2')).toContainText('Specific');
+      await page.locator('.human-signal-sticker', { hasText: 'Feels Human' }).click();
+      await expect(page.locator('.human-signal-popover[role="dialog"] h2')).toContainText('Feels Human');
 
       await page.evaluate(() => window.dispatchEvent(new Event('scroll')));
       await expect(page.locator('.human-signal-popover')).toBeEmpty();
@@ -479,7 +477,8 @@ test.describe('extension smoke', () => {
 
       await popupPage.bringToFront();
       await popupPage.getByRole('button', { name: 'Delete all data' }).click();
-      await expect(popupPage.getByLabel('Signal Stickers')).toHaveValue('all');
+      await popupPage.getByRole('button', { name: 'Delete' }).click();
+      await expect(popupPage.locator('select')).toHaveValue('all');
 
       await linkedInPage.bringToFront();
       await changePopupStickerVisibility(popupPage, 'all');
@@ -513,6 +512,79 @@ test.describe('extension smoke', () => {
       await expect(page.locator('#human-signal-overlay-root')).toBeAttached();
       await expect(page.locator('.human-signal-sticker')).toHaveCount(0);
       expect(consoleErrors).toEqual([]);
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('Escape key minimizes sticker to dot, click dot restores', async () => {
+    const context = await launchExtensionContext();
+
+    try {
+      await setupLinkedInFixtureRoute(context);
+      const page = await openLinkedInFixturePage(context);
+
+      const sticker = page.locator('.human-signal-sticker', { hasText: 'Feels Human' });
+      await expect(sticker).toBeVisible();
+
+      await sticker.focus();
+      await page.keyboard.press('Escape');
+
+      await expect(page.locator('.human-signal-sticker--minimized')).toHaveCount(1);
+
+      await page.locator('.human-signal-sticker--minimized').first().click();
+      await expect(page.locator('.human-signal-sticker--minimized')).toHaveCount(0);
+      await expect(page.locator('.human-signal-sticker', { hasText: 'Feels Human' })).toBeVisible();
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('popup shows new label breakdown and controls', async () => {
+    const context = await launchExtensionContext();
+
+    try {
+      const extensionId = await getExtensionId(context);
+      await setupLinkedInFixtureRoute(context);
+      await openLinkedInFixturePage(context);
+
+      const popupPage = await context.newPage();
+      await popupPage.goto(`chrome-extension://${extensionId}/popup.html`);
+      await popupPage.waitForTimeout(1000);
+
+      await expect(popupPage.locator('.hs-product-name')).toHaveText('HumanSignal');
+      await expect(popupPage.locator('.hs-tagline')).toContainText('Make LinkedIn feel human again');
+      await expect(popupPage.locator('.hs-label-row')).toHaveCount(5);
+
+      await expect(popupPage.locator('.hs-section-title')).toContainText('Enhanced analysis');
+      await expect(popupPage.locator('text=Sensitivity')).toBeVisible();
+      await expect(popupPage.locator('text=Relaxed')).toBeVisible();
+      await expect(popupPage.locator('text=Normal')).toBeVisible();
+      await expect(popupPage.locator('text=Strict')).toBeVisible();
+    } finally {
+      await context.close();
+    }
+  });
+
+  test('popup delete all data shows confirmation dialog', async () => {
+    const context = await launchExtensionContext();
+
+    try {
+      const extensionId = await getExtensionId(context);
+      const popupPage = await context.newPage();
+      await popupPage.goto(`chrome-extension://${extensionId}/popup.html`);
+      await popupPage.waitForTimeout(500);
+
+      await popupPage.locator('text=Data & privacy').click();
+      await expect(popupPage.getByRole('button', { name: 'Delete all data' })).toBeVisible();
+
+      await popupPage.getByRole('button', { name: 'Delete all data' }).click();
+      await expect(popupPage.locator('.hs-confirm-text')).toContainText('Are you sure?');
+      await expect(popupPage.getByRole('button', { name: 'Cancel' })).toBeVisible();
+      await expect(popupPage.getByRole('button', { name: 'Delete' })).toBeVisible();
+
+      await popupPage.getByRole('button', { name: 'Cancel' }).click();
+      await expect(popupPage.locator('.hs-confirm-text')).toHaveCount(0);
     } finally {
       await context.close();
     }
@@ -579,11 +651,11 @@ async function changePopupStickerVisibility(
 ): Promise<void> {
   await popupPage.evaluate((nextValue) => {
     const stickerSelect = [...document.querySelectorAll('select')].find((select) =>
-      select.closest('label')?.textContent?.includes('Signal Stickers'),
+      select.closest('label')?.textContent?.includes('Show stickers on'),
     );
 
     if (stickerSelect === undefined) {
-      throw new Error('Signal Stickers select was not found.');
+      throw new Error('Show stickers on select was not found.');
     }
 
     stickerSelect.value = nextValue;

@@ -44,7 +44,7 @@ export function createE2EGeminiScoringResult(
 
   return {
     itemId: item.itemId,
-    label: item.itemType === 'comment' ? 'thoughtful' : 'high-signal',
+    label: 'feels-human',
     confidence: 'high',
     dimensions: {
       authenticity: 0.9,

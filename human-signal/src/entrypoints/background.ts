@@ -6,12 +6,12 @@ import {
   type MessageResponse,
   type HumanSignalMessage,
 } from '@/shared/messaging';
-import { getLogEntries, logger } from '@/shared/logger';
+import { getLogEntries, logger, type LogEntry } from '@/shared/logger';
+import type { DebugLogEntry } from '@/shared/message-types';
 import {
   addFeedbackEntry,
   clearAllStoredData,
   getGeminiStatus,
-  getUserSettings,
   readStorageValue,
   writeStorageValue,
   setUserSettings,
@@ -23,17 +23,18 @@ import {
   createE2EGeminiStatusResponse,
 } from '@/gemini/e2e-gemini-mock';
 import { DEFAULT_E2E_GEMINI_MOCK_CONFIG, DEFAULT_USER_SETTINGS } from '@/shared/types';
-import type { E2EGeminiMockConfig, ItemId } from '@/shared/types';
+import type { E2EGeminiMockConfig, GeminiStatus, HealthMetrics, ItemId } from '@/shared/types';
 
 const scoringCoordinator: ScoringCoordinator = new ScoringCoordinator();
 
 export default defineBackground((): void => {
+  scoringCoordinator.setEnsureOffscreen(ensureOffscreenDocument);
   logger.info('background.startup', 'HumanSignal background service worker started', {
     extensionId: browser.runtime.id,
   });
 
   addMessageListener('background', handleBackgroundMessage);
-  void checkGeminiOnStartup();
+  void checkTmrOnStartup();
 
   browser.runtime.onInstalled.addListener((details: Browser.runtime.InstalledDetails): void => {
     logger.info('background.installed', 'Extension install event received', {
@@ -61,6 +62,9 @@ async function handleBackgroundMessage(
 
     case 'SETTINGS_CHANGED':
       await relaySettingsToActiveTab(message);
+      if ('isDeveloperMode' in message.settings) {
+        await writeStorageValue('devModeExplicitlySet', true);
+      }
       logger.info('background.settings', 'Settings changed', {
         keys: Object.keys(message.settings),
       });
@@ -90,13 +94,7 @@ async function handleBackgroundMessage(
       return {
         type: 'SCORE_RESULT',
         results: scoreBatchResult.results,
-        queued: scoreBatchResult.queued,
-      };
-
-    case 'PRIORITY_UPDATE':
-      scoringCoordinator.handlePriorityUpdates(message.updates);
-      return {
-        type: 'ACK',
+        queued: [],
       };
 
     case 'SERVICE_WORKER_ALIVE':
@@ -109,6 +107,51 @@ async function handleBackgroundMessage(
       return {
         type: 'ACK',
       };
+
+    case 'OPEN_POPUP':
+      try {
+        await browser.action.openPopup();
+      } catch {
+        logger.warn('background.popup', 'Unable to open popup programmatically');
+      }
+      return {
+        type: 'ACK',
+      };
+
+    case 'GET_TELEMETRY': {
+      const summary = scoringCoordinator.getTelemetrySummary();
+      logger.info('background.telemetry', 'Telemetry requested', {
+        entryCount: summary.entries.length,
+        mode: summary.mode,
+      });
+      return {
+        type: 'TELEMETRY_RESULT',
+        entries: summary.entries,
+        mode: summary.mode,
+        itemsScored: summary.itemsScored,
+      };
+    }
+
+    case 'GET_DEBUG_STATE': {
+      const debugHealth: HealthMetrics = await scoringCoordinator.getHealth(getLogEntries().length, 0);
+      const debugGeminiStatus: GeminiStatus = await getGeminiStatus();
+      const recentLogs: readonly DebugLogEntry[] = getLogEntries()
+        .slice(-50)
+        .map((e: LogEntry): DebugLogEntry => ({
+          timestamp: e.timestamp,
+          level: e.level === 'warn' || e.level === 'error' ? e.level : 'info',
+          context: e.context,
+          message: e.message,
+          data: (e.data ?? {}) as Record<string, unknown>,
+        }));
+      return {
+        type: 'DEBUG_STATE_RESULT',
+        health: debugHealth,
+        geminiAvailability: debugGeminiStatus.availability,
+        scoringMode: 'rules',
+        recentLogs,
+      };
+    }
 
     case 'SHOW_EXPLANATION':
     case 'SCORE_RESULT':
@@ -168,6 +211,11 @@ async function handleBackgroundMessage(
     case 'GEMINI_PROMPT':
       return await forwardToOffscreen(message);
 
+    case 'TMR_CLASSIFY':
+    case 'TMR_STATUS':
+    case 'TMR_LOAD_MODEL':
+      return await forwardToOffscreen(message);
+
     case 'DESTROY_GEMINI_SESSION':
       return await forwardToOffscreen(message);
   }
@@ -184,27 +232,19 @@ async function shouldFailScoreBatchForE2E(): Promise<boolean> {
   return true;
 }
 
-void getUserSettings();
-
 async function forwardToOffscreen(message: HumanSignalMessage): Promise<MessagePayload> {
   const mockPayload: MessagePayload | null = await handleE2EGeminiMockInBackground(message);
 
   if (mockPayload !== null) {
-    if (mockPayload.type === 'MODEL_STATUS' || mockPayload.type === 'GEMINI_RESULT') {
-      scoringCoordinator.onGeminiStatus(mockPayload.status);
-    }
-
     return mockPayload;
   }
 
   const isAvailable: boolean = await ensureOffscreenDocument();
 
   if (!isAvailable) {
-    const status = await getGeminiStatus();
-    scoringCoordinator.onGeminiStatus(status);
     return {
       type: 'MODEL_STATUS',
-      status,
+      status: await getGeminiStatus(),
     };
   }
 
@@ -214,8 +254,12 @@ async function forwardToOffscreen(message: HumanSignalMessage): Promise<MessageP
   });
 
   if (response.ok) {
-    if (response.payload.type === 'MODEL_STATUS' || response.payload.type === 'GEMINI_RESULT') {
-      scoringCoordinator.onGeminiStatus(response.payload.status);
+    if (response.payload.type === 'TMR_STATUS_RESULT') {
+      scoringCoordinator.setTmrAvailable(response.payload.isLoaded);
+    }
+
+    if (response.payload.type === 'TMR_CLASSIFY_RESULT') {
+      scoringCoordinator.setTmrAvailable(true);
     }
 
     return response.payload;
@@ -263,21 +307,18 @@ async function relaySettingsToActiveTab(message: HumanSignalMessage): Promise<vo
   }
 
   const tabs: Browser.tabs.Tab[] = await browser.tabs.query({
-    active: true,
-    currentWindow: true,
     url: 'https://www.linkedin.com/*',
   });
-  const tabId: number | undefined = tabs[0]?.id;
 
-  if (tabId === undefined) {
-    return;
+  for (const tab of tabs) {
+    if (tab.id !== undefined) {
+      await sendToContentScript(tab.id, {
+        type: 'SETTINGS_CHANGED',
+        source: 'background',
+        settings: message.settings,
+      });
+    }
   }
-
-  await sendToContentScript(tabId, {
-    type: 'SETTINGS_CHANGED',
-    source: 'background',
-    settings: message.settings,
-  });
 }
 
 async function relayServiceWorkerAliveToLinkedInTabs(): Promise<void> {
@@ -301,25 +342,62 @@ async function relayServiceWorkerAliveToLinkedInTabs(): Promise<void> {
   }
 }
 
-async function checkGeminiOnStartup(): Promise<void> {
+const TMR_POLL_INTERVAL_MS: number = 2000;
+const TMR_MAX_POLL_ATTEMPTS: number = 30;
+
+async function checkTmrOnStartup(): Promise<void> {
   try {
-    await scoringCoordinator.initialize();
 
-    const statusPayload: MessagePayload = await forwardToOffscreen({
-      type: 'CHECK_GEMINI_STATUS',
-      requestId: '',
-      source: 'background',
-      target: 'offscreen',
-    } as HumanSignalMessage);
+    for (let attempt: number = 0; attempt < TMR_MAX_POLL_ATTEMPTS; attempt++) {
+      const tmrPayload: MessagePayload = await forwardToOffscreen({
+        type: 'TMR_STATUS',
+        requestId: '',
+        source: 'background',
+        target: 'offscreen',
+      } as HumanSignalMessage);
 
-    if (statusPayload.type === 'MODEL_STATUS') {
-      scoringCoordinator.onGeminiStatus(statusPayload.status);
-      logger.info('background.startup', 'Gemini status checked on startup', {
-        availability: statusPayload.status.availability,
-        mode: scoringCoordinator.getMode(),
+      if (tmrPayload.type === 'TMR_STATUS_RESULT' && tmrPayload.isLoaded) {
+        scoringCoordinator.setTmrAvailable(true);
+        logger.info('background.startup', 'TMR model ready', { attempt });
+        void rescoreActiveTabsWithTmr();
+        return;
+      }
+
+      if (tmrPayload.type === 'TMR_STATUS_RESULT' && tmrPayload.errorMessage !== null) {
+        logger.warn('background.startup', 'TMR model failed to load', {
+          error: tmrPayload.errorMessage,
+        });
+        return;
+      }
+
+      await new Promise<void>((resolve: () => void): void => {
+        setTimeout(resolve, TMR_POLL_INTERVAL_MS);
       });
     }
+
+    logger.warn('background.startup', 'TMR model did not load within polling window');
   } catch (error: unknown) {
-    logger.error('background.startup.gemini', error);
+    logger.error('background.startup.tmr', error);
   }
 }
+
+async function rescoreActiveTabsWithTmr(): Promise<void> {
+  const tabs: Browser.tabs.Tab[] = await browser.tabs.query({
+    url: 'https://www.linkedin.com/*',
+  });
+
+  for (const tab of tabs) {
+    if (tab.id !== undefined) {
+      await sendToContentScript(tab.id, {
+        type: 'REDISCOVER_CONTENT',
+        source: 'background',
+      });
+    }
+  }
+
+  logger.info('background.tmr', 'Triggered re-score on LinkedIn tabs after TMR ready', {
+    tabCount: tabs.length,
+  });
+}
+
+

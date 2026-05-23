@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TMR - AI Content Scoring</title>
+  <style>
+    body { font: 14px/1.6 system-ui, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+    #status { padding: 12px; border-radius: 8px; background: #f1f5f9; margin: 12px 0; }
+    #results { white-space: pre-wrap; font: 11px/1.4 monospace; background: #0f172a; color: #e2e8f0; padding: 16px; border-radius: 8px; }
+    button { padding: 8px 16px; border: 1px solid #cbd5e1; border-radius: 8px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>TMR Scoring: AI Content Items</h1>
+  <button id="runBtn" onclick="run()">Run</button>
+  <div id="status">Click Run.</div>
+  <div id="results"></div>
+
+  <script type="module">
+    window.run = async function() {
+      const statusEl = document.getElementById('status');
+      const resultsEl = document.getElementById('results');
+      resultsEl.textContent = '';
+      document.getElementById('runBtn').disabled = true;
+
+      statusEl.textContent = 'Loading AI content items...';
+      const resp = await fetch('ai-content-items.json');
+      const data = await resp.json();
+
+      statusEl.textContent = 'Loading TMR model...';
+      const { pipeline } = await import('https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.5.1');
+      const detector = await pipeline('text-classification', 'onnx-community/tmr-ai-text-detector-ONNX', { dtype: 'q4' });
+
+      const tmrResults = [];
+      for (let i = 0; i < data.items.length; i++) {
+        const item = data.items[i];
+        statusEl.textContent = `Scoring ${i+1}/${data.items.length}: ${item.id}`;
+        const result = await detector(item.text);
+        const top = result[0];
+        const aiScore = top.label === 'ai' ? top.score : 1 - top.score;
+        tmrResults.push({ id: item.id, tmrLabel: top.label, tmrAiProbability: parseFloat(aiScore.toFixed(4)) });
+        resultsEl.textContent += `${item.id.padEnd(20)} tmr=${top.label.padEnd(6)} ai=${aiScore.toFixed(3)} [${item.category}]\n`;
+      }
+
+      document.body.dataset.complete = 'true';
+      document.body.dataset.tmrResults = JSON.stringify({ itemCount: tmrResults.length, items: tmrResults });
+      statusEl.textContent = `Done! ${tmrResults.length} items scored.`;
+      console.log(JSON.stringify({ itemCount: tmrResults.length, items: tmrResults }, null, 2));
+      document.getElementById('runBtn').disabled = false;
+    };
+  </script>
+</body>
+</html>

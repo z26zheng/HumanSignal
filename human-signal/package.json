@@ -2,7 +2,7 @@
   "name": "human-signal",
   "description": "Signal intelligence for LinkedIn",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
@@ -15,6 +15,9 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "eval:rules": "tsx -r tsconfig-paths/register scripts/evaluate-rules.ts",
+    "spike:gen-eval": "tsx -r tsconfig-paths/register spike/gemini-accuracy/generate-eval-json.ts",
+    "spike:benchmark": "npx tsx spike/gemini-accuracy/run-benchmark.ts",
+    "spike:serve": "npx tsx spike/gemini-accuracy/serve-benchmark.ts",
     "perf:baseline": "tsx -r tsconfig-paths/register scripts/perf-baseline.ts",
     "release:check-package": "tsx scripts/check-package-size.ts",
     "manual-test": "bash scripts/manual-test.sh",
@@ -26,6 +29,7 @@
     "@playwright/test": "1.59.1",
     "@preact/preset-vite": "2.10.5",
     "@types/jsdom": "28.0.1",
+    "chrome-webstore-upload-cli": "^3.5.0",
     "jsdom": "29.1.1",
     "tsconfig-paths": "4.2.0",
     "tsx": "4.21.0",
@@ -35,6 +39,7 @@
   },
   "packageManager": "pnpm@11.0.8+sha512.4c4097e1dd2d42372c4e7fa5a791ff28fc75a484c7ac192e64b1df0fdef17594ba982f9b4fed9adfb3c757846f565b799b2763fb3733d1de1bcb82cf46684912",
   "dependencies": {
+    "@huggingface/transformers": "^4.2.0",
     "preact": "10.29.1"
   }
 }

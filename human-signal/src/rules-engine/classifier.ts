@@ -49,40 +49,48 @@ function classifyPost(
   thresholds: ClassificationThresholds,
 ): ClassificationResult {
   if (features.engagementBaitScore > thresholds.engagementBaitMin) {
-    return createResult('engagement-bait', 'high', features);
+    return createResult('almost-certainly-ai', 'high', features,
+      ['Strong engagement-bait or automated pattern with no human specificity.']);
   }
 
   if (features.charCount < thresholds.shortPostMaxChars) {
-    return createResult('unclear', 'low', features);
+    return createResult('cant-tell', 'low', features,
+      ['Too short to classify confidently.']);
   }
 
   if (isGenericPost(features, thresholds)) {
-    return createResult('generic', 'medium', features);
+    return createResult('likely-ai', 'medium', features,
+      ['Generic structure with no personal detail. Matches common AI output patterns.']);
   }
 
   if (features.listicleScore > thresholds.listicleScoreMin && features.evidenceCount === 0) {
-    return createResult('low-signal', 'medium', features);
+    return createResult('likely-ai', 'medium', features,
+      ['Uses a list or template-style structure without supporting evidence.']);
   }
 
   if (
     (features.concreteNumberCount >= thresholds.specificNumbersMin || features.dateReferenceCount >= 1) &&
     features.hasFirstPerson
   ) {
-    return createResult('specific', 'medium', features);
+    return createResult('feels-human', 'medium', features,
+      ['Includes specific personal experience with concrete details.']);
   }
 
   if (
     features.namedEntityCount >= thresholds.specificEntitiesMin &&
     features.firstPersonCount >= 2
   ) {
-    return createResult('high-signal', 'medium', features);
+    return createResult('feels-human', 'medium', features,
+      ['Combines personal experience with multiple specific entities or details.']);
   }
 
   if (hasMixedPostSignals(features)) {
-    return createResult('mixed', 'low', features);
+    return createResult('possibly-ai', 'low', features,
+      ['Some signs of personal context, but also some templated or generic patterns.']);
   }
 
-  return createResult('unclear', 'low', features);
+  return createResult('cant-tell', 'low', features,
+    ['Not enough specific evidence to classify confidently.']);
 }
 
 function classifyComment(
@@ -90,33 +98,40 @@ function classifyComment(
   thresholds: ClassificationThresholds,
 ): ClassificationResult {
   if (features.charCount <= thresholds.shortCommentMaxChars && features.genericPhraseCount > 0) {
-    return createResult('low-effort', 'high', features);
+    return createResult('almost-certainly-ai', 'high', features,
+      ['Short praise phrase matching common automated engagement patterns.']);
   }
 
   if (features.charCount < 10) {
-    return createResult('unclear', 'low', features);
+    return createResult('cant-tell', 'low', features,
+      ['Too short to classify confidently.']);
   }
 
   if (features.genericPhraseCount > 0) {
-    return createResult('generic', 'medium', features);
+    return createResult('likely-ai', 'medium', features,
+      ['Broad praise or motivational language without concrete supporting detail.']);
   }
 
   if (features.questionCount >= 1 && features.charCount > thresholds.questionMinChars) {
-    return createResult('question', 'medium', features);
+    return createResult('feels-human', 'medium', features,
+      ['Asks a substantive question rather than only reacting.']);
   }
 
   if (features.concreteNumberCount >= 1 || features.namedEntityCount >= 1) {
-    return createResult('specific', 'medium', features);
+    return createResult('feels-human', 'medium', features,
+      ['Includes a personal anecdote with specific context or a concrete outcome.']);
   }
 
   if (
     features.charCount > thresholds.thoughtfulMinChars &&
     features.uniqueWordRatio > thresholds.thoughtfulUniqueWordMin
   ) {
-    return createResult('thoughtful', 'medium', features);
+    return createResult('feels-human', 'medium', features,
+      ['Adds enough original wording and context to be more than a short reaction.']);
   }
 
-  return createResult('unclear', 'low', features);
+  return createResult('cant-tell', 'low', features,
+    ['Too short or too ambiguous to classify confidently.']);
 }
 
 function isGenericPost(features: TextFeatures, thresholds: ClassificationThresholds): boolean {
@@ -140,12 +155,13 @@ function createResult(
   label: ScoringLabel,
   confidence: ConfidenceLabel,
   features: TextFeatures,
+  reasons: readonly string[],
 ): ClassificationResult {
   return {
     label,
     confidence,
     dimensions: calculateDimensions(features),
-    reasons: generateReasons(features, label),
+    reasons,
   };
 }
 
@@ -160,35 +176,6 @@ function calculateDimensions(features: TextFeatures): ScoreDimensions {
     engagementBait: features.engagementBaitScore,
     templating: clamp01(features.motivationalClicheCount / 3 + features.listicleScore / 2),
   };
-}
-
-function generateReasons(features: TextFeatures, label: ScoringLabel): readonly string[] {
-  switch (label) {
-    case 'engagement-bait':
-      return ['Contains a direct engagement request or gated giveaway pattern.'];
-    case 'generic':
-      return ['Uses broad praise or motivational language without concrete supporting detail.'];
-    case 'low-signal':
-      return ['Uses a list or template-style structure without detected evidence.'];
-    case 'specific':
-      return ['Includes concrete numbers, dates, named entities, or implementation detail.'];
-    case 'high-signal':
-      return ['Combines personal experience with multiple specific entities or details.'];
-    case 'question':
-      return ['Asks a substantive question rather than only reacting.'];
-    case 'thoughtful':
-      return ['Adds enough original wording and context to be more than a short reaction.'];
-    case 'low-effort':
-      return ['Short praise phrase without additional context.'];
-    case 'mixed':
-      return ['Contains some concrete signal but not enough support for a stronger label.'];
-    case 'unclear':
-      return ['Not enough specific evidence to classify confidently.'];
-    case 'repeated':
-      return ['Appears repeated in context.'];
-    case 'unavailable':
-      return ['Scoring is unavailable.'];
-  }
 }
 
 function clamp01(value: number): number {

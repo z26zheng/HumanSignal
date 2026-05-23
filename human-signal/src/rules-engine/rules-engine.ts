@@ -21,6 +21,7 @@ export function scoreWithRules(
     confidence: classification.confidence,
     dimensions: classification.dimensions,
     explanation: classification.reasons.join(' '),
+    reasons: classification.reasons,
     source: 'rules',
     scoringVersion: RULES_SCORING_VERSION,
     scoredAt: Date.now(),
