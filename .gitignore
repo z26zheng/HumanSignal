@@ -23,6 +23,10 @@ node_modules/
 # Secrets / credentials
 human-signal/CD/
 
+# IDE and debug session artifacts
+.cursor/
+.chrome-cdp-debug/
+
 # Bundled model and ONNX runtime (too large for git; fetched/copied at build time)
 human-signal/public/models/
 human-signal/public/ort/
