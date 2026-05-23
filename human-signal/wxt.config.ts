@@ -5,7 +5,7 @@ export default defineConfig({
   srcDir: 'src',
   manifest: {
     name: 'HumanSignal',
-    description: 'Detect AI-generated posts and comments on LinkedIn with on-device analysis. No data leaves your browser.',
+    description: 'See which LinkedIn posts feel genuinely human. On-device AI detection. No data leaves your browser.',
     version: '1.0.0.0',
     permissions: ['storage', 'offscreen', 'activeTab'],
     host_permissions: [
