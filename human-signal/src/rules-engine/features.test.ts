@@ -181,18 +181,77 @@ describe('extractFeatures', (): void => {
   });
 
   describe('output shape', (): void => {
-    it('returns all 21 documented properties', (): void => {
+    it('returns all documented properties including conversational ones', (): void => {
       const keys: readonly string[] = Object.keys(extractFeatures('Sample text.'));
       const expected: readonly string[] = [
         'charCount', 'wordCount', 'sentenceCount', 'paragraphCount',
         'hasFirstPerson', 'firstPersonCount', 'concreteNumberCount', 'dateReferenceCount',
-        'percentageCount', 'namedEntityCount', 'genericPhraseCount', 'genericPhraseRatio',
+        'percentageCount', 'namedEntityCount', 'properNounCount',
+        'genericPhraseCount', 'genericPhraseRatio',
         'motivationalClicheCount', 'engagementBaitScore', 'listicleScore', 'questionCount',
         'claimCount', 'evidenceCount', 'claimEvidenceRatio', 'uniqueWordRatio', 'averageSentenceLength',
+        'directAddressCount', 'empathyMarkerCount', 'communityTermCount', 'emojiCount', 'conversationalSignals',
       ];
       for (const key of expected) {
         expect(keys).toContain(key);
       }
+    });
+  });
+
+  describe('conversational signals (direct address, empathy, community, emoji)', (): void => {
+    it('counts direct address phrases like "to my network" and "let me know"', (): void => {
+      const f = extractFeatures('To my network: let me know if I can help. Feel free to reach out.');
+      expect(f.directAddressCount).toBeGreaterThanOrEqual(3);
+    });
+
+    it('counts empathy markers like "miss you" and "lucky to"', (): void => {
+      const f = extractFeatures('I was lucky to work with you all. I miss you dearly. So grateful for the team.');
+      expect(f.empathyMarkerCount).toBeGreaterThanOrEqual(3);
+    });
+
+    it('counts ex-<company> patterns generically', (): void => {
+      const f = extractFeatures('Sharing this with ex-hoodies and ex-Googlers — please reach out.');
+      expect(f.communityTermCount).toBeGreaterThanOrEqual(2);
+    });
+
+    it('counts "my team" / "my colleagues" community terms', (): void => {
+      const f = extractFeatures('Reaching out to my colleagues and my team.');
+      expect(f.communityTermCount).toBeGreaterThanOrEqual(2);
+    });
+
+    it('counts emoji codepoints', (): void => {
+      const f = extractFeatures('Thanks for everything 💚 🎉');
+      expect(f.emojiCount).toBeGreaterThanOrEqual(2);
+    });
+
+    it('is zero for text with no conversational markers', (): void => {
+      const f = extractFeatures('The system processed 42 requests in 3 seconds.');
+      expect(f.conversationalSignals).toBe(0);
+    });
+
+    it('sums all four conversational categories into conversationalSignals', (): void => {
+      const f = extractFeatures('To my network: I miss you all. ex-hoodies 💚');
+      expect(f.conversationalSignals).toBe(
+        f.directAddressCount + f.empathyMarkerCount + f.communityTermCount + f.emojiCount,
+      );
+      expect(f.conversationalSignals).toBeGreaterThan(0);
+    });
+  });
+
+  describe('proper noun detection', (): void => {
+    it('catches capitalized company-like words without "at" prefix', (): void => {
+      const f = extractFeatures('Robinhood layoff impacted my colleagues yesterday.');
+      expect(f.properNounCount).toBeGreaterThanOrEqual(1);
+    });
+
+    it('excludes common sentence-starter words', (): void => {
+      const f = extractFeatures('The work was great. This was important. After the meeting, we shipped.');
+      expect(f.properNounCount).toBe(0);
+    });
+
+    it('counts multiple distinct proper nouns', (): void => {
+      const f = extractFeatures('Met with Sarah at Stripe yesterday about the deal.');
+      expect(f.properNounCount).toBeGreaterThanOrEqual(2);
     });
   });
 });

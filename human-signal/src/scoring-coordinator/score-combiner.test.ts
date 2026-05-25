@@ -23,6 +23,15 @@ const AUTHENTIC_DIMS: ScoreDimensions = {
   templating: 0.1,
 };
 
+const STRONGLY_AUTHENTIC_DIMS: ScoreDimensions = {
+  authenticity: 1.0,
+  specificity: 0.7,
+  originality: 0.7,
+  usefulness: 0.5,
+  engagementBait: 0,
+  templating: 0,
+};
+
 const ENGAGEMENT_BAIT_DIMS: ScoreDimensions = {
   ...NEUTRAL_DIMS,
   engagementBait: 0.9,
@@ -159,6 +168,53 @@ describe('combineScores', (): void => {
         tmrAiProbability: 0.95,
       }));
       expect(result.label).toBe('likely-ai');
+    });
+  });
+
+  describe('strongly-authentic tier (rules overrides TMR false positives)', (): void => {
+    it('returns feels-human when rules has max authenticity even if TMR says 95% AI', (): void => {
+      // Emotional / empathetic posts (layoffs, condolences) trigger this:
+      // rules confident-human + TMR false-positive → rules wins.
+      const result = combineScores(input({
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'medium',
+        rulesDimensions: STRONGLY_AUTHENTIC_DIMS,
+        tmrAiProbability: 0.95,
+      }));
+      expect(result.label).toBe('feels-human');
+    });
+
+    it('requires non-low rules confidence to activate strongly-authentic tier', (): void => {
+      // Same dimensions but low confidence → falls back to the softer tier
+      // which may not be enough to overcome TMR at 0.95.
+      const result = combineScores(input({
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'low',
+        rulesDimensions: STRONGLY_AUTHENTIC_DIMS,
+        tmrAiProbability: 0.95,
+      }));
+      expect(result.label).not.toBe('feels-human');
+    });
+
+    it('requires templating below 0.2 to activate strongly-authentic tier', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'medium',
+        rulesDimensions: { ...STRONGLY_AUTHENTIC_DIMS, templating: 0.3 },
+        tmrAiProbability: 0.95,
+      }));
+      // Falls back to authentic (cap 0.65) — possibly-ai is the expected outcome.
+      expect(result.label).not.toBe('feels-human');
+    });
+
+    it('preserves feels-human even with extreme TMR (0.99)', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'high',
+        rulesDimensions: STRONGLY_AUTHENTIC_DIMS,
+        tmrAiProbability: 0.99,
+      }));
+      expect(result.label).toBe('feels-human');
     });
   });
 

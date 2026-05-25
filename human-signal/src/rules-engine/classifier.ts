@@ -100,6 +100,40 @@ function classifyPost(
       ['Personal narrative with concrete details and no templated language.']);
   }
 
+  // Personal / emotional narrative: posts addressing a specific audience
+  // (layoffs, congratulations, support messages) often lack technical metrics
+  // but have strong conversational and empathetic markers. As long as there
+  // are NO AI-leaning signals (cliché, engagement bait, listicle structure),
+  // treat this as human. We accept either (a) several first-person refs
+  // with some conversational cues, OR (b) a single first-person ref with
+  // abundant conversational signals.
+  const noAiSignals: boolean =
+    features.motivationalClicheCount === 0 &&
+    features.engagementBaitScore === 0 &&
+    features.listicleScore === 0 &&
+    features.genericPhraseCount === 0;
+
+  if (
+    noAiSignals &&
+    ((features.firstPersonCount >= 2 && features.conversationalSignals >= 2) ||
+      (features.firstPersonCount >= 1 && features.conversationalSignals >= 3))
+  ) {
+    return createResult('feels-human', 'medium', features,
+      ['Personal narrative with conversational and emotional markers.']);
+  }
+
+  // Shorter empathetic posts: a single first-person reference plus emoji or
+  // direct-address phrasing is still distinctly human (congrats messages,
+  // brief shares). Avoid pushing these into "possibly-ai" purgatory.
+  if (
+    noAiSignals &&
+    features.hasFirstPerson &&
+    features.conversationalSignals >= 1
+  ) {
+    return createResult('feels-human', 'low', features,
+      ['Personal voice with at least one conversational or emotional cue.']);
+  }
+
   if (hasMixedPostSignals(features)) {
     return createResult('possibly-ai', 'low', features,
       ['Some signs of personal context, but also some templated or generic patterns.']);
@@ -182,11 +216,19 @@ function createResult(
 }
 
 function calculateDimensions(features: TextFeatures): ScoreDimensions {
+  // Conversational signals (direct address, empathy, emoji, community terms)
+  // are treated as authenticity evidence equivalent to first-person references.
+  // This lets emotional/empathetic posts (layoff, condolences, congrats)
+  // achieve high authenticity without requiring concrete metrics.
+  const conversationalContribution: number = features.conversationalSignals;
   return {
-    authenticity: clamp01((features.firstPersonCount + features.evidenceCount) / 6),
+    authenticity: clamp01(
+      (features.firstPersonCount + features.evidenceCount + conversationalContribution) / 6,
+    ),
     originality: clamp01(features.uniqueWordRatio - features.motivationalClicheCount * 0.2),
     specificity: clamp01(
-      (features.concreteNumberCount + features.namedEntityCount + features.dateReferenceCount) / 5,
+      (features.concreteNumberCount + features.namedEntityCount + features.dateReferenceCount
+        + features.properNounCount * 0.5) / 5,
     ),
     usefulness: clamp01((features.evidenceCount + features.questionCount) / 5),
     engagementBait: features.engagementBaitScore,

@@ -55,6 +55,45 @@ describe('rules classification', (): void => {
     expect(result.scoringVersion).toBe('rules-1');
   });
 
+  // Regression: emotional/empathetic posts with no metrics were being labeled
+  // "possibly-ai" before the conversational-signals path was added.
+  // These two posts are confirmed human (laid-off employee thank-you message).
+  describe('regression: emotional/empathetic posts (no metrics)', (): void => {
+    it('classifies short sharing message with community references as feels-human', (): void => {
+      const item = createRulesItem(
+        'Sharing this very same message to ex-hoodies. Feel free to reach out and let me know how I can help in any way!',
+        'post',
+      );
+      const result = scoreWithRules(item);
+
+      expect(result.label).toBe('feels-human');
+      expect(result.dimensions.authenticity).toBeGreaterThanOrEqual(0.5);
+      expect(result.dimensions.templating).toBeLessThan(0.4);
+    });
+
+    it('classifies long layoff support message as feels-human', (): void => {
+      const item = createRulesItem(
+        [
+          'To my network:',
+          'As many of you know, Robinhood layoff impacted some of my dear colleagues yesterday.',
+          'If you are looking to fill positions at your company, please consider these ex-hoodies.',
+          'They are some of the most mission-driven, smart, and humble people I know.',
+          '',
+          'To the ex-hoodies that I was lucky to work with:',
+          "It was truly my pleasure to have the opportunity to rally ups and downs together with all of you.",
+          "I miss you dearly and know you will continue to do amazing things! 💚",
+          "Please don't be a stranger, and let me know if I can help you in any way, shape, or form.",
+        ].join('\n'),
+        'post',
+      );
+      const result = scoreWithRules(item);
+
+      expect(result.label).toBe('feels-human');
+      expect(result.dimensions.authenticity).toBeGreaterThanOrEqual(0.8);
+      expect(result.dimensions.templating).toBeLessThan(0.2);
+    });
+  });
+
   it('keeps classification thresholds outside the decision function', (): void => {
     const features = extractFeatures('Here are lessons nobody tells you about leadership.');
     const result = classify(features, 'post', {

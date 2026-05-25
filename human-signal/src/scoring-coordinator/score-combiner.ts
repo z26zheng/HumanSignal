@@ -1,6 +1,6 @@
 import type { ConfidenceLabel, ScoringLabel, ScoreDimensions } from '@/shared/types';
 
-export const COMBINED_SCORING_VERSION: string = 'combined-tmr-q4-3';
+export const COMBINED_SCORING_VERSION: string = 'combined-tmr-q4-4';
 
 export interface CombinerInput {
   readonly text: string;
@@ -96,17 +96,40 @@ export function combineScores(input: CombinerInput): CombinerOutput {
   // dampen TMR's contribution — TMR has known biases on multi-paragraph and
   // corporate-enthusiastic text that cause false positives on genuine human posts.
   const rulesAiProb: number = rulesLabelToAiProbability(input.rulesLabel, input.rulesConfidence);
+
+  // Strongly authentic: rules is very confident in human signals (max authenticity,
+  // minimal templating, non-low confidence). For these, TMR is treated as
+  // unreliable and rules carries the verdict almost entirely. Catches emotional /
+  // empathetic posts (layoffs, congrats) where TMR's training data biases it
+  // toward AI false positives.
+  const stronglyAuthentic: boolean =
+    input.rulesLabel === 'feels-human' &&
+    input.rulesConfidence !== 'low' &&
+    input.rulesDimensions.authenticity >= 0.8 &&
+    input.rulesDimensions.templating < 0.2;
+
+  // Authentic (softer tier): rules says feels-human with moderate authenticity.
+  // TMR gets dampened but still contributes meaningfully.
   const authenticRules: boolean =
+    !stronglyAuthentic &&
     input.rulesLabel === 'feels-human' &&
     input.rulesDimensions.authenticity >= 0.5 &&
     input.rulesDimensions.templating < 0.4;
-  const rw: number = authenticRules ? 0.55 : RULES_WEIGHT;
+
+  let rw: number;
+  let tmrCap: number;
+  if (stronglyAuthentic) {
+    rw = 0.7;
+    tmrCap = 0.4;
+  } else if (authenticRules) {
+    rw = 0.55;
+    tmrCap = 0.65;
+  } else {
+    rw = RULES_WEIGHT;
+    tmrCap = 1;
+  }
   const tw: number = 1 - rw;
-  // Cap TMR's effective AI probability when rules has authentic signals,
-  // so a single paragraph break can't swing the result from human to AI.
-  const effectiveTmrAiProb: number = authenticRules
-    ? Math.min(input.tmrAiProbability, 0.65)
-    : input.tmrAiProbability;
+  const effectiveTmrAiProb: number = Math.min(input.tmrAiProbability, tmrCap);
   const combined: number = rw * rulesAiProb + tw * effectiveTmrAiProb;
 
   return {

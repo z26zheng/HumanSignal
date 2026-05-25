@@ -69,3 +69,72 @@ export const EVIDENCE_PATTERNS: readonly string[] = [
   'rollout',
   'migration',
 ];
+
+/**
+ * Phrases that signal the author is directly addressing the reader or a
+ * specific group of people — a strong human signal that AI-generated
+ * marketing/motivational posts rarely produce.
+ */
+export const DIRECT_ADDRESS_PATTERNS: readonly string[] = [
+  'to my network',
+  'to all of you',
+  'to those of you',
+  'for those of you',
+  'let me know',
+  'reach out',
+  'feel free',
+  'you all',
+  'all of you',
+  'thank you',
+  'please consider',
+  "don't be a stranger",
+  'do not be a stranger',
+  'i can help',
+  'help in any way',
+];
+
+/**
+ * Empathetic / emotional vocabulary that signals genuine human connection
+ * (condolences, congratulations, support, gratitude).
+ */
+export const EMPATHY_PATTERNS: readonly string[] = [
+  'miss you',
+  'lucky to',
+  'honored to',
+  'humbled to',
+  'mission-driven',
+  'mission driven',
+  'dear colleagues',
+  'dear friends',
+  'my dear',
+  'grateful',
+  'blessed',
+  'proud of',
+  'proud to',
+  'i miss',
+  'shape, or form',
+  'shape or form',
+  'pleasure',
+  'rally',
+];
+
+/**
+ * Community / relationship references that suggest the author knows the
+ * reader (insider language, group jargon).
+ */
+export const COMMUNITY_TERMS: readonly string[] = [
+  'ex-hoodies',
+  'my team',
+  'my colleagues',
+  'my coworkers',
+  'my friends',
+  'my mentor',
+  'my mentee',
+  'fellow',
+];
+
+/**
+ * Generic "ex-<company>" pattern (ex-Googler, ex-Stripe, ex-hoodies).
+ * Captures insider community references without hardcoding every company.
+ */
+export const EX_COMMUNITY_PATTERN: RegExp = /\bex-[a-z][a-z]+/gi;
