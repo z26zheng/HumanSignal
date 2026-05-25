@@ -5,13 +5,27 @@ import { combineScores, COMBINED_SCORING_VERSION } from '@/scoring-coordinator/s
 import type { CombinerInput } from '@/scoring-coordinator/score-combiner';
 import type { ScoreDimensions } from '@/shared/types';
 
-const DEFAULT_DIMENSIONS: ScoreDimensions = {
-  authenticity: 0.5,
-  specificity: 0.5,
+const NEUTRAL_DIMS: ScoreDimensions = {
+  authenticity: 0.3,
+  specificity: 0.3,
   originality: 0.5,
   usefulness: 0.5,
   engagementBait: 0,
   templating: 0,
+};
+
+const AUTHENTIC_DIMS: ScoreDimensions = {
+  authenticity: 0.8,
+  specificity: 0.7,
+  originality: 0.6,
+  usefulness: 0.5,
+  engagementBait: 0,
+  templating: 0.1,
+};
+
+const ENGAGEMENT_BAIT_DIMS: ScoreDimensions = {
+  ...NEUTRAL_DIMS,
+  engagementBait: 0.9,
 };
 
 function input(overrides: Partial<CombinerInput>): CombinerInput {
@@ -21,7 +35,7 @@ function input(overrides: Partial<CombinerInput>): CombinerInput {
     charCount: 200,
     rulesLabel: 'feels-human',
     rulesConfidence: 'medium',
-    rulesDimensions: DEFAULT_DIMENSIONS,
+    rulesDimensions: NEUTRAL_DIMS,
     rulesReasons: ['Test reason.'],
     tmrAiProbability: 0.1,
     ...overrides,
@@ -29,154 +43,9 @@ function input(overrides: Partial<CombinerInput>): CombinerInput {
 }
 
 describe('combineScores', (): void => {
-  it('returns rules label for engagement bait regardless of TMR', (): void => {
-    const result = combineScores(input({
-      rulesLabel: 'almost-certainly-ai',
-      tmrAiProbability: 0.1,
-    }));
-
-    expect(result.label).toBe('almost-certainly-ai');
-    expect(result.source).toBe('combined');
+  it('uses correct combined scoring version', (): void => {
+    const result = combineScores(input({}));
     expect(result.scoringVersion).toBe(COMBINED_SCORING_VERSION);
-  });
-
-  it('returns rules label for short text under 100 chars', (): void => {
-    const result = combineScores(input({
-      charCount: 80,
-      rulesLabel: 'cant-tell',
-      tmrAiProbability: 0.9,
-    }));
-
-    expect(result.label).toBe('cant-tell');
-  });
-
-  it('returns rules label when both engines agree on direction', (): void => {
-    const result = combineScores(input({
-      rulesLabel: 'feels-human',
-      tmrAiProbability: 0.1,
-    }));
-
-    expect(result.label).toBe('feels-human');
-  });
-
-  it('returns feels-human when TMR strongly signals human on a post', (): void => {
-    const result = combineScores(input({
-      charCount: 500,
-      itemType: 'post',
-      rulesLabel: 'possibly-ai',
-      tmrAiProbability: 0.10,
-    }));
-
-    expect(result.label).toBe('feels-human');
-  });
-
-  it('returns likely-ai when TMR strongly signals AI on a post', (): void => {
-    const result = combineScores(input({
-      charCount: 500,
-      itemType: 'post',
-      rulesLabel: 'possibly-ai',
-      tmrAiProbability: 0.90,
-    }));
-
-    expect(result.label).toBe('likely-ai');
-  });
-
-  it('returns rules label for comments even when TMR disagrees', (): void => {
-    const result = combineScores(input({
-      itemType: 'comment',
-      rulesLabel: 'likely-ai',
-      tmrAiProbability: 0.05,
-    }));
-
-    expect(result.label).toBe('likely-ai');
-  });
-
-  it('returns rules label when TMR disagrees moderately', (): void => {
-    const result = combineScores(input({
-      rulesLabel: 'feels-human',
-      tmrAiProbability: 0.60,
-    }));
-
-    expect(result.label).toBe('feels-human');
-  });
-
-  it('boosts confidence when engines agree', (): void => {
-    const result = combineScores(input({
-      rulesLabel: 'feels-human',
-      rulesConfidence: 'medium',
-      tmrAiProbability: 0.3,
-    }));
-
-    expect(result.confidence).toBe('high');
-  });
-
-  it('lowers confidence when engines disagree', (): void => {
-    const result = combineScores(input({
-      rulesLabel: 'feels-human',
-      rulesConfidence: 'medium',
-      tmrAiProbability: 0.7,
-    }));
-
-    expect(result.confidence).toBe('low');
-  });
-
-  it('does not boost above high', (): void => {
-    const result = combineScores(input({
-      rulesLabel: 'feels-human',
-      rulesConfidence: 'high',
-      tmrAiProbability: 0.3,
-    }));
-
-    expect(result.confidence).toBe('high');
-  });
-
-  it('preserves high confidence when TMR strongly confirms rules on a post (regression: M1)', (): void => {
-    const result = combineScores(input({
-      itemType: 'post',
-      charCount: 500,
-      rulesLabel: 'feels-human',
-      rulesConfidence: 'high',
-      tmrAiProbability: 0.10,
-    }));
-
-    expect(result.label).toBe('feels-human');
-    expect(result.confidence).toBe('high');
-  });
-
-  it('preserves rules confidence on comment when TMR disagrees (regression: M4)', (): void => {
-    const result = combineScores(input({
-      itemType: 'comment',
-      rulesLabel: 'feels-human',
-      rulesConfidence: 'medium',
-      tmrAiProbability: 0.90,
-    }));
-
-    expect(result.label).toBe('feels-human');
-    expect(result.confidence).toBe('medium');
-  });
-
-  it('boosts comment confidence when TMR agrees with rules', (): void => {
-    const result = combineScores(input({
-      itemType: 'comment',
-      rulesLabel: 'feels-human',
-      rulesConfidence: 'medium',
-      tmrAiProbability: 0.20,
-    }));
-
-    expect(result.label).toBe('feels-human');
-    expect(result.confidence).toBe('high');
-  });
-
-  it('boosts AI-direction comment confidence when TMR agrees with rules', (): void => {
-    const result = combineScores(input({
-      itemType: 'comment',
-      rulesLabel: 'likely-ai',
-      rulesConfidence: 'medium',
-      tmrAiProbability: 0.75,
-    }));
-
-    expect(result.label).toBe('likely-ai');
-    expect(result.confidence).toBe('high');
   });
 
   it('always sets source to combined', (): void => {
@@ -184,8 +53,142 @@ describe('combineScores', (): void => {
     expect(result.source).toBe('combined');
   });
 
-  it('uses combined scoring version', (): void => {
-    const result = combineScores(input({}));
-    expect(result.scoringVersion).toBe('combined-tmr-q4-1');
+  describe('short text (<100 chars)', (): void => {
+    it('trusts rules label regardless of TMR', (): void => {
+      const result = combineScores(input({
+        charCount: 80,
+        rulesLabel: 'cant-tell',
+        tmrAiProbability: 0.95,
+      }));
+      expect(result.label).toBe('cant-tell');
+    });
+  });
+
+  describe('engagement bait override', (): void => {
+    it('returns almost-certainly-ai for engagement bait even if TMR says human', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'almost-certainly-ai',
+        rulesDimensions: ENGAGEMENT_BAIT_DIMS,
+        tmrAiProbability: 0.05,
+      }));
+      expect(result.label).toBe('almost-certainly-ai');
+      expect(result.confidence).toBe('high');
+    });
+  });
+
+  describe('weighted average (post, >100 chars)', (): void => {
+    it('both agree human → feels-human with high confidence', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'medium',
+        rulesDimensions: NEUTRAL_DIMS,
+        tmrAiProbability: 0.05,
+      }));
+      expect(result.label).toBe('feels-human');
+      expect(result.confidence).toBe('high');
+    });
+
+    it('both agree AI → almost-certainly-ai', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'likely-ai',
+        rulesConfidence: 'medium',
+        rulesDimensions: NEUTRAL_DIMS,
+        tmrAiProbability: 0.92,
+      }));
+      expect(result.label).toBe('almost-certainly-ai');
+    });
+
+    it('rules=human + TMR=strong AI (no authenticity) → likely-ai', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'medium',
+        rulesDimensions: NEUTRAL_DIMS,
+        tmrAiProbability: 0.95,
+      }));
+      expect(result.label).toBe('likely-ai');
+    });
+
+    it('rules=possibly-ai + TMR=strong human → feels-human', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'possibly-ai',
+        rulesDimensions: NEUTRAL_DIMS,
+        tmrAiProbability: 0.05,
+      }));
+      expect(result.label).toBe('feels-human');
+    });
+
+    it('rules=possibly-ai + TMR=strong AI → almost-certainly-ai', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'possibly-ai',
+        rulesDimensions: NEUTRAL_DIMS,
+        tmrAiProbability: 0.95,
+      }));
+      expect(result.label).toBe('almost-certainly-ai');
+    });
+  });
+
+  describe('authenticity dampening', (): void => {
+    it('caps TMR AI probability when rules has strong authenticity signals', (): void => {
+      // Rules says human with high authenticity; TMR says 98% AI.
+      // Without dampening this would be likely-ai. With dampening → possibly-ai.
+      const result = combineScores(input({
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'medium',
+        rulesDimensions: AUTHENTIC_DIMS,
+        tmrAiProbability: 0.98,
+      }));
+      expect(['feels-human', 'possibly-ai']).toContain(result.label);
+      expect(result.label).not.toBe('likely-ai');
+      expect(result.label).not.toBe('almost-certainly-ai');
+    });
+
+    it('does NOT dampen TMR when rules does not say feels-human', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'possibly-ai',
+        rulesDimensions: AUTHENTIC_DIMS,
+        tmrAiProbability: 0.95,
+      }));
+      expect(result.label).toBe('almost-certainly-ai');
+    });
+
+    it('does NOT dampen TMR when templating is high', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'feels-human',
+        rulesDimensions: { ...AUTHENTIC_DIMS, templating: 0.6 },
+        tmrAiProbability: 0.95,
+      }));
+      expect(result.label).toBe('likely-ai');
+    });
+  });
+
+  describe('comments', (): void => {
+    it('returns rules label for comments even when TMR disagrees', (): void => {
+      const result = combineScores(input({
+        itemType: 'comment',
+        rulesLabel: 'likely-ai',
+        tmrAiProbability: 0.05,
+      }));
+      expect(result.label).toBe('likely-ai');
+    });
+
+    it('boosts confidence when TMR agrees on comment direction', (): void => {
+      const result = combineScores(input({
+        itemType: 'comment',
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'medium',
+        tmrAiProbability: 0.1,
+      }));
+      expect(result.confidence).toBe('high');
+    });
+
+    it('preserves confidence when TMR disagrees on comment', (): void => {
+      const result = combineScores(input({
+        itemType: 'comment',
+        rulesLabel: 'feels-human',
+        rulesConfidence: 'medium',
+        tmrAiProbability: 0.9,
+      }));
+      expect(result.confidence).toBe('medium');
+    });
   });
 });

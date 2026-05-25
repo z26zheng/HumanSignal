@@ -84,6 +84,22 @@ function classifyPost(
       ['Combines personal experience with multiple specific entities or details.']);
   }
 
+  // First-person narrative with at least SOME concrete evidence (entity, number,
+  // or date) — weaker than the thresholds above, but still more specific than
+  // pure template language. Catches posts like "I led this project at Robinhood"
+  // that have 1 entity + 1 number but not 2 of either.
+  const authenticitySignals: number =
+    features.concreteNumberCount + features.namedEntityCount + features.dateReferenceCount;
+  if (
+    features.firstPersonCount >= 2 &&
+    authenticitySignals >= 2 &&
+    features.motivationalClicheCount === 0 &&
+    features.engagementBaitScore === 0
+  ) {
+    return createResult('feels-human', 'low', features,
+      ['Personal narrative with concrete details and no templated language.']);
+  }
+
   if (hasMixedPostSignals(features)) {
     return createResult('possibly-ai', 'low', features,
       ['Some signs of personal context, but also some templated or generic patterns.']);
