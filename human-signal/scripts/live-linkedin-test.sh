@@ -22,7 +22,7 @@ if pgrep -f "Google Chrome" > /dev/null 2>&1; then
   sleep 2
 fi
 
-echo "       Keeping extension storage (geminiStatus persists across launches)."
+echo "       Keeping extension storage (settings + score cache persist across launches)."
 echo "       Chrome stopped."
 
 echo "[3/5] Launching Chrome with extension and LinkedIn feed..."
