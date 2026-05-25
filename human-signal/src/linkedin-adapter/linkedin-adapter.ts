@@ -250,19 +250,21 @@ function deduplicateByComponentKey(elements: readonly HTMLElement[]): readonly H
   return result;
 }
 
-const POST_AGE_PATTERN: RegExp = /^(\d+)(yr|mo|w|d|h|m)$/;
+const POST_AGE_PATTERN: RegExp = /(\d+)\s*(yr|mo|w|d|h|m)\b/;
 
 /**
  * Extracts the relative-time label LinkedIn shows on posts (e.g. "4yr", "3mo",
- * "2w", "5h"). Returns the raw text or null if not found. The overlay
- * controller uses this to detect pre-AI-era posts.
+ * "2w", "5h"). Returns a normalized form like "4yr" or null if not found.
+ * LinkedIn renders these in various elements (span, time, a) and sometimes
+ * with whitespace between the number and unit.
  */
 function findPostAgeText(element: HTMLElement): string | null {
-  const candidates: NodeListOf<HTMLElement> = element.querySelectorAll('span, time');
+  const candidates: NodeListOf<HTMLElement> = element.querySelectorAll('span, time, a');
   for (const el of candidates) {
-    if (el.children.length > 0) continue;
-    const text: string = el.textContent?.trim() ?? '';
-    if (POST_AGE_PATTERN.test(text)) return text;
+    const text: string = (el.textContent ?? '').trim();
+    if (text.length > 10) continue;
+    const match: RegExpMatchArray | null = text.match(POST_AGE_PATTERN);
+    if (match !== null) return `${match[1]}${match[2]}`;
   }
   return null;
 }
