@@ -250,27 +250,26 @@ function deduplicateByComponentKey(elements: readonly HTMLElement[]): readonly H
   return result;
 }
 
-// LinkedIn uses various formats: "4y", "4yr", "3mo", "2w", "5h", "1d", "30m"
-const POST_AGE_PATTERN: RegExp = /(\d+)\s*(yr|y|mo|w|d|h|m)\b/;
+// LinkedIn renders timestamps as e.g. "4yr • Edited • " or "2w • " inside spans.
+// The age token may be embedded in a longer string with bullet separators.
+const POST_AGE_PATTERN: RegExp = /\b(\d+)\s*(yr|y|mo|w|d|h|m)\b/;
 
 // Normalize "y" → "yr" for consistent downstream handling
 const UNIT_NORMALIZE: Readonly<Record<string, string>> = { y: 'yr' };
 
 /**
- * Extracts the relative-time label LinkedIn shows on posts (e.g. "4y", "3mo",
+ * Extracts the relative-time label LinkedIn shows on posts (e.g. "4yr", "3mo",
  * "2w", "5h"). Returns a normalized form like "4yr" or null if not found.
- * Searches the element itself and up to 2 ancestors in case the post
- * container strategy selected an inner element below the author header.
+ * LinkedIn often puts the timestamp in a span like "4yr • Edited • " so we
+ * match inside longer strings (up to 30 chars to avoid scanning huge elements).
  */
 function findPostAgeText(element: HTMLElement): string | null {
-  // Search the element and a couple of parents (the timestamp is often in
-  // the post header which may be a sibling of the detected text container).
   let searchRoot: HTMLElement | null = element;
   for (let depth: number = 0; depth < 3 && searchRoot !== null; depth++) {
     const candidates: NodeListOf<HTMLElement> = searchRoot.querySelectorAll('span, time, a');
     for (const el of candidates) {
       const text: string = (el.textContent ?? '').trim();
-      if (text.length > 10) continue;
+      if (text.length > 30 || text.length === 0) continue;
       const match: RegExpMatchArray | null = text.match(POST_AGE_PATTERN);
       if (match !== null) {
         const unit: string = UNIT_NORMALIZE[match[2]!] ?? match[2]!;

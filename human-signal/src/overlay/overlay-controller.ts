@@ -313,6 +313,11 @@ export class OverlayController {
   }
 
   private addPost(post: DetectedPost): ExtractedItem | null {
+    logger.info('overlay.addPost.age', 'Post age detection', {
+      postAgeText: post.postAgeText,
+      postId: post.postId.slice(0, 40),
+      textPreview: post.text.slice(0, 60),
+    });
     const item: ExtractedItem = {
       itemId: post.postId as ItemId,
       itemType: 'post',

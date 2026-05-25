@@ -72,7 +72,8 @@ export function combineScores(input: CombinerInput): CombinerOutput {
   // ChatGPT launched Nov 2022; widespread LinkedIn AI usage started mid-2023.
   // LinkedIn shows relative ages like "1yr", "2yr", "3yr". Any post ≥2yr old
   // predates mainstream AI text generation.
-  if (isPreAiEra(input.postAgeText)) {
+  const preAi: boolean = isPreAiEra(input.postAgeText);
+  if (preAi) {
     return { ...base, label: 'feels-human', confidence: 'high' };
   }
 
