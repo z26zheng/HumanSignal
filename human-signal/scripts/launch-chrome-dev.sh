@@ -23,6 +23,31 @@ if [ ! -f "$BUNDLE_DIR/manifest.json" ]; then
   exit 1
 fi
 
+# Kill any running Chrome on the user profile so we get a clean SW registration.
+# Chrome aggressively caches the unpacked extension's service worker; relaunching
+# without nuking the SW caches produces "stale background" symptoms where the
+# new background.js code never runs even though --load-extension points at the
+# fresh bundle. See: https://crbug.com/issues for tracking.
+if pgrep -f "Google Chrome.app/Contents/MacOS" >/dev/null 2>&1; then
+  echo "Stopping running Chrome instances..."
+  pkill -9 -f "Google Chrome" 2>/dev/null || true
+  sleep 3
+fi
+
+# Remove Chrome's singleton lock so the next launch isn't blocked
+rm -f "$HOME/Library/Application Support/Google/Chrome/Singleton"* 2>/dev/null || true
+
+# Nuke the service-worker script cache so Chrome re-registers our background.js
+# from disk instead of using the stale compiled snapshot.
+SW_DIR="$HOME/Library/Application Support/Google/Chrome/Default/Service Worker"
+if [ -d "$SW_DIR/ScriptCache" ]; then
+  rm -rf "$SW_DIR/ScriptCache"/* 2>/dev/null || true
+fi
+if [ -d "$SW_DIR/Database" ]; then
+  rm -rf "$SW_DIR/Database"/* 2>/dev/null || true
+fi
+echo "Cleared Chrome service-worker cache"
+
 # Check if another Chrome already owns port $CDP_PORT
 if lsof -iTCP:$CDP_PORT -sTCP:LISTEN -t &>/dev/null; then
   echo "Port $CDP_PORT already in use — a CDP-enabled Chrome may already be running."

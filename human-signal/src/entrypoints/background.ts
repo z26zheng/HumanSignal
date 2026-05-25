@@ -347,7 +347,6 @@ const TMR_MAX_POLL_ATTEMPTS: number = 30;
 
 async function checkTmrOnStartup(): Promise<void> {
   try {
-
     for (let attempt: number = 0; attempt < TMR_MAX_POLL_ATTEMPTS; attempt++) {
       const tmrPayload: MessagePayload = await forwardToOffscreen({
         type: 'TMR_STATUS',
