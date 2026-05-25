@@ -39,7 +39,6 @@ function input(overrides: Partial<CombinerInput>): CombinerInput {
     rulesDimensions: NEUTRAL_DIMS,
     rulesReasons: ['Test reason.'],
     tmrAiProbability: 0.1,
-    postAgeText: null,
     ...overrides,
   };
 }
@@ -218,7 +217,7 @@ describe('combineScores', (): void => {
       expect(result.label).not.toBe('feels-human');
     });
 
-    it('does NOT override when activityUrn is null and no age text', (): void => {
+    it('does NOT override when activityUrn is null', (): void => {
       const result = combineScores(input({
         activityUrn: null,
         rulesLabel: 'likely-ai',
@@ -226,43 +225,30 @@ describe('combineScores', (): void => {
       }));
       expect(result.label).not.toBe('feels-human');
     });
-
-    it('falls back to postAgeText when no URN', (): void => {
-      const result = combineScores(input({
-        activityUrn: null,
-        postAgeText: '4yr',
-        rulesLabel: 'likely-ai',
-        tmrAiProbability: 0.99,
-      }));
-      expect(result.label).toBe('feels-human');
-    });
   });
 });
 
 describe('isPreAiEra', (): void => {
   it('returns true for pre-2023 activity URN', (): void => {
-    expect(isPreAiEra('urn:li:activity:6925219035013947392', null)).toBe(true);
+    // 6925219035013947392 → April 27, 2022
+    expect(isPreAiEra('urn:li:activity:6925219035013947392')).toBe(true);
   });
 
   it('returns false for post-2023 activity URN', (): void => {
-    expect(isPreAiEra('urn:li:activity:7100000000000000000', null)).toBe(false);
+    // 7100000000000000000 → mid-2024
+    expect(isPreAiEra('urn:li:activity:7100000000000000000')).toBe(false);
   });
 
-  it('returns false for non-URN post IDs without age text', (): void => {
-    expect(isPreAiEra('ck_hash_abc', null)).toBe(false);
+  it('returns false for null', (): void => {
+    expect(isPreAiEra(null)).toBe(false);
   });
 
-  it('falls back to postAgeText when no URN', (): void => {
-    expect(isPreAiEra('ck_hash_abc', '4yr')).toBe(true);
-    expect(isPreAiEra('ck_hash_abc', '2yr')).toBe(true);
-    expect(isPreAiEra('ck_hash_abc', '1yr')).toBe(false);
+  it('returns false for non-URN strings', (): void => {
+    expect(isPreAiEra('ck_hash_abc')).toBe(false);
+    expect(isPreAiEra('')).toBe(false);
   });
 
-  it('prefers URN over postAgeText', (): void => {
-    expect(isPreAiEra('urn:li:activity:6925219035013947392', '1yr')).toBe(true);
-  });
-
-  it('handles activity URN extracted from page URL', (): void => {
-    expect(isPreAiEra('urn:li:activity:6925219035013947392', null)).toBe(true);
+  it('returns false for malformed URN', (): void => {
+    expect(isPreAiEra('urn:li:activity:not-a-number')).toBe(false);
   });
 });

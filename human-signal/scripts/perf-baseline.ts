@@ -58,7 +58,6 @@ function createItem(index: number, text: string): ExtractedItem {
       sourceUrl: 'https://www.linkedin.com/feed/',
       detectedAt: 0,
       idStability: 'content-hash',
-      postAgeText: null,
       activityUrn: null,
     },
     isTruncated: false,

@@ -12,7 +12,6 @@ export interface CombinerInput {
   readonly rulesDimensions: ScoreDimensions;
   readonly rulesReasons: readonly string[];
   readonly tmrAiProbability: number;
-  readonly postAgeText: string | null;
 }
 
 export interface CombinerOutput {
@@ -73,7 +72,7 @@ export function combineScores(input: CombinerInput): CombinerOutput {
   // ChatGPT launched Nov 2022; widespread LinkedIn AI usage started mid-2023.
   // LinkedIn shows relative ages like "1yr", "2yr", "3yr". Any post ≥2yr old
   // predates mainstream AI text generation.
-  if (isPreAiEra(input.activityUrn ?? '', input.postAgeText)) {
+  if (isPreAiEra(input.activityUrn)) {
     return { ...base, label: 'feels-human', confidence: 'high' };
   }
 
@@ -140,38 +139,24 @@ function labelDirection(label: ScoringLabel): 'human' | 'ai' | 'neutral' {
 const PRE_AI_CUTOFF: Date = new Date('2023-01-01T00:00:00Z');
 
 /**
- * Returns true if the post was created before the AI era.
+ * Returns true if the activity URN encodes a creation timestamp before
+ * the AI era.
  *
- * Extracts the creation timestamp from the LinkedIn activity URN using
- * the Snowflake ID encoding (upper 42 bits are milliseconds since Unix
- * epoch, right-shifted by 22). This is far more reliable than parsing
- * relative-time text from the DOM ("4yr", "3mo") which varies by locale
- * and element structure.
- *
- * Falls back to the DOM-scraped postAgeText if the post ID is not a URN
- * (e.g., componentkey-based or content-hash-based IDs).
+ * LinkedIn activity IDs are Snowflake IDs: the upper 42 bits are
+ * milliseconds since the Unix epoch, right-shifted by 22. Decoding this
+ * gives an exact creation timestamp, which is far more reliable than
+ * parsing relative-time text from the DOM.
  */
-export function isPreAiEra(postId: string, postAgeText: string | null): boolean {
-  const urnDate: Date | null = extractDateFromActivityUrn(postId);
-  if (urnDate !== null) {
-    return urnDate < PRE_AI_CUTOFF;
-  }
-
-  if (postAgeText === null) return false;
-  const match: RegExpMatchArray | null = postAgeText.match(/^(\d+)(yr)$/);
+export function isPreAiEra(activityUrn: string | null): boolean {
+  if (activityUrn === null) return false;
+  const match: RegExpMatchArray | null = activityUrn.match(/urn:li:activity:(\d+)/);
   if (match === null) return false;
-  return Number.parseInt(match[1]!, 10) >= 2;
-}
-
-function extractDateFromActivityUrn(postId: string): Date | null {
-  const match: RegExpMatchArray | null = postId.match(/(?:urn:li:activity:|activity[-:])(\d+)/);
-  if (match === null) return null;
   try {
     const id: bigint = BigInt(match[1]!);
     const timestampMs: number = Number(id >> 22n);
-    if (timestampMs < 1_000_000_000_000 || timestampMs > 2_000_000_000_000) return null;
-    return new Date(timestampMs);
+    if (timestampMs < 1_000_000_000_000 || timestampMs > 2_000_000_000_000) return false;
+    return new Date(timestampMs) < PRE_AI_CUTOFF;
   } catch {
-    return null;
+    return false;
   }
 }
