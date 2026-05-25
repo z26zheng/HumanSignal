@@ -538,16 +538,37 @@ export class OverlayController {
 }
 
 /**
- * Extract an activity URN from either the post ID itself (if it's already a
- * URN) or from the page URL (for post detail pages like
- * /feed/update/urn:li:activity:NNN).
+ * Extract an activity URN from the post ID or the page URL.
+ *
+ * LinkedIn uses several URL formats that contain the activity ID:
+ * - /feed/update/urn:li:activity:6925219035013947392/    (canonical URN)
+ * - /posts/ziyou-z-96924941_..._share-6925219035013947392-iAnF/  (share URL)
+ * - /posts/...-activity-6925219035013947392-iAnF/         (alternate)
+ *
+ * Activity IDs are LinkedIn Snowflake IDs: 18-19 digit numbers. We recognize
+ * any 18+ digit run that appears in a URL context that suggests it's an
+ * activity ID, and return it formatted as a canonical URN.
  */
 function extractActivityUrnFromContext(postId: string, pageUrl: string): string | null {
-  const urnPattern: RegExp = /urn:li:activity:\d+/;
-  const fromId: RegExpMatchArray | null = postId.match(urnPattern);
-  if (fromId !== null) return fromId[0];
-  const fromUrl: RegExpMatchArray | null = pageUrl.match(urnPattern);
-  if (fromUrl !== null) return fromUrl[0];
+  // 1. Canonical URN anywhere in postId
+  const canonicalInId: RegExpMatchArray | null = postId.match(/urn:li:activity:\d+/);
+  if (canonicalInId !== null) return canonicalInId[0];
+
+  // 2. Canonical URN anywhere in URL
+  const canonicalInUrl: RegExpMatchArray | null = pageUrl.match(/urn:li:activity:\d+/);
+  if (canonicalInUrl !== null) return canonicalInUrl[0];
+
+  // 3. /posts/...-share-NNN- or /posts/...-activity-NNN- (share URL format)
+  const sharePattern: RegExpMatchArray | null = pageUrl.match(/-(?:share|activity)-(\d{18,20})-/);
+  if (sharePattern !== null) return `urn:li:activity:${sharePattern[1]}`;
+
+  // 4. Any standalone 18-20 digit number in a /posts/ URL (last resort, with
+  // boundaries to avoid matching tracking params that may contain long numbers)
+  if (pageUrl.includes('/posts/') || pageUrl.includes('/feed/update/')) {
+    const longDigits: RegExpMatchArray | null = pageUrl.match(/\b(\d{18,20})\b/);
+    if (longDigits !== null) return `urn:li:activity:${longDigits[1]}`;
+  }
+
   return null;
 }
 
