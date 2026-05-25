@@ -137,6 +137,7 @@ export class LinkedInAdapter {
       postId: resolvedId.postId,
       postIdMethod: resolvedId.method,
       isTruncated: hasSeeMoreControl(element),
+      postAgeText: findPostAgeText(element),
     };
   }
 
@@ -247,6 +248,23 @@ function deduplicateByComponentKey(elements: readonly HTMLElement[]): readonly H
   }
 
   return result;
+}
+
+const POST_AGE_PATTERN: RegExp = /^(\d+)(yr|mo|w|d|h|m)$/;
+
+/**
+ * Extracts the relative-time label LinkedIn shows on posts (e.g. "4yr", "3mo",
+ * "2w", "5h"). Returns the raw text or null if not found. The overlay
+ * controller uses this to detect pre-AI-era posts.
+ */
+function findPostAgeText(element: HTMLElement): string | null {
+  const candidates: NodeListOf<HTMLElement> = element.querySelectorAll('span, time');
+  for (const el of candidates) {
+    if (el.children.length > 0) continue;
+    const text: string = el.textContent?.trim() ?? '';
+    if (POST_AGE_PATTERN.test(text)) return text;
+  }
+  return null;
 }
 
 function hasSeeMoreControl(element: HTMLElement): boolean {

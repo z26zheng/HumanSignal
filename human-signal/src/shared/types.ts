@@ -18,6 +18,7 @@ export interface ExtractedItemMetadata {
   readonly sourceUrl: string | null;
   readonly detectedAt: number;
   readonly idStability: IdStability;
+  readonly postAgeText: string | null;
 }
 
 export interface ExtractedItem {

@@ -322,6 +322,7 @@ export class OverlayController {
         sourceUrl: window.location.href,
         detectedAt: Date.now(),
         idStability: mapIdStability(post.postIdMethod),
+        postAgeText: post.postAgeText,
       },
       isTruncated: post.isTruncated,
     };
@@ -339,6 +340,7 @@ export class OverlayController {
         sourceUrl: window.location.href,
         detectedAt: Date.now(),
         idStability: 'content-hash',
+        postAgeText: null,
       },
       isTruncated: false,
     };

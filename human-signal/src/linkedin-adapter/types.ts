@@ -9,6 +9,7 @@ export interface DetectedPost {
   readonly postId: string;
   readonly postIdMethod: PostIdMethod;
   readonly isTruncated: boolean;
+  readonly postAgeText: string | null;
 }
 
 export interface DetectedComment {

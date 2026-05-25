@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { combineScores, COMBINED_SCORING_VERSION } from '@/scoring-coordinator/score-combiner';
+import { combineScores, COMBINED_SCORING_VERSION, isPreAiEra } from '@/scoring-coordinator/score-combiner';
 
 import type { CombinerInput } from '@/scoring-coordinator/score-combiner';
 import type { ScoreDimensions } from '@/shared/types';
@@ -38,6 +38,7 @@ function input(overrides: Partial<CombinerInput>): CombinerInput {
     rulesDimensions: NEUTRAL_DIMS,
     rulesReasons: ['Test reason.'],
     tmrAiProbability: 0.1,
+    postAgeText: null,
     ...overrides,
   };
 }
@@ -190,5 +191,82 @@ describe('combineScores', (): void => {
       }));
       expect(result.confidence).toBe('medium');
     });
+  });
+
+  describe('pre-AI era hard rule', (): void => {
+    it('overrides to feels-human with high confidence for posts ≥2yr old', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'likely-ai',
+        tmrAiProbability: 0.99,
+        postAgeText: '4yr',
+      }));
+      expect(result.label).toBe('feels-human');
+      expect(result.confidence).toBe('high');
+    });
+
+    it('overrides to feels-human for 2yr old posts', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'almost-certainly-ai',
+        tmrAiProbability: 0.95,
+        postAgeText: '2yr',
+      }));
+      expect(result.label).toBe('feels-human');
+    });
+
+    it('does NOT override for 1yr old posts (could be AI era)', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'likely-ai',
+        tmrAiProbability: 0.9,
+        postAgeText: '1yr',
+      }));
+      expect(result.label).not.toBe('feels-human');
+    });
+
+    it('does NOT override for recent posts', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'likely-ai',
+        tmrAiProbability: 0.9,
+        postAgeText: '3d',
+      }));
+      expect(result.label).not.toBe('feels-human');
+    });
+
+    it('does NOT override when postAgeText is null', (): void => {
+      const result = combineScores(input({
+        rulesLabel: 'likely-ai',
+        tmrAiProbability: 0.9,
+        postAgeText: null,
+      }));
+      expect(result.label).not.toBe('feels-human');
+    });
+  });
+});
+
+describe('isPreAiEra', (): void => {
+  it('returns true for 2yr+', (): void => {
+    expect(isPreAiEra('2yr')).toBe(true);
+    expect(isPreAiEra('3yr')).toBe(true);
+    expect(isPreAiEra('5yr')).toBe(true);
+    expect(isPreAiEra('10yr')).toBe(true);
+  });
+
+  it('returns false for 1yr (AI era)', (): void => {
+    expect(isPreAiEra('1yr')).toBe(false);
+  });
+
+  it('returns false for non-year units', (): void => {
+    expect(isPreAiEra('6mo')).toBe(false);
+    expect(isPreAiEra('2w')).toBe(false);
+    expect(isPreAiEra('3d')).toBe(false);
+    expect(isPreAiEra('5h')).toBe(false);
+  });
+
+  it('returns false for null', (): void => {
+    expect(isPreAiEra(null)).toBe(false);
+  });
+
+  it('returns false for unrecognized text', (): void => {
+    expect(isPreAiEra('yesterday')).toBe(false);
+    expect(isPreAiEra('')).toBe(false);
   });
 });

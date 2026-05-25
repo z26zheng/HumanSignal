@@ -224,6 +224,7 @@ export class ScoringCoordinator {
       rulesDimensions: rulesResult.dimensions,
       rulesReasons: rulesResult.reasons ?? [rulesResult.explanation],
       tmrAiProbability: aiProb,
+      postAgeText: item.metadata.postAgeText,
     });
 
     tmrTraces.push({

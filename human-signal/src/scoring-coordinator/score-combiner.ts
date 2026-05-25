@@ -11,6 +11,7 @@ export interface CombinerInput {
   readonly rulesDimensions: ScoreDimensions;
   readonly rulesReasons: readonly string[];
   readonly tmrAiProbability: number;
+  readonly postAgeText: string | null;
 }
 
 export interface CombinerOutput {
@@ -67,6 +68,14 @@ export function combineScores(input: CombinerInput): CombinerOutput {
     scoringVersion: COMBINED_SCORING_VERSION,
   };
 
+  // Hard rule: posts from before the AI era (2023) are human by definition.
+  // ChatGPT launched Nov 2022; widespread LinkedIn AI usage started mid-2023.
+  // LinkedIn shows relative ages like "1yr", "2yr", "3yr". Any post ≥2yr old
+  // predates mainstream AI text generation.
+  if (isPreAiEra(input.postAgeText)) {
+    return { ...base, label: 'feels-human', confidence: 'high' };
+  }
+
   // Comments: only boost, never downgrade (comments are short and noisy)
   if (input.itemType === 'comment') {
     return { ...base, label: input.rulesLabel, confidence: boostOnAgreement(input) };
@@ -120,4 +129,24 @@ function labelDirection(label: ScoringLabel): 'human' | 'ai' | 'neutral' {
   if (label === 'feels-human') return 'human';
   if (label === 'likely-ai' || label === 'almost-certainly-ai') return 'ai';
   return 'neutral';
+}
+
+const AGE_PATTERN: RegExp = /^(\d+)(yr|mo|w|d|h|m)$/;
+const MIN_PRE_AI_YEARS: number = 2;
+
+/**
+ * Returns true if the post age text indicates the post was written before
+ * mainstream AI text generation became common (pre-2023).
+ * LinkedIn shows "1yr", "2yr", "3yr" etc. for older posts.
+ * As of mid-2026, "2yr" means mid-2024 (borderline), "3yr" means mid-2023.
+ * We use ≥3yr as the safe cutoff.
+ */
+export function isPreAiEra(ageText: string | null): boolean {
+  if (ageText === null) return false;
+  const match: RegExpMatchArray | null = ageText.match(AGE_PATTERN);
+  if (match === null) return false;
+  const value: number = Number.parseInt(match[1]!, 10);
+  const unit: string = match[2]!;
+  if (unit === 'yr' && value >= MIN_PRE_AI_YEARS) return true;
+  return false;
 }
