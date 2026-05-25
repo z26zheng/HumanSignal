@@ -59,6 +59,7 @@ function createItem(index: number, text: string): ExtractedItem {
       detectedAt: 0,
       idStability: 'content-hash',
       postAgeText: null,
+      activityUrn: null,
     },
     isTruncated: false,
   };

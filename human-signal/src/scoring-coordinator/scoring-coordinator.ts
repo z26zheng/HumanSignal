@@ -217,6 +217,7 @@ export class ScoringCoordinator {
 
     const combined = combineScores({
       text: item.text,
+      activityUrn: item.metadata.activityUrn,
       itemType: item.itemType,
       charCount: item.text.length,
       rulesLabel: rulesResult.label,

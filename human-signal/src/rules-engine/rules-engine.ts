@@ -42,6 +42,7 @@ export function createRulesItem(text: string, itemType: ExtractedItem['itemType'
       detectedAt: Date.now(),
       idStability: 'content-hash',
       postAgeText: null,
+      activityUrn: null,
     },
     isTruncated: false,
   };

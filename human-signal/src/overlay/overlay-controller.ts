@@ -313,11 +313,6 @@ export class OverlayController {
   }
 
   private addPost(post: DetectedPost): ExtractedItem | null {
-    logger.info('overlay.addPost.age', 'Post age detection', {
-      postAgeText: post.postAgeText,
-      postId: post.postId.slice(0, 40),
-      textPreview: post.text.slice(0, 60),
-    });
     const item: ExtractedItem = {
       itemId: post.postId as ItemId,
       itemType: 'post',
@@ -328,6 +323,7 @@ export class OverlayController {
         detectedAt: Date.now(),
         idStability: mapIdStability(post.postIdMethod),
         postAgeText: post.postAgeText,
+        activityUrn: extractActivityUrnFromContext(post.postId, window.location.href),
       },
       isTruncated: post.isTruncated,
     };
@@ -346,6 +342,7 @@ export class OverlayController {
         detectedAt: Date.now(),
         idStability: 'content-hash',
         postAgeText: null,
+        activityUrn: null,
       },
       isTruncated: false,
     };
@@ -538,6 +535,20 @@ export class OverlayController {
     const visibility = this.settings?.stickerVisibility ?? 'all';
     return visibility === 'all' || visibility === `${itemType}s`;
   }
+}
+
+/**
+ * Extract an activity URN from either the post ID itself (if it's already a
+ * URN) or from the page URL (for post detail pages like
+ * /feed/update/urn:li:activity:NNN).
+ */
+function extractActivityUrnFromContext(postId: string, pageUrl: string): string | null {
+  const urnPattern: RegExp = /urn:li:activity:\d+/;
+  const fromId: RegExpMatchArray | null = postId.match(urnPattern);
+  if (fromId !== null) return fromId[0];
+  const fromUrl: RegExpMatchArray | null = pageUrl.match(urnPattern);
+  if (fromUrl !== null) return fromUrl[0];
+  return null;
 }
 
 function mapIdStability(method: DetectedPost['postIdMethod']): IdStability {

@@ -237,7 +237,7 @@ describe('regression: cache itemId mismatch (response routing bug)', (): void =>
       itemId: 'STALE_ID' as ItemId,
       label: 'feels-human',
       source: 'combined',
-      scoringVersion: 'combined-tmr-q4-2',
+      scoringVersion: 'combined-tmr-q4-3',
     };
     await internalCache.set(item.metadata.contentHash, staleResult);
 
@@ -247,7 +247,7 @@ describe('regression: cache itemId mismatch (response routing bug)', (): void =>
     expect(result.itemId).toBe(item.itemId);
     expect(result.label).toBe('feels-human');
     expect(result.source).toBe('combined');
-    expect(result.scoringVersion).toBe('combined-tmr-q4-2');
+    expect(result.scoringVersion).toBe('combined-tmr-q4-3');
   });
 
   it('returns N results for N input items even when all are cache hits with stale ids', async (): Promise<void> => {

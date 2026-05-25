@@ -31,6 +31,7 @@ const ENGAGEMENT_BAIT_DIMS: ScoreDimensions = {
 function input(overrides: Partial<CombinerInput>): CombinerInput {
   return {
     text: 'Some test text that is long enough to pass the short text cutoff for testing purposes.',
+    activityUrn: null,
     itemType: 'post',
     charCount: 200,
     rulesLabel: 'feels-human',
@@ -194,79 +195,74 @@ describe('combineScores', (): void => {
   });
 
   describe('pre-AI era hard rule', (): void => {
-    it('overrides to feels-human with high confidence for posts ≥2yr old', (): void => {
+    // Activity ID 6925219035013947392 → April 27, 2022 (pre-AI)
+    const PRE_AI_URN: string = 'urn:li:activity:6925219035013947392';
+    const POST_AI_URN: string = 'urn:li:activity:7100000000000000000';
+
+    it('overrides to feels-human for posts with pre-2023 activity URN', (): void => {
       const result = combineScores(input({
+        activityUrn: PRE_AI_URN,
         rulesLabel: 'likely-ai',
         tmrAiProbability: 0.99,
-        postAgeText: '4yr',
       }));
       expect(result.label).toBe('feels-human');
       expect(result.confidence).toBe('high');
     });
 
-    it('overrides to feels-human for 2yr old posts', (): void => {
+    it('does NOT override for posts with post-2023 activity URN', (): void => {
       const result = combineScores(input({
-        rulesLabel: 'almost-certainly-ai',
-        tmrAiProbability: 0.95,
-        postAgeText: '2yr',
+        activityUrn: POST_AI_URN,
+        rulesLabel: 'likely-ai',
+        tmrAiProbability: 0.9,
+      }));
+      expect(result.label).not.toBe('feels-human');
+    });
+
+    it('does NOT override when activityUrn is null and no age text', (): void => {
+      const result = combineScores(input({
+        activityUrn: null,
+        rulesLabel: 'likely-ai',
+        tmrAiProbability: 0.9,
+      }));
+      expect(result.label).not.toBe('feels-human');
+    });
+
+    it('falls back to postAgeText when no URN', (): void => {
+      const result = combineScores(input({
+        activityUrn: null,
+        postAgeText: '4yr',
+        rulesLabel: 'likely-ai',
+        tmrAiProbability: 0.99,
       }));
       expect(result.label).toBe('feels-human');
-    });
-
-    it('does NOT override for 1yr old posts (could be AI era)', (): void => {
-      const result = combineScores(input({
-        rulesLabel: 'likely-ai',
-        tmrAiProbability: 0.9,
-        postAgeText: '1yr',
-      }));
-      expect(result.label).not.toBe('feels-human');
-    });
-
-    it('does NOT override for recent posts', (): void => {
-      const result = combineScores(input({
-        rulesLabel: 'likely-ai',
-        tmrAiProbability: 0.9,
-        postAgeText: '3d',
-      }));
-      expect(result.label).not.toBe('feels-human');
-    });
-
-    it('does NOT override when postAgeText is null', (): void => {
-      const result = combineScores(input({
-        rulesLabel: 'likely-ai',
-        tmrAiProbability: 0.9,
-        postAgeText: null,
-      }));
-      expect(result.label).not.toBe('feels-human');
     });
   });
 });
 
 describe('isPreAiEra', (): void => {
-  it('returns true for 2yr+', (): void => {
-    expect(isPreAiEra('2yr')).toBe(true);
-    expect(isPreAiEra('3yr')).toBe(true);
-    expect(isPreAiEra('5yr')).toBe(true);
-    expect(isPreAiEra('10yr')).toBe(true);
+  it('returns true for pre-2023 activity URN', (): void => {
+    expect(isPreAiEra('urn:li:activity:6925219035013947392', null)).toBe(true);
   });
 
-  it('returns false for 1yr (AI era)', (): void => {
-    expect(isPreAiEra('1yr')).toBe(false);
+  it('returns false for post-2023 activity URN', (): void => {
+    expect(isPreAiEra('urn:li:activity:7100000000000000000', null)).toBe(false);
   });
 
-  it('returns false for non-year units', (): void => {
-    expect(isPreAiEra('6mo')).toBe(false);
-    expect(isPreAiEra('2w')).toBe(false);
-    expect(isPreAiEra('3d')).toBe(false);
-    expect(isPreAiEra('5h')).toBe(false);
+  it('returns false for non-URN post IDs without age text', (): void => {
+    expect(isPreAiEra('ck_hash_abc', null)).toBe(false);
   });
 
-  it('returns false for null', (): void => {
-    expect(isPreAiEra(null)).toBe(false);
+  it('falls back to postAgeText when no URN', (): void => {
+    expect(isPreAiEra('ck_hash_abc', '4yr')).toBe(true);
+    expect(isPreAiEra('ck_hash_abc', '2yr')).toBe(true);
+    expect(isPreAiEra('ck_hash_abc', '1yr')).toBe(false);
   });
 
-  it('returns false for unrecognized text', (): void => {
-    expect(isPreAiEra('yesterday')).toBe(false);
-    expect(isPreAiEra('')).toBe(false);
+  it('prefers URN over postAgeText', (): void => {
+    expect(isPreAiEra('urn:li:activity:6925219035013947392', '1yr')).toBe(true);
+  });
+
+  it('handles activity URN extracted from page URL', (): void => {
+    expect(isPreAiEra('urn:li:activity:6925219035013947392', null)).toBe(true);
   });
 });

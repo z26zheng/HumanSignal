@@ -1,9 +1,10 @@
 import type { ConfidenceLabel, ScoringLabel, ScoreDimensions } from '@/shared/types';
 
-export const COMBINED_SCORING_VERSION: string = 'combined-tmr-q4-2';
+export const COMBINED_SCORING_VERSION: string = 'combined-tmr-q4-3';
 
 export interface CombinerInput {
   readonly text: string;
+  readonly activityUrn: string | null;
   readonly itemType: 'post' | 'comment';
   readonly charCount: number;
   readonly rulesLabel: ScoringLabel;
@@ -72,8 +73,7 @@ export function combineScores(input: CombinerInput): CombinerOutput {
   // ChatGPT launched Nov 2022; widespread LinkedIn AI usage started mid-2023.
   // LinkedIn shows relative ages like "1yr", "2yr", "3yr". Any post ≥2yr old
   // predates mainstream AI text generation.
-  const preAi: boolean = isPreAiEra(input.postAgeText);
-  if (preAi) {
+  if (isPreAiEra(input.activityUrn ?? '', input.postAgeText)) {
     return { ...base, label: 'feels-human', confidence: 'high' };
   }
 
@@ -132,22 +132,46 @@ function labelDirection(label: ScoringLabel): 'human' | 'ai' | 'neutral' {
   return 'neutral';
 }
 
-const AGE_PATTERN: RegExp = /^(\d+)(yr|mo|w|d|h|m)$/;
-const MIN_PRE_AI_YEARS: number = 2;
+/**
+ * The cutoff date before which AI-generated LinkedIn posts were effectively
+ * non-existent. ChatGPT launched November 30, 2022; widespread LinkedIn
+ * AI usage started in mid-2023.
+ */
+const PRE_AI_CUTOFF: Date = new Date('2023-01-01T00:00:00Z');
 
 /**
- * Returns true if the post age text indicates the post was written before
- * mainstream AI text generation became common (pre-2023).
- * LinkedIn shows "1yr", "2yr", "3yr" etc. for older posts.
- * As of mid-2026, "2yr" means mid-2024 (borderline), "3yr" means mid-2023.
- * We use ≥3yr as the safe cutoff.
+ * Returns true if the post was created before the AI era.
+ *
+ * Extracts the creation timestamp from the LinkedIn activity URN using
+ * the Snowflake ID encoding (upper 42 bits are milliseconds since Unix
+ * epoch, right-shifted by 22). This is far more reliable than parsing
+ * relative-time text from the DOM ("4yr", "3mo") which varies by locale
+ * and element structure.
+ *
+ * Falls back to the DOM-scraped postAgeText if the post ID is not a URN
+ * (e.g., componentkey-based or content-hash-based IDs).
  */
-export function isPreAiEra(ageText: string | null): boolean {
-  if (ageText === null) return false;
-  const match: RegExpMatchArray | null = ageText.match(AGE_PATTERN);
+export function isPreAiEra(postId: string, postAgeText: string | null): boolean {
+  const urnDate: Date | null = extractDateFromActivityUrn(postId);
+  if (urnDate !== null) {
+    return urnDate < PRE_AI_CUTOFF;
+  }
+
+  if (postAgeText === null) return false;
+  const match: RegExpMatchArray | null = postAgeText.match(/^(\d+)(yr)$/);
   if (match === null) return false;
-  const value: number = Number.parseInt(match[1]!, 10);
-  const unit: string = match[2]!;
-  if (unit === 'yr' && value >= MIN_PRE_AI_YEARS) return true;
-  return false;
+  return Number.parseInt(match[1]!, 10) >= 2;
+}
+
+function extractDateFromActivityUrn(postId: string): Date | null {
+  const match: RegExpMatchArray | null = postId.match(/(?:urn:li:activity:|activity[-:])(\d+)/);
+  if (match === null) return null;
+  try {
+    const id: bigint = BigInt(match[1]!);
+    const timestampMs: number = Number(id >> 22n);
+    if (timestampMs < 1_000_000_000_000 || timestampMs > 2_000_000_000_000) return null;
+    return new Date(timestampMs);
+  } catch {
+    return null;
+  }
 }
