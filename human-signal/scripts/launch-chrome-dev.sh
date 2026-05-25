@@ -55,11 +55,14 @@ if lsof -iTCP:$CDP_PORT -sTCP:LISTEN -t &>/dev/null; then
   exit 0
 fi
 
-echo "Launching Chrome (z26zheng profile) with CDP on port $CDP_PORT..."
+echo "Launching Chrome (Default profile) with extension..."
 echo "  Extension: $BUNDLE_DIR"
-echo "  Profile:   Default (z26zheng@gmail.com)"
+echo "  Profile:   Default"
 echo ""
 
+# Note: --remote-debugging-port is silently ignored by Chrome when using the
+# default user-data-dir (security restriction). We pass it anyway for the
+# rare case where a separate profile is in use; CDP wait is best-effort.
 "$CHROME_APP" \
   --profile-directory=Default \
   --load-extension="$BUNDLE_DIR" \
@@ -67,22 +70,15 @@ echo ""
   --no-first-run \
   --no-default-browser-check \
   "https://www.linkedin.com/feed/" \
-  2>/dev/null &
+  >/dev/null 2>&1 &
 
-# Wait for CDP to become available
-echo -n "Waiting for CDP..."
-for i in $(seq 1 20); do
-  if curl -sf "http://localhost:$CDP_PORT/json/version" &>/dev/null; then
-    echo " ready."
-    echo ""
+# Best-effort CDP wait (up to 5s). Doesn't block if Chrome's blocking CDP.
+for i in $(seq 1 10); do
+  if curl -sf --max-time 1 "http://localhost:$CDP_PORT/json/version" &>/dev/null; then
     echo "Chrome is running with CDP on ws://localhost:$CDP_PORT"
-    echo "The Browse MCP plugin will connect automatically."
     exit 0
   fi
   sleep 0.5
-  echo -n "."
 done
 
-echo ""
-echo "WARNING: CDP did not become available within 10 seconds."
-echo "Try: curl http://localhost:$CDP_PORT/json/version"
+echo "Chrome launched. (CDP unavailable — expected when using the default user-data-dir.)"
