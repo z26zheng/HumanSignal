@@ -2,7 +2,7 @@ import { ScoreCache } from '@/scoring-coordinator/score-cache';
 import { sendToContentScript, sendToOffscreen } from '@/shared/messaging';
 import { logger } from '@/shared/logger';
 import { RULES_SCORING_VERSION, scoreWithRules } from '@/rules-engine';
-import { combineScores, COMBINED_SCORING_VERSION } from '@/scoring-coordinator/score-combiner';
+import { combineScores, COMBINED_SCORING_VERSION, isPreAiEra } from '@/scoring-coordinator/score-combiner';
 import { ScoringTelemetry, type ScoringTelemetryEntry } from '@/shared/scoring-telemetry';
 
 import type { MessageResponse } from '@/shared/messaging';
@@ -61,11 +61,14 @@ export class ScoringCoordinator {
       if (cachedResult !== null) {
         this.telemetry.recordCacheHit(item.itemId, cachedResult.source);
         traces.push({ event: 'CACHE_HIT', timestamp: Date.now(), detail: `Cached ${cachedResult.source} result, version ${cachedResult.scoringVersion}` });
-        // Override itemId with the current request's itemId. The cache is keyed by
-        // contentHash, so the cached result may have an older itemId from a previous
-        // detection. Returning a result with a stale itemId would break content-script
-        // routing (the overlay registry wouldn't find a matching entry).
-        results.push({ ...cachedResult, itemId: item.itemId, traceEvents: traces });
+        // Apply the pre-AI era override to cached results too. Posts authored
+        // before mainstream AI text generation are human by definition,
+        // regardless of what the cached score says.
+        const preAiOverride: ScoringResult = this.applyPreAiEraOverride(
+          { ...cachedResult, itemId: item.itemId, traceEvents: traces },
+          item,
+        );
+        results.push(preAiOverride);
         continue;
       }
 
@@ -80,7 +83,12 @@ export class ScoringCoordinator {
       traces.push({ event: 'RULES_COMPLETED', timestamp: rulesEndedAt, detail: `${rulesResult.label}, confidence: ${rulesResult.confidence}` });
 
       await this.cache.set(item.metadata.contentHash, rulesResult);
-      results.push({ ...rulesResult, traceEvents: traces });
+      // Apply pre-AI override to fresh rules-only results too.
+      const freshResult: ScoringResult = this.applyPreAiEraOverride(
+        { ...rulesResult, traceEvents: traces },
+        item,
+      );
+      results.push(freshResult);
       this.itemsScored += 1;
       this.totalLatencyMs += rulesEndedAt - rulesStartedAt;
       this.latencySamples += 1;
@@ -233,14 +241,17 @@ export class ScoringCoordinator {
       detail: `P(AI)=${aiProb.toFixed(3)}, ${latencyMs}ms → ${combined.label} (${combined.confidence})`,
     });
 
-    const updatedResult: ScoringResult = {
-      ...rulesResult,
-      label: combined.label,
-      confidence: combined.confidence,
-      source: 'combined',
-      scoringVersion: COMBINED_SCORING_VERSION,
-      traceEvents: [...(rulesResult.traceEvents ?? []), ...tmrTraces],
-    };
+    const updatedResult: ScoringResult = this.applyPreAiEraOverride(
+      {
+        ...rulesResult,
+        label: combined.label,
+        confidence: combined.confidence,
+        source: 'combined',
+        scoringVersion: COMBINED_SCORING_VERSION,
+        traceEvents: [...(rulesResult.traceEvents ?? []), ...tmrTraces],
+      },
+      item,
+    );
 
     await this.cache.set(item.metadata.contentHash, updatedResult);
 
@@ -261,5 +272,35 @@ export class ScoringCoordinator {
         code: response.error.code,
       });
     }
+  }
+
+  /**
+   * Apply the pre-AI era hard rule to a scoring result. If the post's activity
+   * URN encodes a creation timestamp before 2023, the label is unconditionally
+   * overridden to "feels-human" with high confidence. Applied uniformly to
+   * cached, rules-only, and combined results so the rule can't be bypassed
+   * by a stale cache entry from an earlier scoring run.
+   */
+  private applyPreAiEraOverride(result: ScoringResult, item: ExtractedItem): ScoringResult {
+    if (!isPreAiEra(item.metadata.activityUrn)) {
+      return result;
+    }
+    if (result.label === 'feels-human' && result.confidence === 'high') {
+      return result;
+    }
+    const traces: readonly ScoringTraceEvent[] = [
+      ...(result.traceEvents ?? []),
+      {
+        event: 'PRE_AI_OVERRIDE',
+        timestamp: Date.now(),
+        detail: `Post predates AI era (URN: ${item.metadata.activityUrn})`,
+      },
+    ];
+    return {
+      ...result,
+      label: 'feels-human',
+      confidence: 'high',
+      traceEvents: traces,
+    };
   }
 }

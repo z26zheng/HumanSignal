@@ -1,6 +1,6 @@
 import type { ConfidenceLabel, ScoringLabel, ScoreDimensions } from '@/shared/types';
 
-export const COMBINED_SCORING_VERSION: string = 'combined-tmr-q4-4';
+export const COMBINED_SCORING_VERSION: string = 'combined-tmr-q4-7';
 
 export interface CombinerInput {
   readonly text: string;
@@ -22,8 +22,8 @@ export interface CombinerOutput {
 }
 
 const SHORT_TEXT_CUTOFF: number = 100;
-const RULES_WEIGHT: number = 0.35;
-const TMR_WEIGHT: number = 0.65;
+const RULES_WEIGHT: number = 0.6;
+const TMR_WEIGHT: number = 0.4;
 
 /**
  * Convert a rules label to a numeric AI probability so we can average
@@ -31,26 +31,27 @@ const TMR_WEIGHT: number = 0.65;
  */
 function rulesLabelToAiProbability(label: ScoringLabel, confidence: ConfidenceLabel): number {
   const base: Record<ScoringLabel, number> = {
-    'feels-human':          0.1,
-    'cant-tell':            0.5,
-    'possibly-ai':          0.55,
-    'likely-ai':            0.8,
-    'almost-certainly-ai':  0.95,
+    'feels-human':          0.08,
+    'probably-human':       0.25,
+    'possibly-human':       0.42,
+    'possibly-ai':          0.58,
+    'probably-ai':          0.75,
+    'almost-certainly-ai':  0.92,
     'unavailable':          0.5,
   };
-  const shift: Record<ConfidenceLabel, number> = { low: 0, medium: 0.05, high: 0.1 };
+  const shift: Record<ConfidenceLabel, number> = { low: 0, medium: 0.04, high: 0.08 };
   const raw: number = base[label];
-  // Push toward the extreme for higher confidence
   return raw < 0.5
     ? Math.max(0, raw - shift[confidence])
     : Math.min(1, raw + shift[confidence]);
 }
 
 function aiProbabilityToLabel(p: number): ScoringLabel {
-  if (p < 0.25) return 'feels-human';
-  if (p < 0.45) return 'possibly-ai';
-  if (p < 0.55) return 'cant-tell';
-  if (p < 0.75) return 'likely-ai';
+  if (p < 1 / 6) return 'feels-human';
+  if (p < 2 / 6) return 'probably-human';
+  if (p < 3 / 6) return 'possibly-human';
+  if (p < 4 / 6) return 'possibly-ai';
+  if (p < 5 / 6) return 'probably-ai';
   return 'almost-certainly-ai';
 }
 
@@ -69,9 +70,6 @@ export function combineScores(input: CombinerInput): CombinerOutput {
   };
 
   // Hard rule: posts from before the AI era (2023) are human by definition.
-  // ChatGPT launched Nov 2022; widespread LinkedIn AI usage started mid-2023.
-  // LinkedIn shows relative ages like "1yr", "2yr", "3yr". Any post ≥2yr old
-  // predates mainstream AI text generation.
   if (isPreAiEra(input.activityUrn)) {
     return { ...base, label: 'feels-human', confidence: 'high' };
   }
@@ -91,46 +89,9 @@ export function combineScores(input: CombinerInput): CombinerOutput {
     return { ...base, label: 'almost-certainly-ai', confidence: 'high' };
   }
 
-  // Weighted average of the two AI probabilities.
-  // When rules finds strong authenticity signals (high authenticity + low templating),
-  // dampen TMR's contribution — TMR has known biases on multi-paragraph and
-  // corporate-enthusiastic text that cause false positives on genuine human posts.
+  // Weighted average: rules-dominant (60/40) with no TMR cap.
   const rulesAiProb: number = rulesLabelToAiProbability(input.rulesLabel, input.rulesConfidence);
-
-  // Strongly authentic: rules is very confident in human signals (max authenticity,
-  // minimal templating, non-low confidence). For these, TMR is treated as
-  // unreliable and rules carries the verdict almost entirely. Catches emotional /
-  // empathetic posts (layoffs, congrats) where TMR's training data biases it
-  // toward AI false positives.
-  const stronglyAuthentic: boolean =
-    input.rulesLabel === 'feels-human' &&
-    input.rulesConfidence !== 'low' &&
-    input.rulesDimensions.authenticity >= 0.8 &&
-    input.rulesDimensions.templating < 0.2;
-
-  // Authentic (softer tier): rules says feels-human with moderate authenticity.
-  // TMR gets dampened but still contributes meaningfully.
-  const authenticRules: boolean =
-    !stronglyAuthentic &&
-    input.rulesLabel === 'feels-human' &&
-    input.rulesDimensions.authenticity >= 0.5 &&
-    input.rulesDimensions.templating < 0.4;
-
-  let rw: number;
-  let tmrCap: number;
-  if (stronglyAuthentic) {
-    rw = 0.7;
-    tmrCap = 0.4;
-  } else if (authenticRules) {
-    rw = 0.55;
-    tmrCap = 0.65;
-  } else {
-    rw = RULES_WEIGHT;
-    tmrCap = 1;
-  }
-  const tw: number = 1 - rw;
-  const effectiveTmrAiProb: number = Math.min(input.tmrAiProbability, tmrCap);
-  const combined: number = rw * rulesAiProb + tw * effectiveTmrAiProb;
+  const combined: number = RULES_WEIGHT * rulesAiProb + TMR_WEIGHT * input.tmrAiProbability;
 
   return {
     ...base,
@@ -149,8 +110,8 @@ function boostOnAgreement(input: CombinerInput): ConfidenceLabel {
 }
 
 function labelDirection(label: ScoringLabel): 'human' | 'ai' | 'neutral' {
-  if (label === 'feels-human') return 'human';
-  if (label === 'likely-ai' || label === 'almost-certainly-ai') return 'ai';
+  if (label === 'feels-human' || label === 'probably-human' || label === 'possibly-human') return 'human';
+  if (label === 'possibly-ai' || label === 'probably-ai' || label === 'almost-certainly-ai') return 'ai';
   return 'neutral';
 }
 

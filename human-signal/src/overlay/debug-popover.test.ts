@@ -190,13 +190,13 @@ describe('DebugPopover', (): void => {
       const popover = new DebugPopover(root);
       popover.open(anchor, store, 'item-1', makeScore({
         source: 'tmr',
-        label: 'likely-ai',
+        label: 'probably-ai',
         confidence: 'medium',
         scoringVersion: 'tmr-q4-1',
       }), false);
 
       expect(dlText(root, 'Source')).toBe('tmr');
-      expect(dlText(root, 'Final label')).toBe('likely-ai');
+      expect(dlText(root, 'Final label')).toBe('probably-ai');
       expect(dlText(root, 'Confidence')).toBe('medium');
       expect(dlText(root, 'Scoring version')).toBe('tmr-q4-1');
     });

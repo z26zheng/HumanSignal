@@ -33,10 +33,11 @@ export type FeedbackType = 'agree' | 'disagree' | 'notUseful';
 
 export type ScoringLabel =
   | 'feels-human'
+  | 'probably-human'
+  | 'possibly-human'
   | 'possibly-ai'
-  | 'likely-ai'
+  | 'probably-ai'
   | 'almost-certainly-ai'
-  | 'cant-tell'
   | 'unavailable';
 
 export type ConfidenceLabel = 'low' | 'medium' | 'high';

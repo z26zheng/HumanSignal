@@ -15,6 +15,7 @@ export type TraceEventType =
   | 'TMR_STARTED'
   | 'TMR_COMPLETED'
   | 'TMR_FAILED'
+  | 'PRE_AI_OVERRIDE'
   | 'STICKER_UPGRADED'
   | 'STICKER_UNCHANGED'
   | 'CANCELLED'

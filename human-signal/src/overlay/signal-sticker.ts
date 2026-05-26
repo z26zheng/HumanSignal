@@ -1,6 +1,6 @@
 import type { StickerColor } from '@/overlay/score-display';
 
-export type StickerState = 'loading' | 'labeled' | 'ai-enhancing' | 'minimized' | 'cant-tell' | 'unavailable';
+export type StickerState = 'loading' | 'labeled' | 'ai-enhancing' | 'minimized' | 'unavailable';
 
 export interface StickerProps {
   readonly label: string;

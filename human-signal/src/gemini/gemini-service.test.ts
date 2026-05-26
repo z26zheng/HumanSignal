@@ -314,7 +314,7 @@ describe('coerceToString and prompt response handling', (): void => {
     const service = new GeminiService(languageModel, persistStatus);
     const result = await service.scoreWithGemini(createRulesItem('Success is about mindset.', 'post'));
 
-    expect(result?.label).toBe('likely-ai');
+    expect(result?.label).toBe('probably-ai');
     expect(result?.source).toBe('gemini');
     await service.destroySession();
   });

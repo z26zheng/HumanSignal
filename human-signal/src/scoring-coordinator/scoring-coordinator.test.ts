@@ -237,7 +237,7 @@ describe('regression: cache itemId mismatch (response routing bug)', (): void =>
       itemId: 'STALE_ID' as ItemId,
       label: 'feels-human',
       source: 'combined',
-      scoringVersion: 'combined-tmr-q4-4',
+      scoringVersion: 'combined-tmr-q4-7',
     };
     await internalCache.set(item.metadata.contentHash, staleResult);
 
@@ -247,7 +247,48 @@ describe('regression: cache itemId mismatch (response routing bug)', (): void =>
     expect(result.itemId).toBe(item.itemId);
     expect(result.label).toBe('feels-human');
     expect(result.source).toBe('combined');
-    expect(result.scoringVersion).toBe('combined-tmr-q4-4');
+    expect(result.scoringVersion).toBe('combined-tmr-q4-7');
+  });
+
+  it('applies pre-AI override on cache hits for pre-2023 activity URNs (regression)', async (): Promise<void> => {
+    // Regression: a previously cached "possibly-ai" result for a pre-AI era post
+    // was returned as-is from the cache, bypassing the pre-AI hard rule.
+    // The override must apply uniformly to cached AND fresh results.
+    vi.stubGlobal('browser', {
+      runtime: { sendMessage: vi.fn(async (): Promise<unknown> => ({})) },
+      storage: { local: { get: vi.fn(async (): Promise<Record<string, unknown>> => ({})) } },
+    });
+
+    const { ScoringCoordinator } = await import('@/scoring-coordinator');
+    const { ScoreCache } = await import('@/scoring-coordinator');
+
+    // URN encoding Nov 2021 (the original burger post). >> 22 yields 1635822913483ms.
+    const preAiUrn = 'urn:li:activity:6861138589313593344';
+    const baseItem: ExtractedItem = createRulesItem('Some neutral post text here.', 'post');
+    const item: ExtractedItem = {
+      ...baseItem,
+      metadata: { ...baseItem.metadata, activityUrn: preAiUrn },
+    };
+    const coordinator = new ScoringCoordinator();
+    const internalCache: ScoreCache = (coordinator as unknown as { cache: ScoreCache }).cache;
+
+    const staleResult: ScoringResult = {
+      ...scoreWithRules(baseItem),
+      label: 'possibly-ai',
+      confidence: 'medium',
+      source: 'combined',
+      scoringVersion: 'combined-tmr-q4-7',
+    };
+    await internalCache.set(item.metadata.contentHash, staleResult);
+
+    const batch = await coordinator.handleScoreBatch([item], null);
+
+    const result = batch.results[0]!;
+    expect(result.label).toBe('feels-human');
+    expect(result.confidence).toBe('high');
+    const eventNames: readonly string[] = result.traceEvents!.map((e) => e.event);
+    expect(eventNames).toContain('CACHE_HIT');
+    expect(eventNames).toContain('PRE_AI_OVERRIDE');
   });
 
   it('returns N results for N input items even when all are cache hits with stale ids', async (): Promise<void> => {

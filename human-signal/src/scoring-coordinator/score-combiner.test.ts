@@ -67,10 +67,10 @@ describe('combineScores', (): void => {
     it('trusts rules label regardless of TMR', (): void => {
       const result = combineScores(input({
         charCount: 80,
-        rulesLabel: 'cant-tell',
+        rulesLabel: 'possibly-human',
         tmrAiProbability: 0.95,
       }));
-      expect(result.label).toBe('cant-tell');
+      expect(result.label).toBe('possibly-human');
     });
   });
 
@@ -100,7 +100,7 @@ describe('combineScores', (): void => {
 
     it('both agree AI → almost-certainly-ai', (): void => {
       const result = combineScores(input({
-        rulesLabel: 'likely-ai',
+        rulesLabel: 'probably-ai',
         rulesConfidence: 'medium',
         rulesDimensions: NEUTRAL_DIMS,
         tmrAiProbability: 0.92,
@@ -108,111 +108,71 @@ describe('combineScores', (): void => {
       expect(result.label).toBe('almost-certainly-ai');
     });
 
-    it('rules=human + TMR=strong AI (no authenticity) → likely-ai', (): void => {
+    it('rules=human + TMR=strong AI → possibly-human (rules-dominant dampens TMR)', (): void => {
       const result = combineScores(input({
         rulesLabel: 'feels-human',
         rulesConfidence: 'medium',
         rulesDimensions: NEUTRAL_DIMS,
         tmrAiProbability: 0.95,
       }));
-      expect(result.label).toBe('likely-ai');
+      expect(result.label).toBe('possibly-human');
     });
 
-    it('rules=possibly-ai + TMR=strong human → feels-human', (): void => {
+    it('rules=possibly-ai + TMR=strong human → possibly-human (60/40 average)', (): void => {
       const result = combineScores(input({
         rulesLabel: 'possibly-ai',
         rulesDimensions: NEUTRAL_DIMS,
         tmrAiProbability: 0.05,
       }));
-      expect(result.label).toBe('feels-human');
+      expect(result.label).toBe('possibly-human');
     });
 
-    it('rules=possibly-ai + TMR=strong AI → almost-certainly-ai', (): void => {
+    it('rules=possibly-ai + TMR=strong AI → likely-ai or higher', (): void => {
       const result = combineScores(input({
         rulesLabel: 'possibly-ai',
         rulesDimensions: NEUTRAL_DIMS,
         tmrAiProbability: 0.95,
       }));
-      expect(result.label).toBe('almost-certainly-ai');
+      expect(['probably-ai', 'almost-certainly-ai']).toContain(result.label);
     });
   });
 
-  describe('authenticity dampening', (): void => {
-    it('caps TMR AI probability when rules has strong authenticity signals', (): void => {
-      // Rules says human with high authenticity; TMR says 98% AI.
-      // Without dampening this would be likely-ai. With dampening → possibly-ai.
+  describe('50/50 weighted average behavior', (): void => {
+    it('rules=human + TMR=strong AI → possibly-human (rules-dominant keeps it low)', (): void => {
       const result = combineScores(input({
         rulesLabel: 'feels-human',
         rulesConfidence: 'medium',
         rulesDimensions: AUTHENTIC_DIMS,
         tmrAiProbability: 0.98,
       }));
-      expect(['feels-human', 'possibly-ai']).toContain(result.label);
-      expect(result.label).not.toBe('likely-ai');
-      expect(result.label).not.toBe('almost-certainly-ai');
+      expect(result.label).toBe('possibly-human');
     });
 
-    it('does NOT dampen TMR when rules does not say feels-human', (): void => {
+    it('rules=possibly-ai + TMR=strong AI → AI-leaning', (): void => {
       const result = combineScores(input({
         rulesLabel: 'possibly-ai',
         rulesDimensions: AUTHENTIC_DIMS,
         tmrAiProbability: 0.95,
       }));
-      expect(result.label).toBe('almost-certainly-ai');
+      expect(['probably-ai', 'almost-certainly-ai']).toContain(result.label);
     });
 
-    it('does NOT dampen TMR when templating is high', (): void => {
-      const result = combineScores(input({
-        rulesLabel: 'feels-human',
-        rulesDimensions: { ...AUTHENTIC_DIMS, templating: 0.6 },
-        tmrAiProbability: 0.95,
-      }));
-      expect(result.label).toBe('likely-ai');
-    });
-  });
-
-  describe('strongly-authentic tier (rules overrides TMR false positives)', (): void => {
-    it('returns feels-human when rules has max authenticity even if TMR says 95% AI', (): void => {
-      // Emotional / empathetic posts (layoffs, condolences) trigger this:
-      // rules confident-human + TMR false-positive → rules wins.
+    it('high authenticity dims do NOT override TMR (no special tiers)', (): void => {
       const result = combineScores(input({
         rulesLabel: 'feels-human',
         rulesConfidence: 'medium',
         rulesDimensions: STRONGLY_AUTHENTIC_DIMS,
         tmrAiProbability: 0.95,
       }));
-      expect(result.label).toBe('feels-human');
+      expect(result.label).toBe('possibly-human');
     });
 
-    it('requires non-low rules confidence to activate strongly-authentic tier', (): void => {
-      // Same dimensions but low confidence → falls back to the softer tier
-      // which may not be enough to overcome TMR at 0.95.
-      const result = combineScores(input({
-        rulesLabel: 'feels-human',
-        rulesConfidence: 'low',
-        rulesDimensions: STRONGLY_AUTHENTIC_DIMS,
-        tmrAiProbability: 0.95,
-      }));
-      expect(result.label).not.toBe('feels-human');
-    });
-
-    it('requires templating below 0.2 to activate strongly-authentic tier', (): void => {
-      const result = combineScores(input({
-        rulesLabel: 'feels-human',
-        rulesConfidence: 'medium',
-        rulesDimensions: { ...STRONGLY_AUTHENTIC_DIMS, templating: 0.3 },
-        tmrAiProbability: 0.95,
-      }));
-      // Falls back to authentic (cap 0.65) — possibly-ai is the expected outcome.
-      expect(result.label).not.toBe('feels-human');
-    });
-
-    it('preserves feels-human even with extreme TMR (0.99)', (): void => {
+    it('both engines say human → clear feels-human', (): void => {
       const result = combineScores(input({
         rulesLabel: 'feels-human',
         rulesConfidence: 'high',
         rulesDimensions: STRONGLY_AUTHENTIC_DIMS,
-        tmrAiProbability: 0.99,
+        tmrAiProbability: 0.05,
       }));
       expect(result.label).toBe('feels-human');
     });
@@ -222,10 +182,10 @@ describe('combineScores', (): void => {
     it('returns rules label for comments even when TMR disagrees', (): void => {
       const result = combineScores(input({
         itemType: 'comment',
-        rulesLabel: 'likely-ai',
+        rulesLabel: 'probably-ai',
         tmrAiProbability: 0.05,
       }));
-      expect(result.label).toBe('likely-ai');
+      expect(result.label).toBe('probably-ai');
     });
 
     it('boosts confidence when TMR agrees on comment direction', (): void => {
@@ -257,7 +217,7 @@ describe('combineScores', (): void => {
     it('overrides to feels-human for posts with pre-2023 activity URN', (): void => {
       const result = combineScores(input({
         activityUrn: PRE_AI_URN,
-        rulesLabel: 'likely-ai',
+        rulesLabel: 'probably-ai',
         tmrAiProbability: 0.99,
       }));
       expect(result.label).toBe('feels-human');
@@ -267,7 +227,7 @@ describe('combineScores', (): void => {
     it('does NOT override for posts with post-2023 activity URN', (): void => {
       const result = combineScores(input({
         activityUrn: POST_AI_URN,
-        rulesLabel: 'likely-ai',
+        rulesLabel: 'probably-ai',
         tmrAiProbability: 0.9,
       }));
       expect(result.label).not.toBe('feels-human');
@@ -276,7 +236,7 @@ describe('combineScores', (): void => {
     it('does NOT override when activityUrn is null', (): void => {
       const result = combineScores(input({
         activityUrn: null,
-        rulesLabel: 'likely-ai',
+        rulesLabel: 'probably-ai',
         tmrAiProbability: 0.9,
       }));
       expect(result.label).not.toBe('feels-human');

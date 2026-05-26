@@ -65,7 +65,7 @@ const CATEGORIES: readonly GoldenCategory[] = [
   {
     prefix: 'post-ai-likely-generic',
     itemType: 'post',
-    expectedLabel: 'likely-ai',
+    expectedLabel: 'probably-ai',
     samples: [
       "Here's what I learned about success: most people don't realize consistency beats talent.",
       'Hard truth: the secret to success is showing up when nobody is watching.',
@@ -80,7 +80,7 @@ const CATEGORIES: readonly GoldenCategory[] = [
   {
     prefix: 'post-ai-likely-listicle',
     itemType: 'post',
-    expectedLabel: 'likely-ai',
+    expectedLabel: 'probably-ai',
     samples: [
       'Here are lessons nobody tells you about leadership.',
       'Here are ways to build a personal brand without burning out.',
@@ -108,9 +108,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'post-cant-tell',
+    prefix: 'post-possibly-human',
     itemType: 'post',
-    expectedLabel: 'cant-tell',
+    expectedLabel: 'possibly-human',
     samples: [
       'Big week ahead.',
       'More soon.',
@@ -140,7 +140,7 @@ const CATEGORIES: readonly GoldenCategory[] = [
   {
     prefix: 'comment-ai-likely',
     itemType: 'comment',
-    expectedLabel: 'likely-ai',
+    expectedLabel: 'probably-ai',
     samples: [
       'Great insights, this really resonates with the way teams should think.',
       'Well said, this is such an important reminder for everyone in leadership.',
@@ -198,9 +198,9 @@ const CATEGORIES: readonly GoldenCategory[] = [
     ],
   },
   {
-    prefix: 'comment-cant-tell',
+    prefix: 'comment-possibly-human',
     itemType: 'comment',
-    expectedLabel: 'cant-tell',
+    expectedLabel: 'possibly-human',
     samples: [
       'Interesting angle.',
       'Useful framing.',

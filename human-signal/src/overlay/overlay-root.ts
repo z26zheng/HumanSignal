@@ -61,6 +61,8 @@ function createOverlayStyle(): HTMLStyleElement {
       outline-offset: 2px;
     }
     .human-signal-sticker--green { background: #22c55e; }
+    .human-signal-sticker--yellow-green { background: #4ade80; }
+    .human-signal-sticker--light-green { background: #bef264; color: #111827; }
     .human-signal-sticker--yellow { background: #eab308; color: #111827; }
     .human-signal-sticker--orange { background: #f97316; }
     .human-signal-sticker--red { background: #ef4444; }

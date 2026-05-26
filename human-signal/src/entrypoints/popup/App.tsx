@@ -22,10 +22,11 @@ type LabelCounts = Readonly<Record<ScoringLabel, number>>;
 
 const EMPTY_LABEL_COUNTS: LabelCounts = {
   'feels-human': 0,
+  'probably-human': 0,
+  'possibly-human': 0,
   'possibly-ai': 0,
-  'likely-ai': 0,
+  'probably-ai': 0,
   'almost-certainly-ai': 0,
-  'cant-tell': 0,
   'unavailable': 0,
 };
 
@@ -37,10 +38,11 @@ interface LabelDisplayConfig {
 
 const VISIBLE_LABELS: readonly LabelDisplayConfig[] = [
   { label: 'feels-human', display: 'Feels Human', color: '#22c55e' },
+  { label: 'probably-human', display: 'Probably Human', color: '#4ade80' },
+  { label: 'possibly-human', display: 'Possibly Human', color: '#bef264' },
   { label: 'possibly-ai', display: 'Possibly AI', color: '#eab308' },
-  { label: 'likely-ai', display: 'Likely AI', color: '#f97316' },
+  { label: 'probably-ai', display: 'Probably AI', color: '#f97316' },
   { label: 'almost-certainly-ai', display: 'Almost Certainly AI', color: '#ef4444' },
-  { label: 'cant-tell', display: "Can't Tell", color: '#9ca3af' },
 ];
 
 interface SensitivityOption {

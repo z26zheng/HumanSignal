@@ -109,7 +109,7 @@ describe('rules classification', (): void => {
       questionMinChars: 30,
     });
 
-    expect(result.label).toBe('likely-ai');
+    expect(result.label).toBe('probably-ai');
   });
 });
 

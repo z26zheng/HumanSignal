@@ -54,17 +54,17 @@ function classifyPost(
   }
 
   if (features.charCount < thresholds.shortPostMaxChars) {
-    return createResult('cant-tell', 'low', features,
+    return createResult('possibly-human', 'low', features,
       ['Too short to classify confidently.']);
   }
 
   if (isGenericPost(features, thresholds)) {
-    return createResult('likely-ai', 'medium', features,
+    return createResult('probably-ai', 'medium', features,
       ['Generic structure with no personal detail. Matches common AI output patterns.']);
   }
 
   if (features.listicleScore > thresholds.listicleScoreMin && features.evidenceCount === 0) {
-    return createResult('likely-ai', 'medium', features,
+    return createResult('probably-ai', 'medium', features,
       ['Uses a list or template-style structure without supporting evidence.']);
   }
 
@@ -139,7 +139,7 @@ function classifyPost(
       ['Some signs of personal context, but also some templated or generic patterns.']);
   }
 
-  return createResult('cant-tell', 'low', features,
+  return createResult('possibly-human', 'low', features,
     ['Not enough specific evidence to classify confidently.']);
 }
 
@@ -153,12 +153,12 @@ function classifyComment(
   }
 
   if (features.charCount < 10) {
-    return createResult('cant-tell', 'low', features,
+    return createResult('possibly-human', 'low', features,
       ['Too short to classify confidently.']);
   }
 
   if (features.genericPhraseCount > 0) {
-    return createResult('likely-ai', 'medium', features,
+    return createResult('probably-ai', 'medium', features,
       ['Broad praise or motivational language without concrete supporting detail.']);
   }
 
@@ -180,7 +180,7 @@ function classifyComment(
       ['Adds enough original wording and context to be more than a short reaction.']);
   }
 
-  return createResult('cant-tell', 'low', features,
+  return createResult('possibly-human', 'low', features,
     ['Too short or too ambiguous to classify confidently.']);
 }
 

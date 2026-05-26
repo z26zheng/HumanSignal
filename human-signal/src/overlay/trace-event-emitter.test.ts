@@ -58,7 +58,7 @@ describe('computeTraceEvents', (): void => {
       { event: 'AI_QUEUED', timestamp: 1100, detail: '' },
     ]);
     const events = computeTraceEvents(trace, {
-      result: makeResult({ source: 'gemini', label: 'likely-ai' }),
+      result: makeResult({ source: 'gemini', label: 'probably-ai' }),
       isAiUpgrade: true,
       previousLabel: 'feels-human',
       previousScoredAt: 1050,

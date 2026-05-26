@@ -86,7 +86,7 @@ describe('ExplanationPopover', (): void => {
   describe('rendering', (): void => {
     it('renders title with label text and confidence', (): void => {
       const popover = new ExplanationPopover(root);
-      popover.open(makeSticker(), makeScore({ label: 'likely-ai', confidence: 'medium' }));
+      popover.open(makeSticker(), makeScore({ label: 'probably-ai', confidence: 'medium' }));
 
       const heading: HTMLHeadingElement | null = root.querySelector('h2');
       expect(heading?.textContent).toContain('medium');
@@ -126,7 +126,7 @@ describe('ExplanationPopover', (): void => {
 
     it('sets data-color attribute matching sticker color', (): void => {
       const popover = new ExplanationPopover(root);
-      popover.open(makeSticker(), makeScore({ label: 'likely-ai' }));
+      popover.open(makeSticker(), makeScore({ label: 'probably-ai' }));
 
       const popoverEl: HTMLDivElement | null = root.querySelector('.human-signal-popover');
       expect(popoverEl?.dataset['color']).toBeDefined();
@@ -163,7 +163,7 @@ describe('ExplanationPopover', (): void => {
 
     it('updateScore() is a no-op when popover is closed', (): void => {
       const popover = new ExplanationPopover(root);
-      popover.updateScore(makeScore({ label: 'likely-ai' }));
+      popover.updateScore(makeScore({ label: 'probably-ai' }));
 
       const popoverEl: HTMLDivElement | null = root.querySelector('.human-signal-popover');
       expect(popoverEl?.children.length).toBe(0);
@@ -172,7 +172,7 @@ describe('ExplanationPopover', (): void => {
     it('updateScore() re-renders when popover is open', (): void => {
       const popover = new ExplanationPopover(root);
       popover.open(makeSticker(), makeScore({ label: 'feels-human', source: 'rules' }));
-      popover.updateScore(makeScore({ label: 'likely-ai', source: 'combined' }));
+      popover.updateScore(makeScore({ label: 'probably-ai', source: 'combined' }));
 
       const sourceText: string = (root.querySelector('p')?.textContent ?? '').trim();
       expect(sourceText).toBe('Source: TMR + Rules');

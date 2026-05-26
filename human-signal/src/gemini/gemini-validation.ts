@@ -142,11 +142,15 @@ function mapGeminiLabel(value: unknown): ScoringResult['label'] | null {
   const normalized: string = value.trim().toLowerCase();
   const labelMap: Record<string, ScoringResult['label']> = {
     'feels human': 'feels-human',
+    'probably human': 'probably-human',
+    'possibly human': 'possibly-human',
     'possibly ai': 'possibly-ai',
-    'likely ai': 'likely-ai',
+    'probably ai': 'probably-ai',
     'almost certainly ai': 'almost-certainly-ai',
-    "can't tell": 'cant-tell',
-    'cant tell': 'cant-tell',
+    // Backward-compatible mappings for older Gemini prompt responses
+    'likely ai': 'probably-ai',
+    "can't tell": 'possibly-human',
+    'cant tell': 'possibly-human',
   };
 
   return labelMap[normalized] ?? null;

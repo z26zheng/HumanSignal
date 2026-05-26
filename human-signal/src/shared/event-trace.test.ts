@@ -233,7 +233,7 @@ describe('computeDebugPillText (pure)', (): void => {
 
   it('TMR started without complete shows in-progress', (): void => {
     const events: readonly TraceEvent[] = [
-      makeEvent('RULES_COMPLETED', '6ms → cant-tell'),
+      makeEvent('RULES_COMPLETED', '6ms → possibly-human'),
       makeEvent('TMR_STARTED', ''),
     ];
     expect(computeDebugPillText(events)).toBe('🔧 6ms rules → TMR ⏳');
