@@ -1,12 +1,18 @@
 import { defineConfig } from 'wxt';
 import preact from '@preact/preset-vite';
 
+// Base version lives here; CI appends the GitHub run number as the 4th
+// segment so every published build gets a unique, strictly-increasing
+// Chrome version (e.g. 1.1.0.42). Local builds fall back to .0.
+const VERSION_BASE = '1.1.0';
+const BUILD_NUMBER = process.env.GITHUB_RUN_NUMBER ?? '0';
+
 export default defineConfig({
   srcDir: 'src',
   manifest: {
     name: 'HumanSignal',
     description: 'See which LinkedIn posts feel genuinely human. On-device AI detection. No data leaves your browser.',
-    version: '1.0.0.0',
+    version: `${VERSION_BASE}.${BUILD_NUMBER}`,
     permissions: ['storage', 'offscreen', 'activeTab'],
     host_permissions: [
       'https://www.linkedin.com/*',

@@ -39,9 +39,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Stamp version
-        run: npm version "$(node -p "require('./package.json').version").${{ github.run_number }}" --no-git-tag-version
-
+      # Version is derived in wxt.config.ts from GITHUB_RUN_NUMBER (set
+      # automatically by Actions), producing a unique 4-part Chrome version.
       - name: Build & zip extension
         run: pnpm zip
 
