@@ -137,15 +137,22 @@ async function download(url: string, dest: string, redirects: number = 5): Promi
         (res.statusCode === 301 || res.statusCode === 302 || res.statusCode === 307 || res.statusCode === 308) &&
         res.headers.location !== undefined
       ) {
+        // Drain the redirect response so its socket is released and the
+        // process can exit cleanly once downloads finish.
+        res.resume();
         if (redirects <= 0) {
           reject(new Error(`Too many redirects for ${url}`));
           return;
         }
-        resolve(download(res.headers.location, dest, redirects - 1));
+        // HuggingFace returns relative redirect locations (e.g. /api/resolve-cache/...).
+        // Resolve against the current URL so https.get receives an absolute URL.
+        const nextUrl: string = new URL(res.headers.location, url).toString();
+        resolve(download(nextUrl, dest, redirects - 1));
         return;
       }
 
       if (res.statusCode !== 200) {
+        res.resume();
         reject(new Error(`HTTP ${res.statusCode ?? 'unknown'} for ${url}`));
         return;
       }
