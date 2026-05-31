@@ -23,6 +23,8 @@ jobs:
           node-version-file: .node-version
 
       - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: human-signal/package.json
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -38,13 +40,15 @@ jobs:
       - run: pnpm install --frozen-lockfile
 
       - name: Stamp version
-        run: npm version 0.1.${{ github.run_number }} --no-git-tag-version
+        run: npm version "$(node -p "require('./package.json').version").${{ github.run_number }}" --no-git-tag-version
 
       - name: Build & zip extension
         run: pnpm zip
 
       - name: Upload to Chrome Web Store
-        run: pnpm exec chrome-webstore-upload upload --source .output/human-signal-0.1.${{ github.run_number }}-chrome.zip --auto-publish
+        run: |
+          ZIP=$(ls .output/*.zip | head -1)
+          pnpm exec chrome-webstore-upload upload --source "$ZIP" --auto-publish
         env:
           EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
