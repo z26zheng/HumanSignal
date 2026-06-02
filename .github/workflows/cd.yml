@@ -47,7 +47,10 @@ jobs:
       - name: Upload to Chrome Web Store
         run: |
           ZIP=$(ls .output/*.zip | head -1)
-          pnpm exec chrome-webstore-upload upload --source "$ZIP" --auto-publish
+          # No subcommand = upload AND publish. The bundled model makes the
+          # package large, so Google keeps the upload in IN_PROGRESS for a
+          # while; wait for processing to finish before publishing.
+          pnpm exec chrome-webstore-upload --source "$ZIP" --max-await-in-progress 600
         env:
           EXTENSION_ID: ${{ secrets.CWS_EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
