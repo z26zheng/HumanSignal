@@ -58,6 +58,21 @@ function classifyPost(
       ['Too short to classify confidently.']);
   }
 
+  // Promotional / product-launch structure. Polished marketing copy and
+  // AI-assisted product pitches lean on emoji-numbered feature lists, product
+  // URLs, and calls-to-action ("star it", "sign up"). These posts also tend
+  // to be loaded with first-person + concrete detail, so without this guard
+  // they slip through the feels-human paths below. Catch them first.
+  if (isPromotionalPost(features)) {
+    // An emoji-numbered feature list (1️⃣2️⃣3️⃣…) is the strongest signal.
+    if (features.keycapListCount >= 2) {
+      return createResult('probably-ai', 'medium', features,
+        ['Product-pitch structure: emoji-numbered feature list with calls to action and links.']);
+    }
+    return createResult('possibly-ai', 'medium', features,
+      ['Promotional / product-launch language (calls to action, links) rather than a personal account.']);
+  }
+
   if (isGenericPost(features, thresholds)) {
     return createResult('probably-ai', 'medium', features,
       ['Generic structure with no personal detail. Matches common AI output patterns.']);
@@ -182,6 +197,23 @@ function classifyComment(
 
   return createResult('possibly-human', 'low', features,
     ['Too short or too ambiguous to classify confidently.']);
+}
+
+/**
+ * True when a post reads as a product launch / marketing pitch rather than a
+ * personal account. Triggers on an emoji-numbered feature list, or on a
+ * combination of product calls-to-action and an external link, or on
+ * multiple calls-to-action. Deliberately ignores the personal "reach out /
+ * let me know" phrasing that genuine human posts use.
+ */
+function isPromotionalPost(features: TextFeatures): boolean {
+  if (features.keycapListCount >= 2) {
+    return true;
+  }
+  if (features.promotionalCtaCount >= 1 && features.hasProductUrl) {
+    return true;
+  }
+  return features.promotionalCtaCount >= 2;
 }
 
 function isGenericPost(features: TextFeatures, thresholds: ClassificationThresholds): boolean {

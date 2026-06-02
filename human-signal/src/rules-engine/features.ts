@@ -7,7 +7,10 @@ import {
   EX_COMMUNITY_PATTERN,
   FIRST_PERSON_PATTERNS,
   GENERIC_PRAISE_PHRASES,
+  KEYCAP_DIGIT_PATTERN,
   MOTIVATIONAL_CLICHES,
+  PROMOTIONAL_CTA_PATTERNS,
+  URL_PATTERN,
 } from '@/rules-engine/patterns';
 
 export interface TextFeatures {
@@ -38,6 +41,9 @@ export interface TextFeatures {
   readonly communityTermCount: number;
   readonly emojiCount: number;
   readonly conversationalSignals: number;
+  readonly promotionalCtaCount: number;
+  readonly keycapListCount: number;
+  readonly hasProductUrl: boolean;
 }
 
 const WORD_PATTERN: RegExp = /[a-zA-Z][a-zA-Z'-]*/g;
@@ -93,6 +99,10 @@ export function extractFeatures(text: string): TextFeatures {
   const emojiCount: number = countMatches(normalizedText, EMOJI_PATTERN);
   const properNounCount: number = countProperNouns(normalizedText);
 
+  const promotionalCtaCount: number = countPhraseMatches(lowerText, PROMOTIONAL_CTA_PATTERNS);
+  const keycapListCount: number = countMatches(normalizedText, KEYCAP_DIGIT_PATTERN);
+  const hasProductUrl: boolean = countMatches(normalizedText, URL_PATTERN) > 0;
+
   return {
     charCount: normalizedText.length,
     wordCount: words.length,
@@ -121,6 +131,9 @@ export function extractFeatures(text: string): TextFeatures {
     communityTermCount,
     emojiCount,
     conversationalSignals: directAddressCount + empathyMarkerCount + communityTermCount + emojiCount,
+    promotionalCtaCount,
+    keycapListCount,
+    hasProductUrl,
   };
 }
 

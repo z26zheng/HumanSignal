@@ -4,7 +4,7 @@ import preact from '@preact/preset-vite';
 // Base version lives here; CI appends the GitHub run number as the 4th
 // segment so every published build gets a unique, strictly-increasing
 // Chrome version (e.g. 1.1.0.42). Local builds fall back to .0.
-const VERSION_BASE = '1.1.0';
+const VERSION_BASE = '1.2.0';
 const BUILD_NUMBER = process.env.GITHUB_RUN_NUMBER ?? '0';
 
 export default defineConfig({

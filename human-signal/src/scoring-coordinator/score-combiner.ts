@@ -1,6 +1,6 @@
 import type { ConfidenceLabel, ScoringLabel, ScoreDimensions } from '@/shared/types';
 
-export const COMBINED_SCORING_VERSION: string = 'combined-tmr-q4-7';
+export const COMBINED_SCORING_VERSION: string = 'combined-tmr-q4-14';
 
 export interface CombinerInput {
   readonly text: string;
@@ -22,8 +22,32 @@ export interface CombinerOutput {
 }
 
 const SHORT_TEXT_CUTOFF: number = 100;
-const RULES_WEIGHT: number = 0.6;
-const TMR_WEIGHT: number = 0.4;
+
+/**
+ * Relative trust between the two engines. TMR is the benchmark-validated AI
+ * detector; the rules engine is fast but lenient (it tends to read genuine-
+ * looking AI content as human). Raising TMR_WEIGHT makes the validated
+ * detector win more often. Must sum to 1 with RULES_WEIGHT.
+ */
+const RULES_WEIGHT: number = 0.5;
+const TMR_WEIGHT: number = 0.5;
+
+/**
+ * ── THE SENSITIVITY DIAL ──────────────────────────────────────────────────
+ * Single knob controlling how eager the extension is to flag content as AI.
+ * It is added to the combined AI probability before the label is chosen:
+ *
+ *   AI_SENSITIVITY = 0      → neutral / balanced
+ *                  > 0      → MORE aggressive: more posts labeled AI
+ *                             (catches more AI, but more human false positives)
+ *                  < 0      → MORE lenient: fewer AI labels
+ *
+ * The 6 tiers are 1/6 (~0.167) wide, so every +0.167 shifts results up by one
+ * full tier. Practical range is about -0.15 .. +0.20. Increase this if AI
+ * content is slipping through as "possibly-human"; decrease it if real humans
+ * are being flagged.
+ */
+const AI_SENSITIVITY: number = 0.05;
 
 /**
  * Convert a rules label to a numeric AI probability so we can average
@@ -89,15 +113,20 @@ export function combineScores(input: CombinerInput): CombinerOutput {
     return { ...base, label: 'almost-certainly-ai', confidence: 'high' };
   }
 
-  // Weighted average: rules-dominant (60/40) with no TMR cap.
+  // Weighted average of rules + TMR, then nudged by the sensitivity dial.
   const rulesAiProb: number = rulesLabelToAiProbability(input.rulesLabel, input.rulesConfidence);
-  const combined: number = RULES_WEIGHT * rulesAiProb + TMR_WEIGHT * input.tmrAiProbability;
+  const weighted: number = RULES_WEIGHT * rulesAiProb + TMR_WEIGHT * input.tmrAiProbability;
+  const combined: number = clamp01(weighted + AI_SENSITIVITY);
 
   return {
     ...base,
     label: aiProbabilityToLabel(combined),
     confidence: aiProbabilityToConfidence(combined),
   };
+}
+
+function clamp01(value: number): number {
+  return Math.max(0, Math.min(1, value));
 }
 
 function boostOnAgreement(input: CombinerInput): ConfidenceLabel {

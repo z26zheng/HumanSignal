@@ -138,3 +138,47 @@ export const COMMUNITY_TERMS: readonly string[] = [
  * Captures insider community references without hardcoding every company.
  */
 export const EX_COMMUNITY_PATTERN: RegExp = /\bex-[a-z][a-z]+/gi;
+
+/**
+ * Calls-to-action typical of product launches and marketing copy. Distinct
+ * from the personal "reach out / let me know" direct-address phrases — these
+ * push the reader toward a PRODUCT action (try, star, sign up, read the link).
+ */
+export const PROMOTIONAL_CTA_PATTERNS: readonly string[] = [
+  'star it',
+  'star the repo',
+  'star the project',
+  'open an issue',
+  'check it out',
+  'check out',
+  'sign up',
+  'signup',
+  'try it',
+  'give it a try',
+  'get started',
+  'learn more',
+  'read more',
+  'link in bio',
+  'link in comments',
+  'link below',
+  'available now',
+  'now available',
+  'join the waitlist',
+  'join our waitlist',
+  'drop in',
+];
+
+/**
+ * Keycap emoji digits (1️⃣ 2️⃣ 3️⃣ …) used as numbered list bullets — a very
+ * strong template/marketing structure signal that genuine personal posts
+ * almost never use. The sequence is digit + optional VS16 + enclosing keycap.
+ */
+export const KEYCAP_DIGIT_PATTERN: RegExp = /[0-9]\uFE0F?\u20E3/gu;
+
+/**
+ * Inline URLs / bare product domains (example.com, www.example.io,
+ * lnkd.in/…). Signals the post is pointing the reader at a product or
+ * external landing page.
+ */
+export const URL_PATTERN: RegExp =
+  /\b(?:https?:\/\/\S+|www\.\S+|[a-z0-9-]+\.(?:com|io|ai|dev|co|app|org|net|xyz|gg)\b)/gi;

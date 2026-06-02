@@ -6,7 +6,7 @@ import type { ClassificationResult, ClassificationThresholds } from '@/rules-eng
 import type { TextFeatures } from '@/rules-engine/features';
 import type { ExtractedItem, ScoringResult } from '@/shared/types';
 
-export const RULES_SCORING_VERSION: string = 'rules-1';
+export const RULES_SCORING_VERSION: string = 'rules-2';
 
 export function scoreWithRules(
   item: ExtractedItem,

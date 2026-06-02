@@ -52,7 +52,7 @@ describe('rules classification', (): void => {
 
     expect(result.explanation.length).toBeGreaterThan(10);
     expect(result.dimensions.specificity).toBeGreaterThan(0);
-    expect(result.scoringVersion).toBe('rules-1');
+    expect(result.scoringVersion).toBe('rules-2');
   });
 
   // Regression: emotional/empathetic posts with no metrics were being labeled
@@ -91,6 +91,47 @@ describe('rules classification', (): void => {
       expect(result.label).toBe('feels-human');
       expect(result.dimensions.authenticity).toBeGreaterThanOrEqual(0.8);
       expect(result.dimensions.templating).toBeLessThan(0.2);
+    });
+  });
+
+  // Regression: polished product-pitch posts were being labeled "feels-human"
+  // because they are loaded with first-person + numbers + proper nouns. The
+  // promotional-structure guard now routes them to AI-leaning labels.
+  describe('regression: promotional / product-launch posts', (): void => {
+    it('classifies an emoji-numbered product pitch as probably-ai', (): void => {
+      const item = createRulesItem(
+        [
+          "So I've been collaborating with Su Fu on what solves the foundational piece:",
+          'permit0 (www.permit0.com) - the action authorization layer for AI agents.',
+          'It routes every tool call through:',
+          '1️⃣ Normalize the action',
+          '2️⃣ Score the risk',
+          '3️⃣ Route by tier',
+          '4️⃣ Drop in YAML packs',
+          '⭐️ Star it if you think AI agents need real guardrails.',
+        ].join('\n'),
+        'post',
+      );
+      const result = scoreWithRules(item);
+      expect(result.label).toBe('probably-ai');
+    });
+
+    it('classifies a CTA + product-link post as possibly-ai', (): void => {
+      const item = createRulesItem(
+        'I am thrilled to announce our new tool is live. Check it out and sign up at example.io to get started today.',
+        'post',
+      );
+      const result = scoreWithRules(item);
+      expect(result.label).toBe('possibly-ai');
+    });
+
+    it('does NOT flag a genuine human emotional post as promotional', (): void => {
+      const item = createRulesItem(
+        'To my network: I miss my dear colleagues. Please consider these ex-hoodies. Feel free to reach out. 💚',
+        'post',
+      );
+      const result = scoreWithRules(item);
+      expect(result.label).toBe('feels-human');
     });
   });
 

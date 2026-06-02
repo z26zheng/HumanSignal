@@ -254,4 +254,42 @@ describe('extractFeatures', (): void => {
       expect(f.properNounCount).toBeGreaterThanOrEqual(2);
     });
   });
+
+  describe('promotional / product-launch signals', (): void => {
+    it('counts emoji-numbered keycap list items', (): void => {
+      const f = extractFeatures('Our flow: 1️⃣ Normalize 2️⃣ Score 3️⃣ Route 4️⃣ Deny');
+      expect(f.keycapListCount).toBe(4);
+    });
+
+    it('does not count plain digits as keycap list items', (): void => {
+      const f = extractFeatures('We shipped 3 features and fixed 12 bugs in 2024.');
+      expect(f.keycapListCount).toBe(0);
+    });
+
+    it('counts product calls-to-action', (): void => {
+      const f = extractFeatures('Check it out and sign up today. Star it if you like it.');
+      expect(f.promotionalCtaCount).toBeGreaterThanOrEqual(2);
+    });
+
+    it('detects inline product URLs and bare domains', (): void => {
+      expect(extractFeatures('Read more at www.permit0.com today.').hasProductUrl).toBe(true);
+      expect(extractFeatures('Link: https://lnkd.in/abc').hasProductUrl).toBe(true);
+      expect(extractFeatures('Visit example.io now.').hasProductUrl).toBe(true);
+    });
+
+    it('does not flag personal reach-out phrasing as a product CTA', (): void => {
+      const f = extractFeatures('Feel free to reach out and let me know how I can help.');
+      expect(f.promotionalCtaCount).toBe(0);
+      expect(f.hasProductUrl).toBe(false);
+    });
+
+    it('genuine human emotional post has no promotional signals', (): void => {
+      const f = extractFeatures(
+        'To my network: I miss my dear colleagues. Please consider these ex-hoodies. 💚',
+      );
+      expect(f.keycapListCount).toBe(0);
+      expect(f.promotionalCtaCount).toBe(0);
+      expect(f.hasProductUrl).toBe(false);
+    });
+  });
 });
